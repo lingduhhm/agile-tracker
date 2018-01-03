@@ -17,7 +17,7 @@ export default {
   name: 'ChartMainPage',
   data () {
     return {
-    }
+    };
   },
   created: function () {
   },
@@ -26,7 +26,7 @@ export default {
     chart.addGroup('null', {color: 'green'});
     chart.addPoint(0, 10, 'null');
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

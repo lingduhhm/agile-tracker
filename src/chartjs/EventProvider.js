@@ -27,7 +27,7 @@ EventProvider.prototype.fireEvent = function (eventname, evtdata) {
       eventname: eventname,
       eventid: eventid,
       data: evtdata
-    }
+    };
     eventFun(eventObj);
   }
 };

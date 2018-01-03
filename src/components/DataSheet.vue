@@ -23,7 +23,7 @@ export default {
   name: 'DataSheet',
   data () {
     return {
-    }
+    };
   },
   created: function () {
   },
@@ -34,7 +34,7 @@ export default {
     'block-issues': BlockIssues,
     'followups': Followups
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

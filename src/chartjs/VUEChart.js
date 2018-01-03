@@ -2,7 +2,8 @@
   author: onwebbe (tai)
 */
 /* global $:true */
-import EventProvider from './EventProvider.js'
+import EventProvider from './EventProvider.js';
+
 function VUEChart (element, width, height) {
   this.groups = {};
   this.points = [];
@@ -37,7 +38,7 @@ VUEChart.prototype.createInitialDom = function (element) {
                 '</div>';
   this.ele = $(domStr);
   $(element).append(this.ele);
-}
+};
 VUEChart.colors = {};
 VUEChart.colors['lightblue'] = '#3f6688';
 VUEChart.colors['lightorange'] = '#b29666';
@@ -125,7 +126,7 @@ VUEChart.prototype.init = function (width, height) {
   this.fireEvent('afterChartAxisInitial');
   this.renderBar();
   this.fireEvent('afterChartInitial');
-}
+};
 
 VUEChart.prototype.updateAxisX = function () {
   this.fireEvent('beforeUpdateAxisX');
@@ -141,7 +142,7 @@ VUEChart.prototype.updateAxisX = function () {
   console.log('X----Count:' + this.axisXGapCount + ': gap:' + this.axisXGap);
   this.addAxisXGap();
   this.fireEvent('afterUpdateAxisX');
-}
+};
 VUEChart.prototype.updateAxisY = function () {
   this.fireEvent('beforeUpdateAxisY');
   this.removeAxisYGap();
@@ -157,7 +158,7 @@ VUEChart.prototype.updateAxisY = function () {
   console.log('Y----Count:' + this.axisYGapCount + ': gap:' + this.axisYGap);
   this.addAxisYGap();
   this.fireEvent('afterUpdateAxisY');
-}
+};
 VUEChart.prototype.addAxisX = function () {
   var axisXWidth = this.chartAreaWidth;
   var axisXLeft = this.axisLength;
@@ -167,11 +168,11 @@ VUEChart.prototype.addAxisX = function () {
   axisX.width(axisXWidth);
   axisX.css('left', axisXLeft + 'px');
   axisX.css('top', axisXTop + 'px');
-}
+};
 VUEChart.prototype.removeAxisXGap = function () {
   $(this.ele).find('.axisX').empty();
   $(this.ele).find('.axisXText').empty();
-}
+};
 VUEChart.prototype.addAxisXGap = function () {
   var startPosition = 0;
   var i = 1;
@@ -187,7 +188,7 @@ VUEChart.prototype.addAxisXGap = function () {
     textItem.css('left', textPositionLeft + 'px');
     i++;
   }
-}
+};
 
 VUEChart.prototype.addAxisY = function () {
   var axisYHeight = this.chartAreaHeight;
@@ -197,7 +198,7 @@ VUEChart.prototype.addAxisY = function () {
   axisY.height(axisYHeight);
   axisY.css('left', axisYLeft + 'px');
   axisY.css('top', '0px');
-}
+};
 VUEChart.prototype.addAxisYGap = function () {
   var i = 0;
   var yPixel = i * this.axisYGap;
@@ -221,11 +222,11 @@ VUEChart.prototype.addAxisYGap = function () {
 
     i++;
   }
-}
+};
 VUEChart.prototype.removeAxisYGap = function () {
   $(this.ele).find('.axisY').empty();
   $(this.ele).find('.axisYText').empty();
-}
+};
 VUEChart.prototype.addGroup = function (groupid, settings) {
   this.fireEvent('beforeAddGroup', {groupid: groupid, groupsettings: settings});
   var group = null;
@@ -245,7 +246,7 @@ VUEChart.prototype.addGroup = function (groupid, settings) {
     group.lines = [];
   }
   this.fireEvent('afterAddGroup', {groupid: groupid, groupsettings: settings});
-}
+};
 VUEChart.prototype.reAddAllPoint = function () {
   $(this.ele).find('.chart .chartArea').empty();
   for (var group in this.groups) {
@@ -263,7 +264,7 @@ VUEChart.prototype.reAddAllPoint = function () {
     console.log(newPoints);
     groupItem.points = newPoints;
   }
-}
+};
 VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
   var self = this;
   this.fireEvent('beforeAddPoint', {x: x, y: y, groupid: groupid, isAdd: isAdd, pointdata: extradata});
@@ -309,7 +310,7 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
     positionX: xPixel,
     positionY: this.chartAreaHeight - yPixel,
     groupid: groupid
-  }
+  };
   if (isAdd) {
     points.push(point);
   }
@@ -330,7 +331,7 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
   $.extend(point, extradata);
   this.fireEvent('afterAddPoint', {ele: pointItem, point: point, x: x, y: y, groupid: groupid, isAdd: isAdd, pointdata: extradata});
   return point;
-}
+};
 VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
   var self = this;
   this.fireEvent('beforeAddLine', {point1: point1, point2: point2, isAdd: isAdd, linedata: extradata});
@@ -369,7 +370,7 @@ VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
     endPoint: point2,
     groupid: groupid,
     ele: lineItem
-  }
+  };
   lineItem[0].linedata = line;
   if (isAdd) {
     group.lines.push(line);
@@ -378,12 +379,12 @@ VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
   $.extend(line, extradata);
   this.fireEvent('afterAddLine', {ele: lineItem, line: line, point1: point1, point2: point2, isAdd: isAdd, linedata: extradata});
   return line;
-}
+};
 VUEChart.prototype.reAddAllGroupLine = function (isAdd) {
   for (var group in this.groups) {
     this.addAllLine(group, isAdd);
   }
-}
+};
 VUEChart.prototype.addAllLine = function (groupid, isAdd) {
   if (this.groups[groupid] == null) {
     return;
@@ -412,7 +413,7 @@ VUEChart.prototype.addAllLine = function (groupid, isAdd) {
     this.addLine(point1, point2, null, isAdd);
     point1 = point2;
   }
-}
+};
 VUEChart.prototype.setVisible = function (groupid, visible, type) {
   var queryStr = '.chartArea [groupid="' + groupid + '"]';
   if (type != null) {
@@ -423,7 +424,7 @@ VUEChart.prototype.setVisible = function (groupid, visible, type) {
   } else {
     $(this.ele).find(queryStr).hide();
   }
-}
+};
 VUEChart.prototype.renderBar = function () {
   var self = this;
   $(this.ele).find('.chartBar').empty();
@@ -446,7 +447,7 @@ VUEChart.prototype.renderBar = function () {
       }
     });
   }
-}
+};
 VUEChart.prototype.getMaxXY = function () {
   var maxX = 0;
   var maxY = 0;
@@ -464,7 +465,7 @@ VUEChart.prototype.getMaxXY = function () {
     }
   }
   return {maxx: maxX, maxy: maxY};
-}
+};
 VUEChart.prototype.reScaleChart = function () {
   var maxXY = this.getMaxXY();
   var maxX = maxXY.maxx;
@@ -487,7 +488,7 @@ VUEChart.prototype.reScaleChart = function () {
     this.reAddAllPoint();
     this.reAddAllGroupLine();
   }
-}
+};
 /*
 <script>
 var chart = new VUEChart('.chart1', 1000,500);
