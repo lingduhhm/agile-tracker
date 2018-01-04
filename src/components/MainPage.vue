@@ -3,10 +3,22 @@
 */
 <template>
   <div class="mainPage">
-    test
-    <div class="chart">
-    </div>
-    <router-view></router-view>
+    <el-container>
+      <el-header>
+        Agile Workflow
+      </el-header>
+      <el-container>
+        <el-main>
+          <div class="chart">
+          </div>
+        </el-main>
+        <el-aside width="25%">
+          <router-view></router-view>
+        </el-aside>
+      </el-container>
+      <el-footer>
+      </el-footer>
+    </el-container>
   </div>
 </template>
 
@@ -31,6 +43,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+aside {
+  min-width: 400px;
+}
 h1, h2 {
   font-weight: normal;
 }
