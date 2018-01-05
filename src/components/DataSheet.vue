@@ -68,7 +68,8 @@ export default {
   padding-top: 5px;
 }
 .dataSheet .dataSheetSummary .title {
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: bold;
 }
 .dataSheet .dataSheetSummary .pointContent {
   color: @blueColor;
@@ -88,7 +89,7 @@ export default {
   height: calc( 100% - 2px );
 }
 .dataSheet .dataSheetTabs .el-tabs__nav {
-  width: 100% !important;
+  width: 100%;
   display: flex;
   flex-wrap: nowrap;
   align-items: stretch;
@@ -97,7 +98,7 @@ export default {
   flex-grow: 1;
   flex: flex-grow;
 }
-.dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(1) {
+/*.dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(1) {
   color: @blueColor;
 }
 .dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(2) {
@@ -105,5 +106,5 @@ export default {
 }
 .dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(3) {
   color: @warningColor;
-}
+}*/
 </style>

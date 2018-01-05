@@ -37,6 +37,7 @@ export default {
     let chart = new VUEChart('.chart', 1000, 500);
     chart.addGroup('null', {color: 'green'});
     chart.addPoint(0, 10, 'null');
+    chart.renderBar();
   }
 };
 </script>
