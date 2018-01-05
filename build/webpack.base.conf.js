@@ -1,13 +1,13 @@
-'use strict'
-const path = require('path')
-const utils = require('./utils')
-const config = require('../config')
-const webpack = require("webpack")
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const vueLoaderConfig = require('./vue-loader.conf')
+'use strict';
+const path = require('path');
+const utils = require('./utils');
+const config = require('../config');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const vueLoaderConfig = require('./vue-loader.conf');
 
 function resolve (dir) {
-  return path.join(__dirname, '..', dir)
+  return path.join(__dirname, '..', dir);
 }
 
 const createLintingRule = () => ({
@@ -19,12 +19,13 @@ const createLintingRule = () => ({
     formatter: require('eslint-friendly-formatter'),
     emitWarning: !config.dev.showEslintErrorsInOverlay
   }
-})
+});
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js'
+    app: './src/main.js',
+    admin: './src/admin.js'
   },
   output: {
     path: config.build.assetsRoot,
@@ -38,7 +39,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
-      'jquery': 'jquery',
+      'jquery': 'jquery'
     }
   },
   module: {
@@ -77,17 +78,27 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
         }
+      },
+      {
+        test: /\.less$/,
+        loader: [{
+          loader: 'style-loader' // creates style nodes from JS strings
+        }, {
+          loader: 'css-loader' // translates CSS into CommonJS
+        }, {
+          loader: 'less-loader' // compiles Less to CSS
+        }]
       }
     ]
   },
   plugins: [
-      new webpack.ProvidePlugin({
-          $: "jquery",
-          jQuery: "jquery"
-      }),
-      new ExtractTextPlugin({
-        filename : 'css/VUECharts.css'
-      })
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery'
+    }),
+    new ExtractTextPlugin({
+      filename: 'css/VUECharts.css'
+    })
   ],
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
@@ -101,4 +112,4 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty'
   }
-}
+};
