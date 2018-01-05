@@ -6,29 +6,31 @@
   <div class="dataSheet">
     <el-header class="dataSheetSummary">
       <div class='title'>
-        Summary
+        Summary Day 4
       </div>
-      <div class='content'>
+      <!-- <div class='content'>
         <el-row>
           <el-col :span="8"><div class="grid-content bg-purple-dark pointContent">10 Point</div></el-col>
           <el-col :span="8"><div class="grid-content bg-purple-dark blockContent">2 Block</div></el-col>
           <el-col :span="8"><div class="grid-content bg-purple-dark followContent">3 Follow</div></el-col>
         </el-row>
-      </div>
+      </div> -->
     </el-header>
     <el-main class="tabContainer">
       <el-tabs type="border-card" class="dataSheetTabs">
-        <el-tab-pane label="Points" class="dataSheetTabItem">
+        <el-tab-pane label="Points (10)" class="dataSheetTabItem">
           <point-status></point-status>
         </el-tab-pane>
-        <el-tab-pane label="Blocks" class="dataSheetTabItem">
+        <el-tab-pane label="Blocks (2)" class="dataSheetTabItem">
           <block-issues></block-issues>
         </el-tab-pane>
-        <el-tab-pane label="Follows" class="dataSheetTabItem">
+        <el-tab-pane label="Follows (3)" class="dataSheetTabItem">
           <followups></followups>
         </el-tab-pane>
       </el-tabs>
     </el-main>
+    <div @click="openDialog">opendialog</div>
+    <add-point-dialog :dialogDisplay="dialogDisplay"></add-point-dialog>
   </div>
 </template>
 
@@ -36,14 +38,25 @@
 import PointStatus from '@/components/PointStatusInfoComponent';
 import BlockIssues from '@/components/BlockIssuesInfoComponent';
 import Followups from '@/components/FollowupInfoComponent';
+import AddDialogContent from '@/components/AddPointDialogComponent';
 export default {
   name: 'DataSheet',
   data () {
     return {
+      dialogDisplay: false,
       displayData: {
         currentTab: 'points'
       }
     };
+  },
+  methods: {
+    openDialog: function () {
+      this.dialogDisplay = true;
+      var self = this;
+      setTimeout(function () {
+        self.dialogDisplay = null;
+      });
+    }
   },
   created: function () {
   },
@@ -52,7 +65,8 @@ export default {
   components: {
     'point-status': PointStatus,
     'block-issues': BlockIssues,
-    'followups': Followups
+    'followups': Followups,
+    'add-point-dialog': AddDialogContent
   }
 };
 </script>
@@ -69,16 +83,16 @@ export default {
   padding-top: 5px;
 }
 .dataSheet .dataSheetSummary .title {
-  font-size: 20px;
+  font-size: 25px;
   font-weight: bold;
 }
-.dataSheet .dataSheetSummary .pointContent {
+.dataSheet .pointContent {
   color: @blueColor;
 }
-.dataSheet .dataSheetSummary .blockContent {
+.dataSheet .blockContent {
   color: @dangerColor;
 }
-.dataSheet .dataSheetSummary .followContent {
+.dataSheet .followContent {
   color: @warningColor;
 }
 .dataSheet .tabContainer {
@@ -99,7 +113,7 @@ export default {
   flex-grow: 1;
   flex: flex-grow;
 }
-/*.dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(1) {
+.dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(1) {
   color: @blueColor;
 }
 .dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(2) {
@@ -107,5 +121,5 @@ export default {
 }
 .dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(3) {
   color: @warningColor;
-}*/
+}
 </style>

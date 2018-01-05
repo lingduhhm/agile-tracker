@@ -24,7 +24,9 @@
           <el-col :span="4"><div class="grid-content">10 Point</div></el-col>
         </el-row>
         <el-row class="selections">
-          <el-radio v-model="statusSelected" :label="status.key" border size="medium" v-for="status in statusList" :key="status.key">{{status.label}}</el-radio>
+          <div class="grid-content">
+            <el-radio v-model="statusSelected" :label="status.key" border size="medium" v-for="status in statusList" :key="status.key">{{status.label}}</el-radio>
+          </div>
         </el-row>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">Cancel</el-button>
@@ -91,7 +93,6 @@ export default {
         return;
       }
       this.dialogVisible = this.dialogDisplay;
-      this.dialogDisplay = null;
     }
   }
 };
@@ -99,10 +100,13 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.selections {
+.addPointDialogContainer .selections {
   margin-top: 20px;
 }
 .addPointDialogContainer .addPointDialog .el-dialog {
   min-width: 700px;
+}
+.addPointDialogContainer .grid-content {
+  text-align: left;
 }
 </style>
