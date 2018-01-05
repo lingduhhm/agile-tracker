@@ -1,7 +1,6 @@
 /*
   author: onwebbe (tai)
 */
-@import './css/VUECharts.less';
 
 <template>
   <div class="dataSheet">
