@@ -19,6 +19,8 @@
 </template>
 
 <script>
+  import md5 from 'md5';
+
   export default {
     data () {
       var validateUsername = (rule, value, callback) => {
@@ -59,8 +61,7 @@
       submitForm (formName) {
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            this.axios.get('/admin').then((response) => {
-              console.log('test');
+            this.axios.get('/admin/login/verify?' + 'username=' + this.ruleForm.username + '&password=' + md5(this.ruleForm.password)).then((response) => {
             });
           } else {
             console.log('error submit!!');
