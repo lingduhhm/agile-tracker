@@ -2,15 +2,16 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import App from './App';
-import router from './router';
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-import '@/css/VUECharts.less';
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';
+import router from './router/admin';
+import axios from 'axios';
 
 Vue.config.productionTip = false;
 
-Vue.use(ElementUI);
-Vue.prototype.$ELEMENT = { size: 'medium' };
+Vue.use(iView);
+Vue.use(axios);
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
