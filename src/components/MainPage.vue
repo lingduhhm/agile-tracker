@@ -19,11 +19,13 @@
       <el-footer>
       </el-footer>
     </el-container>
+    <add-point-dialog></add-point-dialog>
   </div>
 </template>
 
 <script>
 import VUEChart from '@/chartjs/VUEChart.js';
+import AddDialogContent from '@/components/AddPointDialogComponent';
 
 export default {
   name: 'ChartMainPage',
@@ -38,6 +40,9 @@ export default {
     chart.addGroup('null', {color: 'green'});
     chart.addPoint(0, 10, 'null');
     chart.renderBar();
+  },
+  components: {
+    'add-point-dialog': AddDialogContent
   }
 };
 </script>
