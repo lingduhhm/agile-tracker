@@ -1,31 +1,34 @@
 <template>
-  <el-card class="box-card">
-    <div slot="header" class="clearfix">
-      <span>Welcome to Agile Tracker</span>
-    </div>
-    <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px">
-      <el-form-item label="用户名" prop="username">
-        <el-input type="input" v-model="ruleForm.username" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input type="password" v-model="ruleForm.password" auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
-      </el-form-item>
-    </el-form>
-  </el-card>
+  <div class="login">
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>Welcome to Agile Tracker</span>
+      </div>
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px">
+        <el-form-item label="Username" prop="username">
+          <el-input type="input" v-model="ruleForm.username" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Password" prop="password">
+          <el-input type="password" v-model="ruleForm.password" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')">Submit</el-button>
+          <el-button @click="resetForm('ruleForm')">Reset</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+  </div>
 </template>
 
 <script>
   import md5 from 'md5';
+  import Cookies from 'js-cookie';
 
   export default {
     data () {
       var validateUsername = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请输入用户名'));
+          callback(new Error('Please input username'));
         } else {
           if (this.ruleForm.password !== '') {
             this.$refs.ruleForm.validateField('password');
@@ -35,9 +38,7 @@
       };
       var validatePass = (rule, value, callback) => {
         if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm.password) {
-          callback(new Error('两次输入密码不一致!'));
+          callback(new Error('Please input password'));
         } else {
           callback();
         }
@@ -59,13 +60,26 @@
     },
     methods: {
       submitForm (formName) {
+        var that = this;
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             this.axios.get('/admin/login/verify?' + 'username=' + this.ruleForm.username + '&password=' + md5(this.ruleForm.password)).then((response) => {
+              if (response.data.status === 'success') {
+                Cookies.set('username', that.ruleForm.username, { expires: 7 });
+                that.$router.push('/home');
+              } else {
+                that.$message({
+                  message: '登录失败！',
+                  type: 'error'
+                });
+              }
+            }).catch((err) => {
+              console.log(err);
+              that.$message({
+                message: '登录失败！',
+                type: 'error'
+              });
             });
-          } else {
-            console.log('error submit!!');
-            return false;
           }
         });
       },
@@ -100,5 +114,13 @@
     position: absolute;
     right: 5rem;
     top: 50%;
+  }
+
+  .login{
+    background-image: url('https://file.iviewui.com/iview-admin/login_bg.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
   }
 </style>

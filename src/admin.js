@@ -5,6 +5,7 @@ import App from './App';
 import VueAxios from 'vue-axios';
 import axios from 'axios';
 import router from './router/admin';
+import '@/css/admin.less';
 
 Vue.config.productionTip = false;
 
