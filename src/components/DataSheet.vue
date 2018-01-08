@@ -122,4 +122,8 @@ export default {
 .dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(3) {
   color: @warningColor;
 }
+.dataSheet .el-tabs__content{
+  padding-left: 0px;
+  padding-right: 0px;
+}
 </style>
