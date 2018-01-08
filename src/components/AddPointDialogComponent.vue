@@ -20,7 +20,7 @@
               </el-select>
             </div>
           </el-col>
-          <el-col :span="5"><div class="grid-content">{{biSelected}}&nbsp;</div></el-col>
+          <el-col :span="5"><div class="grid-content"><a target="_blank" :href='biSelectedURL'>{{biSelected}}</a>&nbsp;</div></el-col>
           <el-col :span="4"><div class="grid-content">10 Point</div></el-col>
         </el-row>
         <el-row class="selections">
@@ -48,18 +48,19 @@ export default {
   data () {
     return {
       biSelected: '',
+      biSelectedURL: '',
       biList: [{
-        value: 'BI-3131',
-        label: 'BI-3131'
+        value: 'CDP-8411',
+        label: 'CDP-8411'
       }, {
-        value: 'BI-3132',
-        label: 'BI-3132'
+        value: 'CDP-8412',
+        label: 'CDP-8412'
       }, {
-        value: 'BI-3133',
-        label: 'BI-3133'
+        value: 'CDP-8413',
+        label: 'CDP-8413'
       }, {
-        value: 'BI-3134',
-        label: 'BI-3134'
+        value: 'CDP-8414',
+        label: 'CDP-8414'
       }],
       statusSelected: '',
       dialogVisible: true,
@@ -87,6 +88,7 @@ export default {
   },
   watch: {
     biSelected: function () {
+      this.biSelectedURL = 'https://jira.successfactors.com/browse/' + this.biSelected;
     },
     dialogDisplay: function () {
       if (this.dialogDisplay == null) {
