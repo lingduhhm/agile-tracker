@@ -171,6 +171,9 @@ export default {
   flex-grow: 1;
   flex: flex-grow;
 }
+.pointStatus {
+  padding: 0;
+}
 .pointStatus i{
   font-size: 24px;
 }
