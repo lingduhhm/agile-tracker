@@ -1,44 +1,57 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import Home from '@/components/admin-home/home';
 import Login from '@/components/login/login';
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import Story from '@/components/admin-story/story';
+import Dashboard from '@/components/admin-dashboard/dashboard';
+import Cookies from 'js-cookie';
 
 Vue.use(Router);
+Vue.use(ElementUI);
 
-export default new Router({
+const routerObj = new Router({
   routes: [
     {
-      path: '/',
-      name: 'login',
-      component: Login
+      path: '/home',
+      name: 'home',
+      component: Home,
+      children: [
+        {
+          path: '/dashboard',
+          component: Dashboard
+        },
+        {
+          path: '/story',
+          component: Story
+        }
+      ],
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
       name: 'login',
       component: Login
     }
-    // {
-    //   path: '/*',
-    //   name: 'error-404',
-    //   meta: {
-    //     title: '404-页面不存在'
-    //   },
-    //   component: resolve => { require(['@/components/error-page/404.vue'], resolve); }
-    // },
-    // {
-    //   path: '/403',
-    //   meta: {
-    //     title: '403-权限不足'
-    //   },
-    //   name: 'error-403',
-    //   component: resolve => { require(['@//components/error-page/403.vue'], resolve); }
-    // },
-    // {
-    //   path: '/500',
-    //   meta: {
-    //     title: '500-服务端错误'
-    //   },
-    //   name: 'error-500',
-    //   component: resolve => { require(['@/components/error-page/500.vue'], resolve); }
-    // }
+
   ]
 });
+routerObj.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if (!Cookies.get('username')) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }
+      });
+    } else {
+      next();
+    }
+  } else {
+    next(); // 确保一定要调用 next()
+  }
+});
+
+export default routerObj;

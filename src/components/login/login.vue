@@ -1,70 +1,126 @@
-<style lang="less">
-  @import './login.less';
-</style>
-
 <template>
-  <div class="login" @keydown.enter="handleSubmit">
-  <div class="login-con">
-    <Card :bordered="false">
-    <p slot="title">
-      <Icon type="log-in"></Icon>
-      Welcome to Agile Tracker
-    </p>
-    <div class="form-con">
-      <Form ref="loginForm" :model="form" :rules="rules">
-      <FormItem prop="userName">
-        <Input v-model="form.userName" placeholder="请输入用户名">
-        <span slot="prepend">
-          <Icon :size="16" type="person"></Icon>
-        </span>
-        </Input>
-      </FormItem>
-      <FormItem prop="password">
-        <Input type="password" v-model="form.password" placeholder="请输入密码">
-        <span slot="prepend">
-          <Icon :size="14" type="locked"></Icon>
-        </span>
-        </Input>
-      </FormItem>
-      <FormItem>
-        <Button @click="handleSubmit" type="primary" long>登录</Button>
-      </FormItem>
-      </Form>
-    </div>
-    </Card>
-  </div>
+  <div class="login">
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>Welcome to Agile Tracker</span>
+      </div>
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px">
+        <el-form-item label="Username" prop="username">
+          <el-input type="input" v-model="ruleForm.username" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="Password" prop="password">
+          <el-input type="password" v-model="ruleForm.password" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')">Submit</el-button>
+          <el-button @click="resetForm('ruleForm')">Reset</el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
   </div>
 </template>
 
 <script>
-export default {
-  data () {
-    return {
-      form: {
-        userName: '',
-        password: ''
-      },
-      rules: {
-        userName: [
-          { required: true, message: '账号不能为空', trigger: 'blur' }
-        ],
-        password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
-        ]
-      }
-    };
-  },
-  methods: {
-    handleSubmit () {
-      this.$refs.loginForm.validate((valid) => {
-        if (valid) {
+  import md5 from 'md5';
+  import Cookies from 'js-cookie';
+
+  export default {
+    data () {
+      var validateUsername = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('Please input username'));
+        } else {
+          if (this.ruleForm.password !== '') {
+            this.$refs.ruleForm.validateField('password');
+          }
+          callback();
         }
-      });
+      };
+      var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('Please input password'));
+        } else {
+          callback();
+        }
+      };
+      return {
+        ruleForm: {
+          username: '',
+          password: ''
+        },
+        rules: {
+          username: [
+            { validator: validateUsername, trigger: 'blur' }
+          ],
+          password: [
+            { validator: validatePass, trigger: 'blur' }
+          ]
+        }
+      };
+    },
+    methods: {
+      submitForm (formName) {
+        var that = this;
+        this.$refs['ruleForm'].validate((valid) => {
+          if (valid) {
+            this.axios.get('/admin/login/verify?' + 'username=' + this.ruleForm.username + '&password=' + md5(this.ruleForm.password)).then((response) => {
+              if (response.data.status === 'success') {
+                Cookies.set('username', that.ruleForm.username, { expires: 7 });
+                that.$router.push('/home');
+              } else {
+                that.$message({
+                  message: '登录失败！',
+                  type: 'error'
+                });
+              }
+            }).catch((err) => {
+              console.log(err);
+              that.$message({
+                message: '登录失败！',
+                type: 'error'
+              });
+            });
+          }
+        });
+      },
+      resetForm (formName) {
+        this.$refs['ruleForm'].resetFields();
+      }
     }
-  }
-};
+  };
 </script>
 
-<style>
+<style scoped>
 
+  .text {
+    font-size: 14px;
+  }
+
+  .item {
+    margin-bottom: 18px;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+    display: table;
+    content: "";
+  }
+  .clearfix:after {
+    clear: both
+  }
+
+  .box-card {
+    width: 480px;
+    position: absolute;
+    right: 5rem;
+    top: 50%;
+  }
+
+  .login{
+    background-image: url('https://file.iviewui.com/iview-admin/login_bg.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+  }
 </style>
