@@ -95,6 +95,9 @@ export default {
 .dataSheet .followContent {
   color: @warningColor;
 }
+.dataSheet .successContent {
+  color: @successColor;
+}
 .dataSheet .tabContainer {
   height: calc( 100% - 18px) ;
   padding-top: 5px;
