@@ -95,6 +95,9 @@ export default {
 .dataSheet .followContent {
   color: @warningColor;
 }
+.dataSheet .successContent {
+  color: @successColor;
+}
 .dataSheet .tabContainer {
   height: calc( 100% - 18px) ;
   padding-top: 5px;
@@ -121,5 +124,9 @@ export default {
 }
 .dataSheet .dataSheetTabs .el-tabs__nav .el-tabs__item:nth-child(3) {
   color: @warningColor;
+}
+.dataSheet .el-tabs__content{
+  padding-left: 0px;
+  padding-right: 0px;
 }
 </style>

@@ -63,19 +63,13 @@ export default {
         label: 'CDP-8414'
       }],
       statusSelected: '',
-      dialogVisible: true,
+      dialogVisible: false,
       statusList: [{
         key: 'devcomplete',
         label: 'Dev Complete'
       }, {
-        key: 'blocked',
-        label: 'Blocked'
-      }, {
         key: 'testcomplete',
         label: 'Test Complete'
-      }, {
-        key: 'add',
-        label: 'Add'
       }]
     };
   },
