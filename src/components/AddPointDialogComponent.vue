@@ -62,19 +62,13 @@ export default {
         label: 'BI-3134'
       }],
       statusSelected: '',
-      dialogVisible: true,
+      dialogVisible: false,
       statusList: [{
         key: 'devcomplete',
         label: 'Dev Complete'
       }, {
-        key: 'blocked',
-        label: 'Blocked'
-      }, {
         key: 'testcomplete',
         label: 'Test Complete'
-      }, {
-        key: 'add',
-        label: 'Add'
       }]
     };
   },
