@@ -63,6 +63,7 @@
       },
       handleSelect (key, keyPath) {
         this.$router.push(key);
+        this.$router.push('/dashboard');
       }
     },
     created: function () {
