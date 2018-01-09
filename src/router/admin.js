@@ -45,7 +45,7 @@ routerObj.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if (!Cookies.get('username')) {
+    if (!Cookies.get('agiletracker')) {
       next({
         path: '/login',
         query: { redirect: to.fullPath }

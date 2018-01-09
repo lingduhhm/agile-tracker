@@ -140,14 +140,16 @@
         if (this.form._id) {
           this.axios.put('/admin/sprint', this.form).then((response) => {
             that.$message({
-              message: '数据保存成功！',
-              type: 'success'
+              message: response.data.resMsg,
+              type: response.data.status
             });
-            that.dialogVisible = false;
-            if (that.form.status === 'inprogress') {
-              that.cardInfo = that.form || {};
-            } else {
-              that.fetchData();
+            if (response.data.status === 'success') {
+              that.dialogVisible = false;
+              if (that.form.status === 'inprogress') {
+                that.cardInfo = that.form || {};
+              } else {
+                that.fetchData();
+              }
             }
           })
           .catch((err) => {
@@ -160,13 +162,15 @@
         } else {
           this.axios.post('/admin/sprint', this.form).then((response) => {
             that.$message({
-              message: '数据保存成功！',
-              type: 'success'
+              message: response.data.resMsg,
+              type: response.data.status
             });
-            if (response.data.resData.status === 'inprogress') {
-              that.cardInfo = response.data.resData;
+            if (response.data.status === 'success') {
+              if (response.data.resData.status === 'inprogress') {
+                that.cardInfo = response.data.resData;
+              }
+              that.dialogVisible = false;
             }
-            that.dialogVisible = false;
           })
           .catch((err) => {
             console.log(err);

@@ -22,7 +22,6 @@
 
 <script>
   import md5 from 'md5';
-  import Cookies from 'js-cookie';
 
   export default {
     data () {
@@ -65,8 +64,7 @@
           if (valid) {
             this.axios.get('/admin/login/verify?' + 'username=' + this.ruleForm.username + '&password=' + md5(this.ruleForm.password)).then((response) => {
               if (response.data.status === 'success') {
-                Cookies.set('username', that.ruleForm.username, { expires: 7 });
-                that.$router.push('/home');
+                that.$router.push('/dashboard');
               } else {
                 that.$message({
                   message: '登录失败！',
