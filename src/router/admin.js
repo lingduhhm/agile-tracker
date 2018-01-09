@@ -14,6 +14,10 @@ Vue.use(ElementUI);
 const routerObj = new Router({
   routes: [
     {
+      path: '/',
+      redirect: '/home'
+    },
+    {
       path: '/home',
       name: 'home',
       component: Home,

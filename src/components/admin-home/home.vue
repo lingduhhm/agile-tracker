@@ -67,6 +67,7 @@
     },
     created: function () {
       this.fetchData();
+      this.$router.push('/dashboard');
     }
   };
 </script>
