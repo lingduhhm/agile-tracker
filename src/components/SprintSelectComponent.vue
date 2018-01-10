@@ -48,7 +48,7 @@ export default {
     },
     queryData: function () {
       var self = this;
-      this.axios.get('http://127.0.0.1:3000/api/v1/sprints').then(function (data) {
+      this.axios.get('/api/v1/sprints').then(function (data) {
         console.log(data);
         self.sprintList = data.data.resData;
       });
