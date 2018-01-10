@@ -120,7 +120,7 @@
           this.dialogVisible = true;
         } else if (command === 'scan') {
           var that = this;
-          this.axios.patch('/admin/sprint?objid=' + that.cardInfo._id).then((response) => {
+          this.axios.patch('/admin/sprint?category=' + that.cardInfo.release + '/' + that.cardInfo.sprint).then((response) => {
             that.$message({
               message: '扫描成功！',
               type: 'success'
