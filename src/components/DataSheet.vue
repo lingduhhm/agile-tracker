@@ -30,7 +30,7 @@
       </el-tabs>
     </el-main>
     <div @click="openDialog">opendialog</div>
-    <add-point-dialog :dialogDisplay="dialogDisplay"></add-point-dialog>
+    <sprint-select-dialog :dialogDisplay="dialogDisplay"></sprint-select-dialog>
   </div>
 </template>
 
@@ -39,6 +39,7 @@ import PointStatus from '@/components/PointStatusInfoComponent';
 import BlockIssues from '@/components/BlockIssuesInfoComponent';
 import Followups from '@/components/FollowupInfoComponent';
 import AddDialogContent from '@/components/AddPointDialogComponent';
+import SprintDialogContent from '@/components/SprintSelectComponent';
 export default {
   name: 'DataSheet',
   data () {
@@ -66,7 +67,10 @@ export default {
     'point-status': PointStatus,
     'block-issues': BlockIssues,
     'followups': Followups,
-    'add-point-dialog': AddDialogContent
+    'add-point-dialog': AddDialogContent,
+    'sprint-select-dialog': SprintDialogContent
+  },
+  watch: {
   }
 };
 </script>
