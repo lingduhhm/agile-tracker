@@ -32,7 +32,30 @@ export default {
     return {
     };
   },
+  methods: {
+    updateData: function (response) {
+      var summary = response.resData.summary;
+      var dataByGroup = {};
+      for (var i = 0; i < summary.length; i++) {
+        var summ = summary[i];
+        var day = summ.day;
+        var groups = summ.groups;
+        for (var groupid in groups) {
+          var groupObj = groups[groupid];
+          if (dataByGroup[groupid]) {
+            dataByGroup[groupid] = {};
+            dataByGroup[groupid]['day'] = day;
+            dataByGroup[groupid]['blocker'] = groupObj['blocker'];
+            dataByGroup[groupid]['followup'] = groupObj['followup'];
+          }
+        }
+      }
+    }
+  },
   created: function () {
+    if (this.$root.eventHub) {
+      this.$root.eventHub.$on('sprintChanged', this.updateData);
+    }
   },
   mounted: function () {
     let chart = new VUEChart('.chart', 1000, 500);

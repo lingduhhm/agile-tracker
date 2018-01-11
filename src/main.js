@@ -25,9 +25,13 @@ new Vue({
     sprintSelected: null
   },
   methods: {
-    sprintSelected: function (params) {
-      console.log(params);
-      this.sprintSelected = params;
+    querySummaryData: function (params) {
+      var self = this;
+      var sprintid = params._id;
+      this.axios.get('/api/v1/summary?sprintid=' + sprintid).then(function (summarydata) {
+        console.log(self);
+        self.eventHub.$emit('sprintChanged', summarydata);
+      });
     }
   },
   created: function () {
@@ -36,6 +40,11 @@ new Vue({
       this.eventHub.$on('sprintSelected', function (params) {
         self.sprintSelected = params;
       });
+    }
+  },
+  watch: {
+    sprintSelected: function () {
+      this.querySummaryData(this.sprintSelected);
     }
   }
 });
