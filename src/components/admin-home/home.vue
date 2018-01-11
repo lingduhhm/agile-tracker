@@ -64,12 +64,15 @@
       handleSelect (key, keyPath) {
         if (key === 'dashboard') {
           this.$router.push('/' + key);
-        } else {
+        } else if (key) {
           this.$router.push('/story/' + key);
+        } else {
+          this.$router.push('/dashboard');
         }
       }
     },
     created: function () {
+      this.handleSelect();
       this.fetchData();
     }
   };
