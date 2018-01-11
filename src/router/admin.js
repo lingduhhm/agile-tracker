@@ -27,7 +27,7 @@ const routerObj = new Router({
           component: Dashboard
         },
         {
-          path: '/story',
+          path: '/story/:category',
           component: Story
         }
       ],

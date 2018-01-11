@@ -62,8 +62,11 @@
         });
       },
       handleSelect (key, keyPath) {
-        this.$router.push(key);
-        this.$router.push('/dashboard');
+        if (key === 'dashboard') {
+          this.$router.push('/' + key);
+        } else {
+          this.$router.push('/story/' + key);
+        }
       }
     },
     created: function () {

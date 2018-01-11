@@ -73,6 +73,8 @@
 </template>
 
 <script>
+  import { Loading } from 'element-ui';
+
   export default {
     data () {
       return {
@@ -119,8 +121,13 @@
           this.title = 'Add Sprint';
           this.dialogVisible = true;
         } else if (command === 'scan') {
+          var loading = Loading.service({fullscreen: true,
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)',
+            text: 'Scanning...'});
           var that = this;
-          this.axios.patch('/admin/sprint?category=' + that.cardInfo.release + '/' + that.cardInfo.sprint).then((response) => {
+          this.axios.patch('/admin/sprint?sprint=' + that.cardInfo._id).then((response) => {
+            loading.close();
             that.$message({
               message: '扫描成功！',
               type: 'success'
