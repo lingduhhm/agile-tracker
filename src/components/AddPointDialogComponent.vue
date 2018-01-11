@@ -7,10 +7,11 @@
         width="30%"
         :before-close="handleClose"
         class="addPointDialog">
-        <el-row>
-          <el-col :span="15">
-            <div class="grid-content">
-              <el-select v-model="biSelected" filterable allow-create placeholder="Please select BI">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="grid-content">
+          <el-form-item prop="biSelected" label="BI Number" class="addPointDialogContent">
+            <el-row>
+              <el-col :span="15">
+              <el-select v-model="ruleForm.biSelected" filterable allow-create placeholder="Please select BI">
                 <el-option
                   v-for="item in biList"
                   :key="item.value"
@@ -18,20 +19,24 @@
                   :value="item.value">
                 </el-option>
               </el-select>
-            </div>
-          </el-col>
-          <el-col :span="5"><div class="grid-content"><a target="_blank" :href='biSelectedURL'>{{biSelected}}</a>&nbsp;</div></el-col>
-          <el-col :span="4"><div class="grid-content">10 Point</div></el-col>
-        </el-row>
-        <el-row class="selections">
-          <div class="grid-content">
-            <el-radio v-model="statusSelected" :label="status.key" border size="medium" v-for="status in statusList" :key="status.key">{{status.label}}</el-radio>
-          </div>
-        </el-row>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="dialogVisible = false">Confirm</el-button>
-        </span>
+              </el-col>
+              <el-col :span="5">
+                <div><a target="_blank" :href='biSelectedURL'>{{ruleForm.biSelected}}</a>&nbsp;</div>
+              </el-col>
+              <el-col :span="4"><div>10 Point</div></el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item prop="statusSelected" class="addPointDialogContent">
+            <el-radio-group v-model="ruleForm.statusSelected">
+              <el-radio :label="status.key" border size="medium" v-for="status in statusList" :key="status.key">{{status.label}}
+              </el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item class="addPointDialogFooter">
+            <el-button type="primary" @click="dialogVisible = false">Cancel</el-button>
+            <el-button @click="submitForm('ruleForm')">Confirm</el-button>
+          </el-form-item>
+        </el-form>
       </el-dialog>
     </div>
   </div>
@@ -47,7 +52,6 @@ export default {
   },
   data () {
     return {
-      biSelected: '',
       biSelectedURL: '',
       biList: [{
         value: 'CDP-8411',
@@ -62,7 +66,6 @@ export default {
         value: 'CDP-8414',
         label: 'CDP-8414'
       }],
-      statusSelected: '',
       dialogVisible: false,
       statusList: [{
         key: 'devcomplete',
@@ -70,19 +73,48 @@ export default {
       }, {
         key: 'testcomplete',
         label: 'Test Complete'
-      }]
+      }],
+      ruleForm: {
+        biSelected: '',
+        statusSelected: ''
+      },
+      rules: {
+        biSelected: [
+          { required: true, message: 'please enter story id', trigger: 'change' }
+        ],
+        statusSelected: [
+          { required: true, message: 'please select option', trigger: 'change' }
+        ]
+      }
     };
   },
   methods: {
-    handleClose: function () {}
+    handleClose: function () {},
+    submitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!');
+          this.ruleForm.biSelected = '';
+          this.dialogVisible = false;
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    }
   },
   created: function () {
   },
   mounted: function () {
   },
+  computed: {
+    biSelected () {
+      return this.ruleForm.biSelected;
+    }
+  },
   watch: {
-    biSelected: function () {
-      this.biSelectedURL = 'https://jira.successfactors.com/browse/' + this.biSelected;
+    biSelected: function (newValue) {
+      this.biSelectedURL = 'https://jira.successfactors.com/browse/' + newValue;
     },
     dialogDisplay: function () {
       if (this.dialogDisplay == null) {
@@ -104,5 +136,12 @@ export default {
 }
 .addPointDialogContainer .grid-content {
   text-align: left;
+}
+.addPointDialogContainer .addPointDialogContent {
+  margin-bottom: 40px;
+}
+.addPointDialogFooter {
+  text-align: right;
+  margin-bottom: 0px;
 }
 </style>
