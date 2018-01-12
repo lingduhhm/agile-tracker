@@ -1,9 +1,11 @@
 <template>
-  <el-row>
-    <el-col :span="6">
-      <sprint-card></sprint-card>
-    </el-col>
-  </el-row>
+  <div>
+    <el-row>
+      <el-col :span="6">
+        <sprint-card></sprint-card>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
@@ -12,6 +14,9 @@
   export default {
     data () {
       return {
+        dialogVisible: false,
+        title: 'Add',
+        form: {}
       };
     },
     methods: {
