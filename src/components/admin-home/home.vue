@@ -130,10 +130,10 @@
       jsonfy (data) {
         var mapRes = {};
         data.forEach((value, key, arr) => {
-          if(value.status === 'planning'){
+          if (value.status === 'planning') {
             this.isHadPlanning = true;
           }
-          if(value.status === 'inprogress'){
+          if (value.status === 'inprogress') {
             this.isHadInprogress = true;
           }
           mapRes[value._id] = value;
