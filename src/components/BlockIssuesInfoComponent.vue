@@ -1,12 +1,12 @@
 <template>
   <el-container>
-    <el-header style="text-align: left; height: 36px" class="blockSheetHeader">
+    <el-header style="text-align: left; height: 40px; line-height: 25px" class="blockSheetHeader">
       <el-row>
         <el-col :span="20">
           <span class="textBold">Block Issues</span>
         </el-col>
         <el-col :span="4">
-          <i style="font-size: 20px" class="el-icon-circle-plus-outline addIssueIcon" @click="openDialog"></i>
+          <i style="font-size: 24px" class="el-icon-circle-plus-outline addIssueIcon" @click="openDialog"></i>
           <add-block-dialog :dialogDisplay="dialogDisplay" :blockIssues="issues" 
           @blockIssueAdded="addBlockFromDialog"></add-block-dialog>
         </el-col>
