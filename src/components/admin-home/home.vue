@@ -36,6 +36,17 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </el-col>
+            <template v-if="sprintObjId">
+              <el-col :span="2" offset="1">
+                Work Days: {{form.workdays || 0}} days
+              </el-col> 
+              <el-col :span="4" offset="1">
+                Start Date: {{form.start}}
+              </el-col> 
+              <el-col :span="4" offset="1">
+                End Date: {{form.end}}
+              </el-col> 
+            </template>           
           </el-row>
         </el-header>
         <el-main>
@@ -54,6 +65,9 @@
         </el-form-item>
         <el-form-item label="Sprint">
           <el-input v-model="form.sprint"></el-input>
+        </el-form-item>
+        <el-form-item label="Work Days">
+          <el-input-number v-model="form.workdays"></el-input-number>
         </el-form-item>
         <el-form-item label="Start">
           <el-date-picker 
@@ -99,7 +113,8 @@
         menu: [],
         dialogVisible: false,
         title: 'Add',
-        form: {}
+        form: {},
+        sprintObjId: ''
       };
     },
     watch: {
@@ -142,12 +157,14 @@
       },
       handleSelect (key, keyPath) {
         if (key === 'dashboard') {
+          this.sprintObjId = '';
           this.$router.push('/' + key);
         } else if (key) {
           this.sprintObjId = key;
           this.form = this.menuMap[key];
           this.$router.push('/story/' + key);
         } else {
+          this.sprintObjId = '';
           this.$router.push('/dashboard');
         }
       },

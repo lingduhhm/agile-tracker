@@ -1,31 +1,125 @@
 <template>
   <div>
-    <el-row>
-      <el-col :span="6">
-        <sprint-card></sprint-card>
+    <el-container>
+      <el-aside width="300px">
+        <el-row :gutter="20">
+          <el-col :span="24">
+            <el-card class="box-card">
+              <div slot="header" class="clearfix">
+                <span class="font">Current Sprint</span>
+              </div>
+              <el-form inline label-position="left" class="demo-table-expand">
+                <el-form-item label="Release:">
+                  <span>{{dashboard.sprintData.release}}</span>
+                </el-form-item>
+                <el-form-item label="Sprint:">
+                  <span>{{dashboard.sprintData.sprint}}</span>
+                </el-form-item>
+                <el-form-item label="Start:">
+                  <span>{{dashboard.sprintData.start}}</span>
+                </el-form-item>
+                <el-form-item label="End:">
+                  <span>{{dashboard.sprintData.end}}</span>
+                </el-form-item>
+              </el-form>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-aside>
+      <el-main style="padding: 0 20px;">
+        <el-row :gutter="20" class="rowMargin">
+          <el-col :span="8">
+            <number-card label="Blocked Stories" :value="dashboard.blockedstories" unit="stories" bkcolor="#F56C6C"></number-card>
+          </el-col>
+
+          <el-col :span="8">
+            <number-card label="Affected Stories" :value="dashboard.affectedstories" unit="stories" bkcolor="#E6A23C"></number-card>
+          </el-col>
+
+          <el-col :span="8">
+            <number-card label="Left Days" :value="dashboard.leftdays" unit="days" bkcolor="#409EFF"></number-card>
+          </el-col>
+
+        </el-row>
+
+        <el-row :gutter="20" class="rowMargin">
+          <el-col :span="8">
+            <number-card label="Total Points" :value="dashboard.totalpoints" unit="points" bkcolor="#409EFF"></number-card>
+          </el-col>
+
+          <el-col :span="8">
+            <number-card label="Commited" :value="dashboard.commitedpoints" unit="points" bkcolor="#67C23A"></number-card>
+          </el-col>
+
+          <el-col :span="8">
+            <number-card label="Done" :value="dashboard.donepoints" unit="points" bkcolor="#E6A23C"></number-card>
+          </el-col>
+        </el-row>
+      </el-main>
+    </el-container>
+
+    <el-row :gutter="20" class="rowMargin">
+      <el-col :span="24">
+        <line-chart :sprintsData="dashboard.sprintHistoryPoints"></line-chart>
       </el-col>
     </el-row>
+
   </div>
 </template>
 
 <script>
-  import sprintCard from './sprintcard.vue';
+  import numberCard from './numberCard.vue';
+  import lineChart from './lineChart.vue';
 
   export default {
     data () {
       return {
-        dialogVisible: false,
-        title: 'Add',
-        form: {}
+        dashboard: {
+          sprintData: {},
+          pastdays: 0,
+          sprintHistoryPoints: {}
+        }
       };
     },
+    created: function () {
+      this.fetchData();
+    },
+    watch: {
+      '$route': 'fetchData'
+    },
     methods: {
+      fetchData () {
+        var that = this;
+        this.axios.get('/admin/dashboard').then((response) => {
+          if (response.data.status === 'success') {
+            var responseData = response.data.resData;
+            that.dashboard = responseData;
+          } else {
+            that.$message({
+              message: response.data.resMsg,
+              type: response.data.status
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          that.$message({
+            message: '数据获取失败！',
+            type: 'error'
+          });
+        });
+      }
     },
     components: {
-      sprintCard
+      'numberCard': numberCard,
+      'lineChart': lineChart
     }
   };
 </script>
 
 <style scoped>
+  .rowMargin{
+    margin: 0 0 20px 0;
+  }
+
 </style>
