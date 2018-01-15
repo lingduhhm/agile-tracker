@@ -38,7 +38,7 @@
             </el-col>
             <template v-if="sprintObjId">
               <el-col :span="2" :offset="1">
-                Work Days: {{form.workdays || 0}} days
+                Work Days: {{(form.workdays && form.workdays.length) || 0}} days
               </el-col> 
               <el-col :span="4" :offset="1">
                 Start Date: {{form.start}}
@@ -67,7 +67,14 @@
           <el-input v-model="form.sprint"></el-input>
         </el-form-item>
         <el-form-item label="Work Days">
-          <el-input-number v-model="form.workdays"></el-input-number>
+          <el-select v-model="form.workdays" multiple placeholder="请选择">
+            <el-option
+              v-for="day in avaliableDays"
+              :key="day.value"
+              :label="day.label"
+              :value="day.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="Start">
           <el-date-picker 
@@ -113,12 +120,39 @@
         menu: [],
         dialogVisible: false,
         title: 'Add',
-        form: {},
+        form: {
+          workdays: []
+        },
         sprintObjId: ''
       };
     },
     watch: {
       $routes: 'fetchData'
+    },
+    computed: {
+      avaliableDays: function () {
+        var dateArray = [];
+        var start = this.form.start || '';
+        var end = this.form.end || '';
+        var getDate = function (datestr) {
+          var temp = datestr.split('-');
+          var date = new Date(temp[0], temp[1], temp[2]);
+          return date;
+        };
+        var startTime = getDate(start);
+        var endTime = getDate(end);
+        while ((endTime.getTime() - startTime.getTime()) >= 0) {
+          var year = startTime.getFullYear();
+          var month = startTime.getMonth().toString().length === 1 ? '0' + startTime.getMonth().toString() : startTime.getMonth();
+          var day = startTime.getDate().toString().length === 1 ? '0' + startTime.getDate() : startTime.getDate();
+          dateArray.push({
+            'value': year + '-' + month + '-' + day,
+            'label': year + '-' + month + '-' + day
+          });
+          startTime.setDate(startTime.getDate() + 1);
+        }
+        return dateArray;
+      }
     },
     methods: {
       fetchData () {
