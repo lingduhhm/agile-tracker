@@ -37,13 +37,13 @@
               </el-dropdown>
             </el-col>
             <template v-if="sprintObjId">
-              <el-col :span="2" offset="1">
+              <el-col :span="2" :offset="1">
                 Work Days: {{form.workdays || 0}} days
               </el-col> 
-              <el-col :span="4" offset="1">
+              <el-col :span="4" :offset="1">
                 Start Date: {{form.start}}
               </el-col> 
-              <el-col :span="4" offset="1">
+              <el-col :span="4" :offset="1">
                 End Date: {{form.end}}
               </el-col> 
             </template>           

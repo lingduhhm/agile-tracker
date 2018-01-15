@@ -78,7 +78,6 @@
     },
     methods: {
       setData: function (data) {
-        console.log('start');
         this.myChart.setOption({
           series: [
             {
