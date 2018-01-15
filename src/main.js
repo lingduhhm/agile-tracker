@@ -29,8 +29,7 @@ new Vue({
       var self = this;
       var sprintid = params._id;
       this.axios.get('/api/v1/summary?sprintid=' + sprintid).then(function (summarydata) {
-        console.log(self);
-        self.eventHub.$emit('sprintChanged', summarydata);
+        self.eventHub.$emit('sprintChanged', summarydata.data);
       });
     }
   },

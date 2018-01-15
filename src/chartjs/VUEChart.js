@@ -255,9 +255,10 @@ VUEChart.prototype.reAddAllPoint = function () {
     var newPoints = [];
     for (var i = 0; i < points.length; i++) {
       var point = points[i];
+      var pointExtraData = point.extraData;
       var x = point.x;
       var y = point.y;
-      var changedPoint = this.addPoint(x, y, group, null, false);
+      var changedPoint = this.addPoint(x, y, group, pointExtraData, false);
       newPoints.push(changedPoint);
     }
     console.log(group);
@@ -327,8 +328,10 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
   point['ele'] = pointItem;
   pointItem[0].pointdata = point;
   $(this.ele).find('.chart .chartArea').append(pointItem);
-
-  $.extend(point, extradata);
+  var extraDataObj = {
+    extraData: extradata
+  };
+  $.extend(point, extraDataObj);
   this.fireEvent('afterAddPoint', {ele: pointItem, point: point, x: x, y: y, groupid: groupid, isAdd: isAdd, pointdata: extradata});
   return point;
 };
@@ -408,11 +411,14 @@ VUEChart.prototype.addAllLine = function (groupid, isAdd) {
   });
   var point1 = sortedPoints[0];
   var point2 = null;
+
+  var returnLines = [];
   for (var i = 1; i < sortedPoints.length; i++) {
     point2 = sortedPoints[i];
-    this.addLine(point1, point2, null, isAdd);
+    returnLines.push(this.addLine(point1, point2, null, isAdd));
     point1 = point2;
   }
+  return returnLines;
 };
 VUEChart.prototype.setVisible = function (groupid, visible, type) {
   var queryStr = '.chartArea [groupid="' + groupid + '"]';
