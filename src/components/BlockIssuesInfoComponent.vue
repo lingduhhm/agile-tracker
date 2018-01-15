@@ -1,11 +1,14 @@
 <template>
   <el-container>
-    <el-header style="text-align: left; font-size: 14px; font-weight:600; height: 36px" class="blockSheetHeader">
+    <el-header style="text-align: left; height: 40px; line-height: 25px" class="blockSheetHeader">
       <el-row>
-        <el-col :span="20"><span>Block Issues</span></el-col>
+        <el-col :span="20">
+          <span class="textBold">Block Issues</span>
+        </el-col>
         <el-col :span="4">
-          <i style="font-size: 20px" class="el-icon-circle-plus-outline addIssueIcon" @click="openDialog"></i>
-          <add-block-dialog :dialogDisplay="dialogDisplay"></add-block-dialog>
+          <i style="font-size: 24px" class="el-icon-circle-plus-outline addIssueIcon" @click="openDialog"></i>
+          <add-block-dialog :dialogDisplay="dialogDisplay" :blockIssues="issues" 
+          @blockIssueAdded="addBlockFromDialog"></add-block-dialog>
         </el-col>
       </el-row>
     </el-header>
@@ -17,12 +20,12 @@
         </el-col>
         <el-col :span="12">
           <i style="font-size: 35px; vertical-align: middle" class="el-icon-caret-top addedIssueIcon"></i>
-          <span style="vertical-align: middle" class="textDangerColor">2</span>
+          <span style="font-size: 20px; vertical-align: middle" class="textDangerColor">2</span>
         </el-col>
       </el-row>
       <el-row style="text-align: left; padding-left: 20px; margin: 5px 0 7px">
         <el-col :span="20">
-          <span style="font-size: 14px; font-weight:600; text-align: left">Current Blockers：</span>
+          <span class="textBold" style="text-align: left">Current Blockers：</span>
         </el-col>
         <el-col :span="4">
           <span class="textDangerColor">{{currentblockersnum}}</span>
@@ -30,23 +33,23 @@
       </el-row>
       <el-row style="text-align: left; padding-left: 20px" class="blockSheetSummary">
         <el-col :span="20">
-          <span style="font-size: 14px; font-weight:600; text-align: left">Previous Blockers：</span>
+          <span class="textBold" style="text-align: left">Previous Blockers：</span>
         </el-col>
         <el-col :span="4">
           <span class="textDangerColor">{{previousblockersnum}}</span>
         </el-col>
       </el-row>
-      <el-row style="text-align: left; padding-left: 20px">
+      <el-row style="text-align: left; padding-left: 20px; margin-bottom: 3px">
         <el-col :span="12">
-          <span>Issues ({{issues.length}})</span>
+          <span class="textBold">Issues ({{issues.length}})</span>
         </el-col>
         <el-col :span="12">
           <span>Show All</span>
-          <el-switch :value="true" active-color="#13ce66" inactive-color="#ff4949">
+          <el-switch v-model="isShowAll" active-color="#13ce66">
           </el-switch>
         </el-col>
       </el-row>
-      <el-table :data="issues"
+      <el-table :data="filterIssues"
        :show-header=false 
        :row-class-name="tableRowClassName"
         max-height="300" 
@@ -64,9 +67,6 @@
               <el-row>
                 <el-button type="text" v-show="scope.row.status !== 'Blocking'" @click="updateIssueStatus(scope.row, 'Blocking')">Blocking</el-button>
               </el-row>
-              <el-row>
-                <el-button type="text" v-show="scope.row.status !== 'Followup'" @click="updateIssueStatus(scope.row, 'Followup')">Followup</el-button>
-              </el-row>
             </el-popover>
             <span v-popover:popoverStatus>{{scope.row.status}}</span>
           </template>
@@ -76,7 +76,6 @@
   </el-container>
 </template>
 <script>
-// import AddDialogContent from '@/components/AddPointDialogComponent';
 import AddDialogContent from '@/components/AddBlockedDialogContent';
 export default {
   components: { 'add-block-dialog': AddDialogContent },
@@ -101,9 +100,10 @@ export default {
         follower: 'Tai',
         status: 'Resolved'
       }],
-      currentblockersnum: 4,
+      currentblockersnum: 1,
       previousblockersnum: 5,
-      dialogDisplay: false
+      dialogDisplay: false,
+      isShowAll: true
     };
   },
   methods: {
@@ -112,8 +112,6 @@ export default {
         return 'blockedIssueTrColor';
       } else if (this.issues[rowIndex].status === 'Resolved') {
         return 'resolvedIssueTrColor';
-      } else if (this.issues[rowIndex].status === 'Followup') {
-        return 'followupIssueTrColor';
       }
       return '';
     },
@@ -121,8 +119,13 @@ export default {
       row.status = status;
       if (status === 'Resolved') {
         this.currentblockersnum--;
-        this.previousblockersnum++;
+        // this.previousblockersnum++;
+      } else if (status === 'Blocking') {
+        this.currentblockersnum++;
       }
+    },
+    changeShowAll: function () {
+      this.isShowAll = !this.isShowAll;
     },
     openDialog: function () {
       this.dialogDisplay = true;
@@ -130,6 +133,20 @@ export default {
       setTimeout(function () {
         self.dialogDisplay = null;
       });
+    },
+    addBlockFromDialog: function (data) {
+      this.issues.unshift(data);
+    }
+  },
+  computed: {
+    filterIssues: function () {
+      if (this.isShowAll) {
+        return this.issues;
+      } else {
+        return this.issues.filter(function (item) {
+          return item.status === 'Blocking';
+        });
+      }
     }
   },
   created: function () {},
@@ -146,7 +163,8 @@ export default {
   color: @blueColor;
 }
 .textBold{
-  font-size: 14px; font-weight:600;
+  font-size: 14px; 
+  font-weight:600;
 }
 .reducedIssueIcon,
 .textSuccColor,
@@ -160,18 +178,16 @@ export default {
   color: @dangerColor;
 }
 
-.followupIssueTrColor {
-  color: @warningColor;
-}
-
 .blockSheetSummary {
   border-bottom: 1px solid @borderColor;
   padding-bottom: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .popoverMinWidth {
   min-width: 80px;
+  padding: 6px;
+  text-align: center;
 }
 
 .popoverMinWidth .el-button--text {

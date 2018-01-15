@@ -37,6 +37,7 @@ export default {
     updateData: function (response) {
       var summary = response.resData.summary;
       var initialPoints = response.resData.initialPoints;
+      var issueResovledStatus = response.resData.constances.storyIssueResovledStatus;
       var dataByGroup = {};
       var groupIndex = 0;
       for (let group in initialPoints) {
@@ -72,23 +73,30 @@ export default {
       for (let group in initialPoints) {
         lines = this.chart.addAllLine(group);
       }
-      console.log('lines');
-      console.log(lines);
       for (i = 0; i < lines.length; i++) {
         var line = lines[i];
         var lineEndPoint = line.endPoint;
         let groups = lineEndPoint.extraData.groups;
         var ifLineBlock = false;
-        console.log(lineEndPoint);
         for (let groupid in groups) {
+          console.log('group------' + groupid);
           var groupItem = groups[groupid];
           var groupBlocker = groupItem.blocker;
           if (groupBlocker != null && groupBlocker.length > 0) {
-            ifLineBlock = true;
-            break;
+            for (var j = 0; j < groupBlocker.length; j++) {
+              var groupBlockerItem = groupBlocker[j];
+              console.log(groupBlockerItem);
+              if (groupBlockerItem.status !== issueResovledStatus) {
+                console.log('we have block issue at sprint day:' + day);
+                ifLineBlock = true;
+                break;
+              }
+            }
           }
         }
         if (ifLineBlock) {
+          console.log('----------------get line--------------');
+          console.log(line);
           line.ele.css('border-bottom', '1px solid red');
         }
       }

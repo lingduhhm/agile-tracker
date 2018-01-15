@@ -1,33 +1,80 @@
 <template>
-  <div class="home">
-    <el-container style="height: 100%; border: 1px solid #eee">
-      <el-aside style="width: 180px;">
-        <el-menu class="left-menu" :collapse="isCollapse" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" @select="handleSelect" default-active="dashboard">
-          <el-menu-item index="dashboard" route="/dashboard">
-            <i class="el-icon-menu"></i>
-            <span slot="title">Dashboard</span>
-          </el-menu-item>
-          <el-menu-item index="storyadmin" route="/storyadmin">
-            <i class="el-icon-menu"></i>
-            <span slot="title">Story Management</span>
-          </el-menu-item>
-        </el-menu>
-      </el-aside>
-      <el-container>
-        <el-header style="font-size: 12px; background: #e4e4e4; padding: 20px;">
-          <el-row>
-            <el-col :span="4">
-              <el-breadcrumb separator="/">
-                <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-              </el-breadcrumb>
-            </el-col>
-          </el-row>
-        </el-header>
-        <el-main>
-          <router-view></router-view>
-        </el-main>
-      </el-container>
-    </el-container>
+  <div>
+    <el-table
+      :data="tableData"
+      border
+      style="width: 100%">
+      <el-table-column
+        fixed
+        prop="storykey"
+        label="Key" >
+      </el-table-column>
+      <el-table-column
+        prop="summary"
+        label="Summary" >
+      </el-table-column>
+      <el-table-column
+        prop="issuetype"
+        label="Type" >
+      </el-table-column>
+      <el-table-column
+        prop="points"
+        label="Points" >
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        label="Status" >
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="150">
+        <template slot-scope="scope">
+          <el-button @click="handleClick(scope.row, 'edit')" type="text" size="small">Edit</el-button>
+          <el-button @click="handleClick(scope.row, 'delete')" type="text" size="small">Delete</el-button>
+          <el-button @click="handleClick(scope.row, 'add')" type="text" size="small">add</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-dialog
+    title="提示"
+    :visible.sync="popupVisible"
+    width="30%"
+    center>
+      <span>
+        <el-form ref="form" :model="form" label-width="80px">
+          <el-form-item label="Key">
+            <el-input v-model="form.storykey"></el-input>
+          </el-form-item>
+          <el-form-item label="Summary">
+            <el-input v-model="form.summary"></el-input>
+          </el-form-item>
+          <el-form-item label="Type">
+            <el-input v-model="form.issuetype"></el-input>
+          </el-form-item>
+          <el-form-item label="Points">
+            <el-input v-model="form.points"></el-input>
+          </el-form-item>
+          <el-form-item label="Status">
+            <el-input v-model="form.status"></el-input>
+          </el-form-item>
+        </el-form>
+      </span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="popupVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="handleEdit">Save</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      title="Delete Confirm?"
+      :visible.sync = "deleteVisible"
+      width="30%">
+      <span>Are you sure you want to delete?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="deleteVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="handleDelete">Confirm</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -35,12 +82,138 @@
   export default {
     data () {
       return {
-        isCollapse: false
+        tableData: [],
+        popupVisible: false,
+        deleteVisible: false,
+        form: {},
+        title: '添加Story',
+        deleteObjId: ''
       };
     },
+    created: function () {
+      this.fetchData();
+    },
+    watch: {
+      '$route': 'fetchData'
+    },
     methods: {
-      handleSelect (key, keyPath) {
-        this.$router.push(key);
+      fetchData: function () {
+        var that = this;
+        var objId = this.$route.params.category;
+        this.axios.get('/admin/stories/' + objId)
+        .then(function (response) {
+          if (response.data.status === 'success') {
+            that.tableData = response.data.resData;
+          } else {
+            that.$message({
+              message: '数据获取失败！',
+              type: 'error'
+            });
+          }
+        })
+        .catch(function (err) {
+          console.log(err);
+          that.$message({
+            message: '数据获取失败！',
+            type: 'error'
+          });
+        });
+      },
+
+      handleClick: function (data, type) {
+        if (type === 'edit') {
+          this.title = '添加Story';
+          this.form = data;
+          this.popupVisible = true;
+        } else if (type === 'add') {
+          this.title = '编辑Story';
+          this.form = {};
+          this.popupVisible = true;
+        } else if (type === 'delete') {
+          this.deleteVisible = true;
+          this.deleteObjId = data._id;
+        }
+      },
+
+      handleEdit: function (data) {
+        var that = this;
+        if (this.form._id) {
+          this.axios.put('/admin/stories', this.form)
+          .then(function (response) {
+            if (response.data.status === 'success') {
+              that.tableData = response.data.resData;
+              that.$message({
+                message: response.data.resMsg,
+                type: response.data.status
+              });
+              that.popupVisible = false;
+            } else {
+              that.$message({
+                message: response.data.resMsg,
+                type: response.data.status
+              });
+            }
+          })
+          .catch(function (err) {
+            console.log(err);
+            that.$message({
+              message: '数据获取失败！',
+              type: 'error'
+            });
+          });
+        } else {
+          this.form.sprint = this.$route.params.category;
+          this.axios.post('/admin/stories', this.form)
+          .then(function (response) {
+            if (response.data.status === 'success') {
+              that.tableData = response.data.resData;
+              that.$message({
+                message: response.data.resMsg,
+                type: response.data.status
+              });
+              that.popupVisible = false;
+            } else {
+              that.$message({
+                message: response.data.resMsg,
+                type: response.data.status
+              });
+            }
+          })
+          .catch(function (err) {
+            console.log(err);
+            that.$message({
+              message: '数据获取失败！',
+              type: 'error'
+            });
+          });
+        }
+      },
+
+      handleDelete: function (data) {
+        var that = this;
+        this.axios.delete('/admin/stories?objid=' + this.deleteObjId)
+        .then(function (response) {
+          if (response.data.status === 'success') {
+            that.tableData = response.data.resData;
+            that.$message({
+              message: response.data.resMsg,
+              type: response.data.status
+            });
+            that.deleteVisible = false;
+          } else {
+            that.$message({
+              message: response.data.resMsg,
+              type: response.data.status
+            });
+          }
+        })
+        .catch(function (err) {
+          console.log(err);
+          that.$message({
+            message: '数据获取失败！',
+            type: 'error'
+          });
+        });
       }
     }
   };

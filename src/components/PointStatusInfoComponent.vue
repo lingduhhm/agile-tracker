@@ -3,7 +3,7 @@
 */
 <template>
   <div class="pointInfoContainer">
-    <el-header class="pointStatus">
+    <el-header class="pointStatus" style="height: 40px;">
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="12">
           <span class="pointInfoTitle">Point Status</span>
@@ -49,7 +49,7 @@
             <span class="pointInfoTitle">Changed Items  ( {{testData[4].changedItem.length}} )</span>
           </el-col>
         </el-row>
-        <el-table :data="testData[4].changedItem" class="changeItemTab" style="width: 100%" :show-header="false">
+        <el-table :data="testData[4].changedItem" class="changeItemTab" style="width: 100%" :show-header="false" :row-class-name="tableRowClassName">
           <el-table-column prop="storyId" style="width: 30%"></el-table-column>
           <el-table-column prop="points" style="width: 30%"></el-table-column>
           <el-table-column prop="status"></el-table-column>
@@ -105,37 +105,6 @@ export default {
         currentPoint: 10,
         previousPoint: 10,
         changedItem: []
-      }],
-      tableData1: [{
-        storyId: 'CDP-4811',
-        points: '3 Points',
-        status: 'Active',
-        primaryCount: '3 Points'
-      }, {
-        storyId: 'CDP-4812',
-        points: '3 Points',
-        status: 'Active',
-        primaryCount: '4 Points'
-      }, {
-        storyId: 'CDP-4823',
-        points: '5 Points',
-        status: 'Active',
-        primaryCount: '5 Points'
-      }, {
-        storyId: 'CDP-4814',
-        points: '3 Points',
-        status: 'Active',
-        primaryCount: '3 Points'
-      }, {
-        storyId: 'CDP-4815',
-        points: '3 Points',
-        status: 'Active',
-        primaryCount: '10 Points'
-      }, {
-        storyId: 'CDP-4816',
-        points: '5 Points',
-        status: 'Active',
-        primaryCount: '9 Points'
       }]
     };
   },
@@ -150,6 +119,15 @@ export default {
       setTimeout(function () {
         self.dialogDisplay = null;
       });
+    },
+    tableRowClassName ({row, rowIndex}) {
+      var tableRowList = this.testData[4].changedItem;
+      if (tableRowList[rowIndex].status === 'Add') {
+        return 'blockContent';
+      } else if (tableRowList[rowIndex].status === 'Done') {
+        return 'successContent';
+      }
+      return '';
     },
     handleClose () {}
   },
@@ -171,7 +149,8 @@ export default {
   flex-grow: 1;
   flex: flex-grow;
 }
-.pointStatus {
+header.pointStatus {
+  line-height: 25px;
   padding: 0;
 }
 .pointStatus i{

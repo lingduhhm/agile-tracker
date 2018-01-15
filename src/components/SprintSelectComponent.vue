@@ -10,7 +10,7 @@
         <el-alert style="margin: -20px 0px 20px 0px" title="The issue number and owner are required!" 
         type="warning" v-show="isShowAlert" @close="isShowAlert=false"></el-alert>
         <el-row>
-          <el-col :span="24" v-for='sprintItem in sprintList' :key="sprintItem._id">
+          <el-col :span="24" v-for='sprintItem in sprintList' :key='sprintItem._id'>
             <div @click='selectSprint(sprintItem)'>{{sprintItem.release}} - {{sprintItem.sprint}}</div>
           </el-col>
         </el-row>
