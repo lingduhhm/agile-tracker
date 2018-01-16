@@ -18,13 +18,13 @@
     </el-header>
     <el-main class="tabContainer">
       <el-tabs type="border-card" class="dataSheetTabs">
-        <el-tab-pane label="Points (10)" class="dataSheetTabItem">
+        <el-tab-pane :label="pointLabel" class="dataSheetTabItem">
           <point-status></point-status>
         </el-tab-pane>
-        <el-tab-pane label="Blocks (2)" class="dataSheetTabItem">
+        <el-tab-pane :label="blockLabel" class="dataSheetTabItem">
           <block-issues></block-issues>
         </el-tab-pane>
-        <el-tab-pane label="Follows (3)" class="dataSheetTabItem">
+        <el-tab-pane :label="followupLabel" class="dataSheetTabItem">
           <followups></followups>
         </el-tab-pane>
       </el-tabs>
@@ -48,7 +48,10 @@ export default {
       displayData: {
         currentTab: 'points'
       },
-      day: 0
+      day: 0,
+      pointLabel: 'Points',
+      blockLabel: 'Blockers',
+      followupLabel: 'Follows'
     };
   },
   methods: {
@@ -61,6 +64,29 @@ export default {
     },
     getDaySummary: function (day, group, todayObj, previousObj) {
       this.day = day;
+      var blockCount = 0;
+      var blockers = todayObj['groups'][group]['blocker'];
+      if (blockers != null) {
+        for (let i = 0; i < blockers.length; i++) {
+          let blockItem = blockers[i];
+          if (blockItem.status !== this.$root.summary['constances']['storyIssueResovledStatus']) {
+            blockCount++;
+          }
+        }
+      }
+      this.blockLabel = 'Blocks (' + blockCount + ')';
+
+      var followupCount = 0;
+      var followups = todayObj['groups'][group]['followup'];
+      if (followups != null) {
+        for (let i = 0; i < followups.length; i++) {
+          let followupItem = followups[i];
+          if (followupItem.status !== this.$root.summary['constances']['storyIssueResovledStatus']) {
+            followupCount++;
+          }
+        }
+      }
+      this.followupLabel = 'Follows (' + followupCount + ')';
     }
   },
   created: function () {

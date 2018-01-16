@@ -22,13 +22,15 @@ new Vue({
   components: { App },
   data: {
     eventHub: eventHub,
-    sprintSelected: null
+    sprintSelected: null,
+    summary: null
   },
   methods: {
     querySummaryData: function (params) {
       var self = this;
       var sprintid = params._id;
       this.axios.get('/api/v1/summary?sprintid=' + sprintid).then(function (summarydata) {
+        self.summary = summarydata.data.resData;
         self.eventHub.$emit('sprintChanged', summarydata.data);
       });
     }
