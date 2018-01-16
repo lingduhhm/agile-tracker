@@ -37,6 +37,28 @@ export default {
     };
   },
   methods: {
+    getLatestSummaryData: function () {
+      var allGroups = this.$root.sprintSelected.sprintgroups;
+      var allSummaryLength = this.allData.summary.length;
+      var latestDay = allSummaryLength - 1;
+      var previousDay = latestDay - 1;
+      if (previousDay < 0) {
+        previousDay = 0;
+      }
+      if (latestDay >= 0) {
+        var todayData = this.getSummaryByDate(latestDay);
+        var previousDayData = this.getSummaryByDate(previousDay);
+        var clickedGroup = '';
+        for (var i = 0; i < allGroups.length; i++) {
+          var groupItem = allGroups[i];
+          clickedGroup = groupItem.groupname;
+        }
+        var day = latestDay;
+        if (this.$root.eventHub) {
+          this.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousDayData);
+        }
+      }
+    },
     getSummaryByDate: function (date) {
       var summarys = this.allData.summary;
       var returnSummary = null;
@@ -114,6 +136,7 @@ export default {
           line.ele.css('border-bottom', '1px solid red');
         }
       }
+      this.getLatestSummaryData();
     },
     addNewGroup: function (groupname, index) {
       var i = 0;
