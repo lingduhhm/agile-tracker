@@ -30,11 +30,28 @@ export default {
   name: 'ChartMainPage',
   data () {
     return {
-      chart: null
+      chart: null,
+      allPoints: [],
+      allLines: [],
+      allData: null
     };
   },
   methods: {
+    getSummaryByDate: function (date) {
+      var summarys = this.allData.summary;
+      var returnSummary = null;
+      for (var i = 0; i < summarys.length; i++) {
+        var summaryItem = summarys[i];
+        var day = summaryItem.day;
+        if (day === date) {
+          returnSummary = summaryItem;
+          break;
+        }
+      }
+      return returnSummary;
+    },
     updateData: function (response) {
+      this.allData = response.resData;
       var summary = response.resData.summary;
       var initialPoints = response.resData.initialPoints;
       var issueResovledStatus = response.resData.constances.storyIssueResovledStatus;
@@ -59,11 +76,11 @@ export default {
           dataByGroup[groupid]['point'] = groupObj.points;
 
           initialPoints[groupid] = initialPoints[groupid] - groupObj['points']['red'];
-          this.chart.addPoint(i, initialPoints[groupid], groupid, summ);
+          this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'red', group: groupid, summarydata: summ}));
 
           if (groupObj['points']['add'] > 0) {
             initialPoints[groupid] = initialPoints[groupid] + groupObj['points']['add'];
-            this.chart.addPoint(i, initialPoints[groupid], groupid, summ);
+            this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'add', group: groupid, summarydata: summ}));
           }
         }
       }
@@ -76,10 +93,9 @@ export default {
       for (i = 0; i < lines.length; i++) {
         var line = lines[i];
         var lineEndPoint = line.endPoint;
-        let groups = lineEndPoint.extraData.groups;
+        let groups = lineEndPoint.extraData.summarydata.groups;
         var ifLineBlock = false;
         for (let groupid in groups) {
-          console.log('group------' + groupid);
           var groupItem = groups[groupid];
           var groupBlocker = groupItem.blocker;
           if (groupBlocker != null && groupBlocker.length > 0) {
@@ -87,7 +103,7 @@ export default {
               var groupBlockerItem = groupBlocker[j];
               console.log(groupBlockerItem);
               if (groupBlockerItem.status !== issueResovledStatus) {
-                console.log('we have block issue at sprint day:' + day);
+                console.log('we have block issue at sprint day:' + i);
                 ifLineBlock = true;
                 break;
               }
@@ -95,8 +111,6 @@ export default {
           }
         }
         if (ifLineBlock) {
-          console.log('----------------get line--------------');
-          console.log(line);
           line.ele.css('border-bottom', '1px solid red');
         }
       }
@@ -120,7 +134,22 @@ export default {
     }
   },
   mounted: function () {
+    var self = this;
     let chart = new VUEChart('.chart', 1000, 500);
+    chart.addEventListener('pointclicked', function (evt) {
+      var todayData = evt.data.data.extraData.summarydata;
+      var day = evt.data.data.extraData.summarydata.day;
+      var previousDay = (day === 0 ? 0 : day - 1);
+      var previousData = self.getSummaryByDate(previousDay);
+      var clickedGroup = evt.data.data.extraData.group;
+      console.log(day);
+      console.log(clickedGroup);
+      console.log(todayData);
+      console.log(previousData);
+      if (self.$root.eventHub) {
+        self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData);
+      }
+    });
     /* chart.addGroup('null', {color: 'green'});
     chart.addPoint(0, 10, 'null');
     chart.renderBar(); */

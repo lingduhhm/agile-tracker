@@ -6,7 +6,7 @@
   <div class="dataSheet">
     <el-header class="dataSheetSummary">
       <div class='title'>
-        Summary Day 4
+        Summary of Day {{day}}
       </div>
       <!-- <div class='content'>
         <el-row>
@@ -47,7 +47,8 @@ export default {
       dialogDisplay: false,
       displayData: {
         currentTab: 'points'
-      }
+      },
+      day: 0
     };
   },
   methods: {
@@ -57,9 +58,15 @@ export default {
       setTimeout(function () {
         self.dialogDisplay = null;
       });
+    },
+    getDaySummary: function (day, group, todayObj, previousObj) {
+      this.day = day;
     }
   },
   created: function () {
+    if (this.$root.eventHub) {
+      this.$root.eventHub.$on('getDaySummary', this.getDaySummary);
+    }
   },
   mounted: function () {
   },

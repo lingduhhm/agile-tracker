@@ -326,12 +326,12 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
     self.fireEvent('pointhoverleave', {ele: this, data: this.pointdata});
   });
   point['ele'] = pointItem;
-  pointItem[0].pointdata = point;
   $(this.ele).find('.chart .chartArea').append(pointItem);
   var extraDataObj = {
     extraData: extradata
   };
   $.extend(point, extraDataObj);
+  pointItem[0].pointdata = point;
   this.fireEvent('afterAddPoint', {ele: pointItem, point: point, x: x, y: y, groupid: groupid, isAdd: isAdd, pointdata: extradata});
   return point;
 };
