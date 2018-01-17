@@ -166,8 +166,10 @@ export default {
       var previousDay = (day === 0 ? 0 : day - 1);
       var previousData = self.getSummaryByDate(previousDay);
       var clickedGroup = evt.data.data.extraData.group;
+      var type = evt.data.data.extraData.type;
+      console.log(type);
       if (self.$root.eventHub) {
-        self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData);
+        self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData, type);
       }
     });
     chart.addEventListener('chartClicked', function (evt) {
