@@ -6,7 +6,7 @@
   <div class="dataSheet">
     <el-header class="dataSheetSummary">
       <div class='title'>
-        Summary of Day {{day}}
+        Summary of Day {{day}} - {{groupName}}
       </div>
       <!-- <div class='content'>
         <el-row>
@@ -49,6 +49,7 @@ export default {
         currentTab: 'points'
       },
       day: 0,
+      groupName: '',
       pointLabel: 'Points',
       blockLabel: 'Blockers',
       followupLabel: 'Follows'
@@ -64,6 +65,7 @@ export default {
     },
     getDaySummary: function (day, group, todayObj, previousObj) {
       this.day = day;
+      this.groupName = group;
       var blockCount = 0;
       var blockers = todayObj['groups'][group]['blocker'];
       if (blockers != null) {

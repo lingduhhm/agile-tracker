@@ -46,6 +46,7 @@ VUEChart.colors['lightred'] = '#d18080';
 VUEChart.colors['lightgreen'] = '#92b479';
 VUEChart.colors['lightpurple'] = '#af7db0';
 VUEChart.prototype.init = function (width, height) {
+  var self = this;
   this.fireEvent('beforeChartInitial');
 
   $(this.ele).find('.axisYText').empty();
@@ -126,6 +127,26 @@ VUEChart.prototype.init = function (width, height) {
   this.fireEvent('afterChartAxisInitial');
   this.renderBar();
   this.fireEvent('afterChartInitial');
+
+  // this.groups
+  $(this.ele).find('.chart').click(function () {
+    self.clearAllClickedPoint();
+    self.fireEvent('chartClicked', {ele: this, data: this.pointdata});
+  });
+};
+VUEChart.prototype.clearAllClickedPoint = function () {
+  if (!this.groups) {
+    return;
+  }
+  for (var groupid in this.groups) {
+    var groupItem = this.groups[groupid];
+    var points = groupItem.points;
+    for (var i = 0; i < points.length; i++) {
+      var pointItem = points[i];
+      var pointEle = pointItem.ele;
+      $(pointEle).removeClass('pointHighlited');
+    }
+  }
 };
 
 VUEChart.prototype.updateAxisX = function () {
@@ -315,10 +336,14 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
   if (isAdd) {
     points.push(point);
   }
-  var pointItem = $('<div></div>').attr('groupid', groupid).attr('type', 'point').addClass('chartPoint').height(this.pointHeight).width(this.pointWidth).css('backgroundColor', color).css('top', positionY + 'px').css('left', positionX + 'px').css('border-radius', this.pointWidth / 2 + 'px');
+  var pointItem = $('<div></div>').attr('groupid', groupid).attr('type', 'point').addClass('chartPoint').height(this.pointHeight).width(this.pointWidth).css('color', color).css('backgroundColor', color).css('top', positionY + 'px').css('left', positionX + 'px').css('border-radius', this.pointWidth / 2 + 'px');
 
-  pointItem.click(function () {
-    self.fireEvent('pointclicked', {ele: this, data: this.pointdata});
+  pointItem.click(function (evt) {
+    var isClicked = $(this).hasClass('pointHighlited');
+    self.fireEvent('pointclicked', {ele: this, data: this.pointdata, isClicked: !isClicked});
+    $(this).toggleClass('pointHighlited');
+
+    evt.stopPropagation();
   })
   .hover(function () {
     self.fireEvent('pointhoverenter', {ele: this, data: this.pointdata});
