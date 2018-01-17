@@ -160,18 +160,18 @@ export default {
     var self = this;
     let chart = new VUEChart('.chart', 1000, 500);
     chart.addEventListener('pointclicked', function (evt) {
+      chart.clearAllClickedPoint();
       var todayData = evt.data.data.extraData.summarydata;
       var day = evt.data.data.extraData.summarydata.day;
       var previousDay = (day === 0 ? 0 : day - 1);
       var previousData = self.getSummaryByDate(previousDay);
       var clickedGroup = evt.data.data.extraData.group;
-      console.log(day);
-      console.log(clickedGroup);
-      console.log(todayData);
-      console.log(previousData);
       if (self.$root.eventHub) {
         self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData);
       }
+    });
+    chart.addEventListener('chartClicked', function (evt) {
+      self.getLatestSummaryData();
     });
     /* chart.addGroup('null', {color: 'green'});
     chart.addPoint(0, 10, 'null');
