@@ -167,7 +167,6 @@ export default {
       var previousData = self.getSummaryByDate(previousDay);
       var clickedGroup = evt.data.data.extraData.group;
       var type = evt.data.data.extraData.type;
-      console.log(type);
       if (self.$root.eventHub) {
         self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData, type);
       }
