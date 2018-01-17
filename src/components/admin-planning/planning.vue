@@ -45,12 +45,19 @@
       </el-main>
     </el-container>
 
+    <el-row :gutter="20" class="rowMargin">
+      <el-col :span="24">
+        <group-card :sprintinfo="sprintinfo"></group-card>
+      </el-col>
+    </el-row>
+
   </div>
 </template>
 
 <script>
   import numberCard from '../admin-common/numberCard.vue';
   import estimationChart from '../admin-common/estimationChart.vue';
+  import groupCard from '../admin-common/groupCard.vue';
 
   export default {
     data () {
@@ -89,7 +96,8 @@
     },
     components: {
       'numberCard': numberCard,
-      'estimationChart': estimationChart
+      'estimationChart': estimationChart,
+      'groupCard': groupCard
     }
   };
 </script>
