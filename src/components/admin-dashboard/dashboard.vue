@@ -10,16 +10,16 @@
               </div>
               <el-form inline label-position="left" class="demo-table-expand">
                 <el-form-item label="Release:">
-                  <span>{{dashboard.sprintData.release}}</span>
+                  <span>{{dashboard.sprintData && dashboard.sprintData.release}}</span>
                 </el-form-item>
                 <el-form-item label="Sprint:">
-                  <span>{{dashboard.sprintData.sprint}}</span>
+                  <span>{{dashboard.sprintData && dashboard.sprintData.sprint}}</span>
                 </el-form-item>
                 <el-form-item label="Start:">
-                  <span>{{dashboard.sprintData.start}}</span>
+                  <span>{{dashboard.sprintData && dashboard.sprintData.start}}</span>
                 </el-form-item>
                 <el-form-item label="End:">
-                  <span>{{dashboard.sprintData.end}}</span>
+                  <span>{{dashboard.sprintData && dashboard.sprintData.end}}</span>
                 </el-form-item>
               </el-form>
             </el-card>

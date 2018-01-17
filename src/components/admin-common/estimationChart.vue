@@ -121,7 +121,9 @@
           }
           loading.close();
           if (response.data.status === 'success') {
-            that.setData(response.data);
+            if (response.data.resData) {
+              that.setData(response.data);
+            }
           } else {
             that.$message({
               message: response.data.resMsg,

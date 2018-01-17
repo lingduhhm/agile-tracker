@@ -209,7 +209,7 @@
 
       handleDelete: function (data) {
         var that = this;
-        this.axios.delete('/admin/stories?objid=' + this.deleteObjId)
+        this.axios.delete('/admin/stories?objid=' + this.deleteObjId + '&sprintid=' + this.$route.params.category)
         .then(function (response) {
           if (response.data.status === 'success') {
             that.tableData = response.data.resData;

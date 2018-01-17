@@ -17,7 +17,7 @@
           </el-menu-item>
           <el-menu-item v-for="item in menu" :index="item._id" :key="item._id">
             <i :class="[item.status === 'done'? 'el-icon-check' : 'el-icon-tickets']"></i>
-            <span slot="title">{{item.release}}/{{item.sprint}}</span>
+            <span slot="title">{{(item && item.release) || ''}}/{{item.sprint}}</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
@@ -90,6 +90,9 @@
             type="date"
             placeholder="select">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="JQL">
+          <el-input v-model="form.jql"></el-input>
         </el-form-item>
         <el-form-item label="Status">
           <el-select v-model="form.status" placeholder="Status">

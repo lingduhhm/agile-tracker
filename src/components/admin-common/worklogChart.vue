@@ -100,13 +100,13 @@
     },
     methods: {
       fetchData: function (isRefresh) {
+        if (!this.sprintinfo) {
+          return false;
+        }
         var loading = Loading.service({fullscreen: true,
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
           text: 'Loading...'});
-        if (!this.sprintinfo) {
-          return false;
-        }
         var that = this;
         var options = 'refresh=' + (isRefresh || '') + '&sprintid=' + (this.sprintinfo._id || '') + '&start=' + (this.sprintinfo.start || '') + '&end=' + (this.sprintinfo.end || '');
         this.axios.get('/admin/dashboard/worklog?' + options)
