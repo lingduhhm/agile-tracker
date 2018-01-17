@@ -60,6 +60,12 @@
 
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="24">
+        <worklog-chart :sprintinfo="sprintinfo"></worklog-chart>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="20" class="rowMargin">
+      <el-col :span="24">
         <line-chart :sprintsData="dashboard.sprintHistoryPoints"></line-chart>
       </el-col>
     </el-row>
@@ -68,12 +74,14 @@
 </template>
 
 <script>
-  import numberCard from './numberCard.vue';
+  import numberCard from '../admin-common/numberCard.vue';
   import lineChart from './lineChart.vue';
+  import worklogChart from '../admin-common/worklogChart.vue';
 
   export default {
     data () {
       return {
+        sprintinfo: '',
         dashboard: {
           sprintData: {},
           pastdays: 0,
@@ -94,6 +102,7 @@
           if (response.data.status === 'success') {
             var responseData = response.data.resData;
             that.dashboard = responseData;
+            that.sprintinfo = responseData.sprintData;
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -112,7 +121,8 @@
     },
     components: {
       'numberCard': numberCard,
-      'lineChart': lineChart
+      'lineChart': lineChart,
+      'worklogChart': worklogChart
     }
   };
 </script>

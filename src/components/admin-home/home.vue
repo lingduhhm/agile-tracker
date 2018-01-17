@@ -32,7 +32,6 @@
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="add" v-if="!$route.params.category">Add</el-dropdown-item>
                   <el-dropdown-item command="edit" v-if="$route.params.category">Edit</el-dropdown-item>
-                  <el-dropdown-item command="scan" v-if="$route.params.category">Scan</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-col>
@@ -190,7 +189,7 @@
         return mapRes;
       },
       handleSelect (key, keyPath) {
-        if (key === 'dashboard') {
+        if ((key === 'dashboard') || (key === 'planning')) {
           this.sprintObjId = '';
           this.$router.push('/' + key);
         } else if (key) {

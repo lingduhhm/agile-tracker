@@ -6,6 +6,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Story from '@/components/admin-story/story';
 import Dashboard from '@/components/admin-dashboard/dashboard';
+import Planning from '@/components/admin-planning/planning';
 import Cookies from 'js-cookie';
 
 Vue.use(Router);
@@ -25,6 +26,10 @@ const routerObj = new Router({
         {
           path: '/dashboard',
           component: Dashboard
+        },
+        {
+          path: '/planning',
+          component: Planning
         },
         {
           path: '/story/:category',
