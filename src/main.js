@@ -41,6 +41,9 @@ new Vue({
       this.eventHub.$on('sprintSelected', function (params) {
         self.sprintSelected = params;
       });
+      this.eventHub.$on('sprintDataChanged', function (params) {
+        self.querySummaryData(self.sprintSelected);
+      });
     }
   },
   watch: {
