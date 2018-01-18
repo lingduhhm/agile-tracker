@@ -1,55 +1,58 @@
 <template>
   <el-container>
-    <el-header style="text-align: left; height: 40px; line-height: 25px" class="blockSheetHeader">
-      <el-row>
-        <el-col :span="20">
-          <span class="textBold">Block Issues</span>
+    <el-header class="pointStatus" style="height: 40px;">
+      <el-row type="flex" class="row-bg" justify="space-around">
+        <el-col :span="12">
+          <span class="pointInfoTitle">Block issues</span>
         </el-col>
-        <el-col :span="4">
-          <i style="font-size: 24px" class="el-icon-circle-plus-outline addIssueIcon" @click="openDialog"></i>
+        <el-col :span="6">
+          <i class="el-icon-circle-plus-outline addIssueIcon" @click="openDialog"></i>
           <add-block-dialog :dialogDisplay="dialogDisplay" :blockIssues="issues" 
           @blockIssueAdded="addBlockFromDialog"></add-block-dialog>
         </el-col>
       </el-row>
     </el-header>
-    <el-main style="padding-top: 5px; padding-left:0px; padding-right:0px">
-      <el-row>
-        <el-col :span="12">
-          <i style="font-size: 35px; vertical-align: middle;" class="el-icon-caret-bottom reducedIssueIcon"></i>
-          <span style="font-size: 20px; vertical-align: middle" class="textSuccColor">2</span>
-        </el-col>
-        <el-col :span="12">
-          <i style="font-size: 35px; vertical-align: middle" class="el-icon-caret-top addedIssueIcon"></i>
-          <span style="font-size: 20px; vertical-align: middle" class="textDangerColor">2</span>
-        </el-col>
-      </el-row>
-      <el-row style="text-align: left; padding-left: 20px; margin: 5px 0 7px">
-        <el-col :span="20">
-          <span class="textBold" style="text-align: left">Current Blockers：</span>
-        </el-col>
-        <el-col :span="4">
-          <span class="textDangerColor">{{currentblockersnum}}</span>
-        </el-col>
-      </el-row>
-      <el-row style="text-align: left; padding-left: 20px" class="blockSheetSummary">
-        <el-col :span="20">
-          <span class="textBold" style="text-align: left">Previous Blockers：</span>
-        </el-col>
-        <el-col :span="4">
-          <span class="textDangerColor">{{previousblockersnum}}</span>
-        </el-col>
-      </el-row>
-      <el-row style="text-align: left; padding-left: 20px; margin-bottom: 3px">
-        <el-col :span="12">
-          <span class="textBold">Issues ({{issues.length}})</span>
-        </el-col>
-        <el-col :span="12">
+    <el-main style="padding:0px">
+       <div class="pointChangedHis">
+        <el-row type="flex" class="row-bg" justify="space-around">
+          <el-col :span="9">
+            <i class="el-icon-caret-bottom successContent"></i>
+            <span class="successContent">{{getReducedBlockNum}}</span>
+          </el-col>
+          <el-col :span="9">
+            <i class="el-icon-caret-top blockContent"></i>
+            <span class="blockContent">{{getAddBlockNum}}</span>
+          </el-col>
+        </el-row>
+        <el-row style="height: 30px;line-height: 30px;padding-left: 20px">
+          <el-col :span="12">
+            <span class="pointInfoTitle">Today Blockers：</span>
+          </el-col>
+          <el-col :span="6">
+            <span class="textDangerColor">{{getCurrentBlockersNum}}</span>
+          </el-col>
+        </el-row>
+        <el-row style="height: 30px;line-height: 30px;padding-left: 20px">
+          <el-col :span="12">
+            <span class="pointInfoTitle">Last Day Blockers：</span>
+          </el-col>
+          <el-col :span="6">
+            <span class="textDangerColor">{{getPreviousBlockersnum}}</span>
+          </el-col>
+        </el-row>
+      </div>
+      <div class="pointChangedItem">
+         <el-row type="flex" class="row-bg" justify="space-around">
+          <el-col :span="9">
+            <span class="pointInfoTitle">Issues ({{issues.length}})</span>
+          </el-col>
+           <el-col :span="9">
           <span>Show All</span>
           <el-switch v-model="isShowAll" active-color="#13ce66">
           </el-switch>
         </el-col>
-      </el-row>
-      <el-table :data="filterIssues"
+        </el-row>
+        <el-table :data="filterIssues"
        :show-header=false 
        :row-class-name="tableRowClassName"
         max-height="300" 
@@ -65,13 +68,17 @@
                 <el-button type="text" v-show="scope.row.status !== 'Resolved'" @click="updateIssueStatus(scope.row, 'Resolved')">Resolved</el-button>
               </el-row>
               <el-row>
-                <el-button type="text" v-show="scope.row.status !== 'Blocking'" @click="updateIssueStatus(scope.row, 'Blocking')">Blocking</el-button>
+                <el-button type="text" v-show="scope.row.status !== 'Open'" @click="updateIssueStatus(scope.row, 'Open')">Blocking</el-button>
+              </el-row>
+              <el-row>
+                <el-button type="text" v-show="scope.row.status !== 'Followup'" @click="updateIssueStatus(scope.row, 'Followup')">Followup</el-button>
               </el-row>
             </el-popover>
             <span v-popover:popoverStatus>{{scope.row.status}}</span>
           </template>
         </el-table-column>
       </el-table>
+      </div>
     </el-main>
   </el-container>
 </template>
@@ -81,48 +88,31 @@ export default {
   components: { 'add-block-dialog': AddDialogContent },
   data () {
     return {
-      issues: [{
-        issueid: '111',
-        issuekey: 'CDP-7111',
-        ownergroup: 'CDP',
-        follower: 'Tai',
-        status: 'Blocking'
-      }, {
-        issueid: '222',
-        issuekey: 'CDP-7222',
-        ownergroup: 'CDP',
-        follower: 'Tai',
-        status: 'Resolved'
-      }, {
-        issueid: '333',
-        issuekey: 'CDP-7333',
-        ownergroup: 'CDP',
-        follower: 'Tai',
-        status: 'Resolved'
-      }],
-      currentblockersnum: 1,
-      previousblockersnum: 5,
+      issues: [],
+      previousIssues: [],
+      currentblockersnum: 0,
+      previousblockersnum: 0,
       dialogDisplay: false,
       isShowAll: true
     };
   },
   methods: {
+    updateBlockData (data) {
+      var dayLength = data.resData.summary.length - 1;
+      this.$root.eventHub.$emit('getDaySummary', dayLength, 'QA', data.resData.summary[dayLength], data.resData.summary[dayLength - 1]);
+    },
     tableRowClassName ({row, rowIndex}) {
-      if (this.issues[rowIndex].status === 'Blocked') {
-        return 'blockedIssueTrColor';
-      } else if (this.issues[rowIndex].status === 'Resolved') {
-        return 'resolvedIssueTrColor';
+      if (this.issues) {
+        if (this.issues[rowIndex].status === 'Open') {
+          return 'blockedIssueTrColor';
+        } else if (this.issues[rowIndex].status === 'Resolved') {
+          return 'resolvedIssueTrColor';
+        }
       }
       return '';
     },
     updateIssueStatus (row, status) {
       row.status = status;
-      if (status === 'Resolved') {
-        this.currentblockersnum--;
-        // this.previousblockersnum++;
-      } else if (status === 'Blocking') {
-        this.currentblockersnum++;
-      }
     },
     changeShowAll: function () {
       this.isShowAll = !this.isShowAll;
@@ -136,6 +126,11 @@ export default {
     },
     addBlockFromDialog: function (data) {
       this.issues.unshift(data);
+    },
+    getDayBlockSummary: function (day, clickedGroup, todayData, previousData) {
+      console.log(arguments);
+      this.issues = todayData.groups[clickedGroup].blocker || [];
+      this.previousIssues = previousData.groups[clickedGroup].blocker || [];
     }
   },
   computed: {
@@ -144,12 +139,90 @@ export default {
         return this.issues;
       } else {
         return this.issues.filter(function (item) {
-          return item.status === 'Blocking';
+          return item.status === 'Open';
         });
       }
+    },
+    getCurrentBlockersNum: function () {
+      var num = 0;
+      if (this.issues) {
+        for (var i = 0; i < this.issues.length; i++) {
+          var issue = this.issues[i];
+          if (issue.status === 'Open') {
+            num++;
+          }
+        }
+      };
+      return num;
+    },
+    getPreviousBlockersnum: function () {
+      var num = 0;
+      if (this.previousIssues) {
+        for (var i = 0; i < this.previousIssues.length; i++) {
+          var issue = this.previousIssues[i];
+          if (issue.status === 'Open') {
+            num++;
+          }
+        }
+      };
+      return num;
+    },
+    getAddBlockNum: function () {
+      var num = 0;
+      for (var i = 0; i < this.issues.length; i++) {
+        var currentIssue = this.issues[i];
+        if (currentIssue.status !== 'Open') {
+          continue;
+        } else {
+          var flag = true;
+          if (this.previousIssues) {
+            for (var j = 0; j < this.previousIssues.length; j++) {
+              var previousIssue = this.previousIssues[j];
+              if (currentIssue.issuekey === previousIssue.issuekey) {
+                flag = false;
+                if (previousIssue.status === 'Resolved') {
+                  num++;
+                }
+              }
+            }
+            if (flag) {
+              num++;
+            }
+          } else {
+            num++;
+          }
+        }
+      }
+      return num;
+    },
+    getReducedBlockNum: function () {
+      var num = 0;
+      for (var i = 0; i < this.issues.length; i++) {
+        var currentIssue = this.issues[i];
+        if (currentIssue.status !== 'Resolved') {
+          continue;
+        } else {
+          if (this.previousIssues) {
+            for (var j = 0; j < this.previousIssues.length; j++) {
+              var previousIssue = this.previousIssues[j];
+              if (currentIssue.issuekey === previousIssue.issuekey) {
+                if (previousIssue.status !== 'Resolved') {
+                  num++;
+                }
+              }
+            }
+          }
+        }
+      }
+      return num;
     }
   },
-  created: function () {},
+  created: function () {
+    if (this.$root.eventHub) {
+      this.$root.eventHub.$on('sprintChanged', this.updateBlockData);
+      this.$root.eventHub.$on('getDaySummary', this.getDayBlockSummary);
+    }
+  },
   mounted: function () {}
 };
 </script>
@@ -159,29 +232,16 @@ export default {
   border-bottom: 1px solid @borderColor;
 }
 
-.addIssueIcon {
+.addIssueIcon{
   color: @blueColor;
 }
-.textBold{
-  font-size: 14px; 
-  font-weight:600;
-}
-.reducedIssueIcon,
-.textSuccColor,
 .resolvedIssueTrColor {
   color: @successColor;
 }
 
-.addedIssueIcon,
 .textDangerColor,
 .blockedIssueTrColor {
   color: @dangerColor;
-}
-
-.blockSheetSummary {
-  border-bottom: 1px solid @borderColor;
-  padding-bottom: 8px;
-  margin-bottom: 15px;
 }
 
 .popoverMinWidth {
@@ -194,4 +254,30 @@ export default {
   color: #606266;
 }
 
+header.pointStatus {
+  line-height: 25px;
+  padding: 0;
+}
+.pointStatus i{
+  font-size: 24px;
+}
+.pointInfoTitle{
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+.pointChangedHis i {
+  font-size:35px; 
+  vertical-align:top;
+}
+.pointStatus,
+.pointChangedHis,
+.pointChangedItem{
+  line-height: 40px;
+  border-bottom: 1px solid @borderColor;
+}
+.pointChangedItem {
+  border: none;
+}
 </style>
