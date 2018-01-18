@@ -162,33 +162,17 @@ export default {
     let chart = new VUEChart('.chart', 1000, 500);
     chart.addEventListener('pointclicked', function (evt) {
       chart.clearAllClickedPoint();
-      var todayData = evt.data.data.extraData.summarydata;
-      var day = evt.data.data.extraData.summarydata.day;
-      var point = evt.data.data.y;
-      var previousDay = (day === 0 ? 0 : day - 1);
-      var previousData = self.getSummaryByDate(previousDay);
-      var clickedGroup = evt.data.data.extraData.group;
-      var type = evt.data.data.extraData.type;
-      var isClicked = evt.data.isClicked;
+      let todayData = evt.data.data.extraData.summarydata;
+      let day = evt.data.data.extraData.summarydata.day;
+      let previousDay = (day === 0 ? 0 : day - 1);
+      let previousData = self.getSummaryByDate(previousDay);
+      let clickedGroup = evt.data.data.extraData.group;
+      let type = evt.data.data.extraData.type;
+      let isClicked = evt.data.isClicked;
       if (isClicked) {
         if (self.$root.eventHub) {
           self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData, type);
         }
-        console.log(evt.data);
-        var x = evt.data.data.positionX;
-        var y = evt.data.data.positionY;
-        var blocker = evt.data.data.extraData.summarydata.groups[clickedGroup]['blocker'];
-        var blockerCount = 0;
-        if (blocker != null) {
-          blockerCount = blocker.length;
-        }
-
-        var followup = evt.data.data.extraData.summarydata.groups[clickedGroup]['followup'];
-        var followupCount = 0;
-        if (followup != null) {
-          followupCount = followup.length;
-        }
-        chart.displayPopover(x, y, '<div>' + clickedGroup + '</div><div>Point:' + point + '</div><div>Blocker:' + blockerCount + '&nbsp;&nbsp;Followup:' + followupCount + '</div>');
       } else {
         self.getLatestSummaryData();
       }
@@ -197,33 +181,33 @@ export default {
       self.getLatestSummaryData();
     });
     chart.addEventListener('pointhoverenter', function (evt) {
-      var constances = evt.data.pointdata.constances;
-      var clickedGroup = evt.data.pointdata.group;
-      var point = evt.data.point.y;
-      var x = evt.data.point.positionX;
-      var y = evt.data.point.positionY;
-      var blocker = evt.data.pointdata.summarydata.groups[clickedGroup]['blocker'];
-      var blockerCount = 0;
+      let constances = evt.data.pointdata.constances;
+      let clickedGroup = evt.data.pointdata.group;
+      let point = evt.data.point.y;
+      let x = evt.data.point.positionX;
+      let y = evt.data.point.positionY;
+      let blocker = evt.data.pointdata.summarydata.groups[clickedGroup]['blocker'];
+      let blockerCount = 0;
       if (blocker != null) {
         for (let i = 0; i < blocker.length; i++) {
-          var blockerItem = blocker[i];
+          let blockerItem = blocker[i];
           if (blockerItem.status !== constances.storyIssueResovledStatus) {
             blockerCount++;
           }
         }
       }
 
-      var followup = evt.data.pointdata.summarydata.groups[clickedGroup]['followup'];
-      var followupCount = 0;
+      let followup = evt.data.pointdata.summarydata.groups[clickedGroup]['followup'];
+      let followupCount = 0;
       if (followup != null) {
         for (let i = 0; i < followup.length; i++) {
-          var followupItem = followup[i];
+          let followupItem = followup[i];
           if (followupItem.status !== constances.storyIssueResovledStatus) {
             followupCount++;
           }
         }
       }
-      var displayContent = '<div>' + clickedGroup + '</div><div>Point:' + point + '</div><div>Blocker:' + blockerCount + '&nbsp;&nbsp;Followup:' + followupCount + '</div>';
+      let displayContent = '<div>' + clickedGroup + '</div><div>Point:' + point + '</div><div>Blocker:' + blockerCount + '&nbsp;&nbsp;Followup:' + followupCount + '</div>';
       console.log(displayContent);
       chart.displayPopover(x, y, displayContent);
     });
