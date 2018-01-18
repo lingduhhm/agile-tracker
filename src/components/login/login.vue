@@ -5,15 +5,15 @@
         <span>Welcome to Agile Tracker</span>
       </div>
       <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px">
-        <el-form-item label="Username" prop="username">
-          <el-input type="input" v-model="ruleForm.username" auto-complete="off"></el-input>
+        <el-form-item label="Employee Id" prop="username">
+          <el-input type="input" v-model="ruleForm.username" auto-complete="off" placeholder="Employee Id"></el-input>
         </el-form-item>
-        <el-form-item label="Password" prop="password">
-          <el-input type="password" v-model="ruleForm.password" auto-complete="off"></el-input>
+        <el-form-item label="Password" prop="password" v-show="false">
+          <el-input type="hidden" v-model="ruleForm.password" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')">Submit</el-button>
-          <el-button @click="resetForm('ruleForm')">Reset</el-button>
+          <el-button @click="resetForm('ruleForm')" v-show="false">Reset</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -45,7 +45,7 @@
       return {
         ruleForm: {
           username: '',
-          password: ''
+          password: 'admin'
         },
         rules: {
           username: [
@@ -62,19 +62,19 @@
         var that = this;
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            this.axios.get('/admin/login/verify?' + 'username=' + this.ruleForm.username + '&password=' + md5(this.ruleForm.password)).then((response) => {
+            this.axios.get('/admin/login/verify?' + 'username=' + this.ruleForm.username + '&password=' + md5(this.ruleForm.password) + '&module=' + this.$root.module).then((response) => {
               if (response.data.status === 'success') {
                 that.$router.push('/dashboard');
               } else {
                 that.$message({
-                  message: '登录失败！',
+                  message: 'Login failed!',
                   type: 'error'
                 });
               }
             }).catch((err) => {
               console.log(err);
               that.$message({
-                message: '登录失败！',
+                message: 'Login failed!',
                 type: 'error'
               });
             });
