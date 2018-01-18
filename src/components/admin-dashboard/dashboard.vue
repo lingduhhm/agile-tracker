@@ -10,16 +10,16 @@
               </div>
               <el-form inline label-position="left" class="demo-table-expand">
                 <el-form-item label="Release:">
-                  <span>{{dashboard.sprintData.release}}</span>
+                  <span>{{dashboard.sprintData && dashboard.sprintData.release}}</span>
                 </el-form-item>
                 <el-form-item label="Sprint:">
-                  <span>{{dashboard.sprintData.sprint}}</span>
+                  <span>{{dashboard.sprintData && dashboard.sprintData.sprint}}</span>
                 </el-form-item>
                 <el-form-item label="Start:">
-                  <span>{{dashboard.sprintData.start}}</span>
+                  <span>{{dashboard.sprintData && dashboard.sprintData.start}}</span>
                 </el-form-item>
                 <el-form-item label="End:">
-                  <span>{{dashboard.sprintData.end}}</span>
+                  <span>{{dashboard.sprintData && dashboard.sprintData.end}}</span>
                 </el-form-item>
               </el-form>
             </el-card>
@@ -28,30 +28,21 @@
       </el-aside>
       <el-main style="padding: 0 20px;">
         <el-row :gutter="20" class="rowMargin">
-          <el-col :span="8">
-            <number-card label="Blocked Stories" :value="dashboard.blockedstories" unit="stories" bkcolor="#F56C6C"></number-card>
+          <el-col :span="12">
+            <number-card label="Total Points" :value="dashboard.totalpoints" unit="points" bkcolor="#409EFF"></number-card>
           </el-col>
-
-          <el-col :span="8">
-            <number-card label="Affected Stories" :value="dashboard.affectedstories" unit="stories" bkcolor="#E6A23C"></number-card>
-          </el-col>
-
-          <el-col :span="8">
-            <number-card label="Left Days" :value="dashboard.leftdays" unit="days" bkcolor="#409EFF"></number-card>
+          <el-col :span="12">
+            <number-card label="Left Days" :value="dashboard.leftdays" unit="days" bkcolor="#F56C6C"></number-card>
           </el-col>
 
         </el-row>
 
         <el-row :gutter="20" class="rowMargin">
-          <el-col :span="8">
-            <number-card label="Total Points" :value="dashboard.totalpoints" unit="points" bkcolor="#409EFF"></number-card>
-          </el-col>
-
-          <el-col :span="8">
+          <el-col :span="12">
             <number-card label="Commited" :value="dashboard.commitedpoints" unit="points" bkcolor="#67C23A"></number-card>
           </el-col>
 
-          <el-col :span="8">
+          <el-col :span="12">
             <number-card label="Done" :value="dashboard.donepoints" unit="points" bkcolor="#E6A23C"></number-card>
           </el-col>
         </el-row>
@@ -98,7 +89,7 @@
     methods: {
       fetchData () {
         var that = this;
-        this.axios.get('/admin/dashboard').then((response) => {
+        this.axios.get('/admin/dashboard?module=' + this.$root.module).then((response) => {
           if (response.data.status === 'success') {
             var responseData = response.data.resData;
             that.dashboard = responseData;
