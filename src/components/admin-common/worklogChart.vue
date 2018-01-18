@@ -108,7 +108,7 @@
           background: 'rgba(0, 0, 0, 0.7)',
           text: 'Loading...'});
         var that = this;
-        var options = 'refresh=' + (isRefresh || '') + '&sprintid=' + (this.sprintinfo._id || '') + '&start=' + (this.sprintinfo.start || '') + '&end=' + (this.sprintinfo.end || '');
+        var options = 'refresh=' + (isRefresh || '') + '&sprintid=' + (this.sprintinfo._id || '') + '&start=' + (this.sprintinfo.start || '') + '&end=' + (this.sprintinfo.end || '') + '&module=' + this.$root.module;
         this.axios.get('/admin/dashboard/worklog?' + options)
         .then(function (response) {
           loading.close();

@@ -24,8 +24,11 @@
       <el-container>
         <el-header style="font-size: 12px; background: #e4e4e4; padding: 20px;">
           <el-row>
+            <el-col :span="1">
+              <span style='font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; color: #409EFF; font-size: 18px;'>{{module}}</span>
+            </el-col>
             <el-col :span="2">
-              <el-dropdown style="float: right; padding: 3px 0;"  @command="action">
+              <el-dropdown style="float: right;"  @command="action">
                 <span class="el-dropdown-link">
                   Action<i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
@@ -59,21 +62,16 @@
       width="30%" 
       center>
       <el-form ref="form" :model="form" label-width="80px">
+        <el-form-item label="Module">
+          <el-select v-model="form.module" placeholder="module">
+            <el-option label="CDP" value="CDP"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="Release">
           <el-input v-model="form.release"></el-input>
         </el-form-item>
         <el-form-item label="Sprint">
           <el-input v-model="form.sprint"></el-input>
-        </el-form-item>
-        <el-form-item label="Work Days">
-          <el-select v-model="form.workdays" multiple placeholder="请选择">
-            <el-option
-              v-for="day in avaliableDays"
-              :key="day.value"
-              :label="day.label"
-              :value="day.value">
-            </el-option>
-          </el-select>
         </el-form-item>
         <el-form-item label="Start">
           <el-date-picker 
@@ -90,6 +88,16 @@
             type="date"
             placeholder="select">
           </el-date-picker>
+        </el-form-item>
+        <el-form-item label="Work Days">
+          <el-select v-model="form.workdays" multiple placeholder="Select">
+            <el-option
+              v-for="day in avaliableDays"
+              :key="day.value"
+              :label="day.label"
+              :value="day.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="JQL">
           <el-input v-model="form.jql"></el-input>
@@ -125,7 +133,8 @@
         form: {
           workdays: []
         },
-        sprintObjId: ''
+        sprintObjId: '',
+        module: this.$root.module
       };
     },
     watch: {
@@ -159,7 +168,7 @@
     methods: {
       fetchData () {
         var that = this;
-        this.axios.get('/admin/sprint?limit=8').then((response) => {
+        this.axios.get('/admin/sprint?limit=8&module=' + this.$root.module).then((response) => {
           if (response.data.status === 'success') {
             that.menu = response.data.resData;
             that.menuMap = that.jsonfy(that.menu);
