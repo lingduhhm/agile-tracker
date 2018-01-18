@@ -57,6 +57,8 @@ VUEChart.prototype.init = function (width, height) {
   $(this.ele).find('.chartTitle').empty();
   $(this.ele).find('.chartBar').empty();
 
+  this.addPopoverContainer();
+
   this.chartHeight = height;
   this.chartWidth = width;
 
@@ -133,6 +135,27 @@ VUEChart.prototype.init = function (width, height) {
     self.clearAllClickedPoint();
     self.fireEvent('chartClicked', {ele: this, data: this.pointdata});
   });
+};
+VUEChart.prototype.addPopoverContainer = function () {
+  if ($('.chart .chartArea .popoverContainer').length === 0) {
+    var popupContainer = $('<div class="popoverContainer" style="position:absolute;display:none;"><div class="popoverContent">test1818181818</div><div class="calloutpoint"></div></div>');
+    $('.chart .chartArea').append(popupContainer);
+  }
+};
+VUEChart.prototype.displayPopover = function (x, y, htmlContent) {
+  $(this.ele).find('.chartArea .popoverContainer .popoverContent').empty();
+  $(this.ele).find('.chartArea .popoverContainer').fadeIn();
+  var contentHTMLEle = $(htmlContent);
+  $(this.ele).find('.chartArea .popoverContainer .popoverContent').append(contentHTMLEle);
+  var width = $(this.ele).find('.chartArea .popoverContainer').width();
+  var height = $(this.ele).find('.chartArea .popoverContainer').height();
+
+  var left = x - (width / 2 + 10 + 6);
+  var top = y - (height + 35);
+  $(this.ele).find('.chartArea .popoverContainer').css('left', left + 'px').css('top', top + 'px');
+};
+VUEChart.prototype.hidePopover = function () {
+  $(this.ele).find('.chartArea .popoverContainer').hide();
 };
 VUEChart.prototype.clearAllClickedPoint = function () {
   if (!this.groups) {
@@ -270,6 +293,7 @@ VUEChart.prototype.addGroup = function (groupid, settings) {
 };
 VUEChart.prototype.reAddAllPoint = function () {
   $(this.ele).find('.chart .chartArea').empty();
+  this.addPopoverContainer();
   for (var group in this.groups) {
     var groupItem = this.groups[group];
     var points = groupItem.points;
@@ -341,14 +365,18 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
   pointItem.click(function (evt) {
     var isClicked = $(this).hasClass('pointHighlited');
     self.fireEvent('pointclicked', {ele: this, data: this.pointdata, isClicked: !isClicked});
-    $(this).toggleClass('pointHighlited');
+    if (isClicked) {
+      $(this).removeClass('pointHighlited');
+    } else {
+      $(this).addClass('pointHighlited');
+    }
 
     evt.stopPropagation();
   })
   .hover(function () {
-    self.fireEvent('pointhoverenter', {ele: this, data: this.pointdata});
+    self.fireEvent('pointhoverenter', {ele: pointItem, point: point, x: x, y: y, groupid: groupid, isAdd: isAdd, pointdata: extradata});
   }, function () {
-    self.fireEvent('pointhoverleave', {ele: this, data: this.pointdata});
+    self.fireEvent('pointhoverleave', {ele: pointItem, point: point, x: x, y: y, groupid: groupid, isAdd: isAdd, pointdata: extradata});
   });
   point['ele'] = pointItem;
   $(this.ele).find('.chart .chartArea').append(pointItem);

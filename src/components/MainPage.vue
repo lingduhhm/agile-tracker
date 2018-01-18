@@ -75,6 +75,7 @@ export default {
     updateData: function (response) {
       this.allData = response.resData;
       var summary = response.resData.summary;
+      var constances = response.resData.constances;
       var initialPoints = response.resData.initialPoints;
       var issueResovledStatus = response.resData.constances.storyIssueResovledStatus;
       var dataByGroup = {};
@@ -98,11 +99,11 @@ export default {
           dataByGroup[groupid]['point'] = groupObj.points;
 
           initialPoints[groupid] = initialPoints[groupid] - groupObj['points']['red'];
-          this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'red', group: groupid, summarydata: summ}));
+          this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'red', group: groupid, summarydata: summ, constances: constances}));
 
           if (groupObj['points']['add'] > 0) {
             initialPoints[groupid] = initialPoints[groupid] + groupObj['points']['add'];
-            this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'add', group: groupid, summarydata: summ}));
+            this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'add', group: groupid, summarydata: summ, constances: constances}));
           }
         }
       }
@@ -163,16 +164,72 @@ export default {
       chart.clearAllClickedPoint();
       var todayData = evt.data.data.extraData.summarydata;
       var day = evt.data.data.extraData.summarydata.day;
+      var point = evt.data.data.y;
       var previousDay = (day === 0 ? 0 : day - 1);
       var previousData = self.getSummaryByDate(previousDay);
       var clickedGroup = evt.data.data.extraData.group;
       var type = evt.data.data.extraData.type;
-      if (self.$root.eventHub) {
-        self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData, type);
+      var isClicked = evt.data.isClicked;
+      if (isClicked) {
+        if (self.$root.eventHub) {
+          self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData, type);
+        }
+        console.log(evt.data);
+        var x = evt.data.data.positionX;
+        var y = evt.data.data.positionY;
+        var blocker = evt.data.data.extraData.summarydata.groups[clickedGroup]['blocker'];
+        var blockerCount = 0;
+        if (blocker != null) {
+          blockerCount = blocker.length;
+        }
+
+        var followup = evt.data.data.extraData.summarydata.groups[clickedGroup]['followup'];
+        var followupCount = 0;
+        if (followup != null) {
+          followupCount = followup.length;
+        }
+        chart.displayPopover(x, y, '<div>' + clickedGroup + '</div><div>Point:' + point + '</div><div>Blocker:' + blockerCount + '&nbsp;&nbsp;Followup:' + followupCount + '</div>');
+      } else {
+        self.getLatestSummaryData();
       }
     });
     chart.addEventListener('chartClicked', function (evt) {
       self.getLatestSummaryData();
+    });
+    chart.addEventListener('pointhoverenter', function (evt) {
+      var constances = evt.data.pointdata.constances;
+      var clickedGroup = evt.data.pointdata.group;
+      var point = evt.data.point.y;
+      var x = evt.data.point.positionX;
+      var y = evt.data.point.positionY;
+      var blocker = evt.data.pointdata.summarydata.groups[clickedGroup]['blocker'];
+      var blockerCount = 0;
+      if (blocker != null) {
+        for (let i = 0; i < blocker.length; i++) {
+          var blockerItem = blocker[i];
+          if (blockerItem.status !== constances.storyIssueResovledStatus) {
+            blockerCount++;
+          }
+        }
+      }
+
+      var followup = evt.data.pointdata.summarydata.groups[clickedGroup]['followup'];
+      var followupCount = 0;
+      if (followup != null) {
+        for (let i = 0; i < followup.length; i++) {
+          var followupItem = followup[i];
+          if (followupItem.status !== constances.storyIssueResovledStatus) {
+            followupCount++;
+          }
+        }
+      }
+      var displayContent = '<div>' + clickedGroup + '</div><div>Point:' + point + '</div><div>Blocker:' + blockerCount + '&nbsp;&nbsp;Followup:' + followupCount + '</div>';
+      console.log(displayContent);
+      chart.displayPopover(x, y, displayContent);
+    });
+    chart.addEventListener('pointhoverleave', function (evt) {
+      console.log('hide');
+      chart.hidePopover();
     });
     /* chart.addGroup('null', {color: 'green'});
     chart.addPoint(0, 10, 'null');
