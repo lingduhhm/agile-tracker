@@ -69,6 +69,20 @@
               name: 'Capacity',
               type: 'bar',
               stack: 'Capacity',
+              itemStyle: {
+                normal: {
+                  borderRadius: 5,
+                  color: 'rgb(230, 162, 60)',
+                  label: {
+                    show: true,
+                    textStyle: {
+                      fontSize: '20',
+                      fontFamily: '微软雅黑',
+                      fontWeight: 'bold'
+                    }
+                  }
+                }
+              },
               data: [],
               markLine: {
                 data: [
@@ -82,7 +96,7 @@
               itemStyle: {
                 normal: {
                   borderRadius: 5,
-                  color: 'rgba(138,43,226,0.8)',
+                  color: 'rgb(64, 158, 255)',
                   label: {
                     show: true,
                     textStyle: {
