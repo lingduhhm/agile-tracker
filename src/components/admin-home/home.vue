@@ -99,6 +99,16 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="Groups">
+          <el-select v-model="form.sprintgroups" multiple placeholder="Select">
+            <el-option
+              v-for="group in groups"
+              :key="group._id"
+              :label="group.groupname"
+              :value="group._id">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="JQL">
           <el-input v-model="form.jql"></el-input>
         </el-form-item>
@@ -134,7 +144,8 @@
           workdays: []
         },
         sprintObjId: '',
-        module: this.$root.module
+        module: this.$root.module,
+        groups: []
       };
     },
     watch: {
@@ -172,6 +183,24 @@
           if (response.data.status === 'success') {
             that.menu = response.data.resData;
             that.menuMap = that.jsonfy(that.menu);
+          } else {
+            that.$message({
+              message: response.data.resMsg,
+              type: response.data.status
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          that.$message({
+            message: '数据获取失败！',
+            type: 'error'
+          });
+        });
+
+        this.axios.get('/api/v1/getAllGroups').then((response) => {
+          if (response.data.status === 'success') {
+            that.groups = response.data.resData;
           } else {
             that.$message({
               message: response.data.resMsg,
