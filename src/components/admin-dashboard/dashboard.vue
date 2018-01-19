@@ -57,7 +57,7 @@
 
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="24">
-        <line-chart :sprintsData="dashboard.sprintHistoryPoints"></line-chart>
+        <line-chart></line-chart>
       </el-col>
     </el-row>
 
@@ -66,7 +66,7 @@
 
 <script>
   import numberCard from '../admin-common/numberCard.vue';
-  import lineChart from './lineChart.vue';
+  import lineChart from '../admin-common/historyChart.vue';
   import worklogChart from '../admin-common/worklogChart.vue';
 
   export default {
@@ -75,8 +75,7 @@
         sprintinfo: '',
         dashboard: {
           sprintData: {},
-          pastdays: 0,
-          sprintHistoryPoints: {}
+          pastdays: 0
         }
       };
     },

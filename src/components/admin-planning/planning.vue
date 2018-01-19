@@ -47,7 +47,7 @@
 
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="24">
-        <group-card :sprintinfo="sprintinfo"></group-card>
+        <history-chart :sprintinfo="sprintinfo"></history-chart>
       </el-col>
     </el-row>
 
@@ -57,7 +57,7 @@
 <script>
   import numberCard from '../admin-common/numberCard.vue';
   import estimationChart from '../admin-common/estimationChart.vue';
-  import groupCard from '../admin-common/groupCard.vue';
+  import historyChart from '../admin-common/historyChart.vue';
 
   export default {
     data () {
@@ -88,7 +88,7 @@
         .catch((err) => {
           console.log(err);
           that.$message({
-            message: '数据获取失败！',
+            message: 'Data error!',
             type: 'error'
           });
         });
@@ -97,7 +97,7 @@
     components: {
       'numberCard': numberCard,
       'estimationChart': estimationChart,
-      'groupCard': groupCard
+      'historyChart': historyChart
     }
   };
 </script>

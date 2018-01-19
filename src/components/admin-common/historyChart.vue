@@ -14,16 +14,15 @@
   require('echarts/lib/chart/line');
 
   export default {
-    props: ['sprintsData'],
-    watch: {
-      'sprintsData': 'setData'
+    created: function () {
+      this.fetchData();
     },
     mounted () {
       this.myChart = echarts.init(document.getElementById('mainChart'));
       this.myChart.setOption(
         {
           title: {
-            text: 'Sprint Points Review'
+            text: 'Sprint History Review'
           },
           tooltip: {
             trigger: 'axis'
@@ -48,7 +47,7 @@
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: this.sprintsData.axis
+            data: []
           },
           yAxis: {
             type: 'value',
@@ -61,7 +60,7 @@
             {
               name: 'Planned',
               type: 'line',
-              data: this.sprintsData.planned,
+              data: [],
               itemStyle: {
                 normal: {
                   color: '#67C23A'
@@ -71,19 +70,40 @@
             {
               name: 'Done',
               type: 'line',
-              data: this.sprintsData.done
+              data: []
             }
           ]
         });
     },
     methods: {
+      fetchData () {
+        var that = this;
+        this.axios.get('/admin/dashboard/sprintHistoryPoints?module=' + this.$root.module).then((response) => {
+          if (response.data.status === 'success') {
+            var responseData = response.data.resData;
+            that.setData(responseData);
+          } else {
+            that.$message({
+              message: response.data.resMsg,
+              type: response.data.status
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          that.$message({
+            message: 'Data error!',
+            type: 'error'
+          });
+        });
+      },
       setData: function (data) {
         this.myChart.setOption({
           series: [
             {
               name: 'Planned',
               type: 'line',
-              data: this.sprintsData.planned,
+              data: data.planned,
               itemStyle: {
                 normal: {
                   color: '#67C23A'
@@ -93,13 +113,13 @@
             {
               name: 'Done',
               type: 'line',
-              data: this.sprintsData.done
+              data: data.done
             }
           ],
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: this.sprintsData.axis
+            data: data.axis
           }
         });
       }
