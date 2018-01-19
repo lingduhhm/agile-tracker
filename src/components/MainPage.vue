@@ -4,6 +4,9 @@
 
 <template>
   <div class="mainPage">
+    <div class="toDashboard">
+      <el-button type="primary" plain icon="el-icon-menu" @click="toDashbord">Dashboard</el-button>
+    </div>
     <el-container>
       <el-header>
         Agile Workflow
@@ -150,6 +153,9 @@ export default {
         i++;
       }
       this.chart.addGroup(groupname, {color: selectedColor});
+    },
+    toDashbord: function () {
+      window.location.href = '/admin#/dashboard';
     }
   },
   created: function () {
@@ -243,5 +249,9 @@ li {
 }
 a {
   color: #42b983;
+}
+.toDashboard {
+  text-align: right;
+  padding: 0px 20px;
 }
 </style>
