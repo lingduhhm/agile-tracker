@@ -3,11 +3,6 @@
   <div>
     <el-card class="box-card">
       <div id="worklogChart" style="height:400px;"></div>
-      <div style="padding: 14px;">
-        <div class="bottom clearfix">
-          <el-button type="text" class="button" @click="refresh">Refresh</el-button>
-        </div>
-      </div>
     </el-card>
   </div>
 </template>

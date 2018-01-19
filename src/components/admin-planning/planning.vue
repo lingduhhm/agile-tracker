@@ -7,6 +7,7 @@
             <el-card class="box-card rowMargin">
               <div slot="header" class="clearfix">
                 <span class="font">Sprint Infomation</span>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="refreshData">Refresh</el-button>
               </div>
               <el-form inline label-position="left" class="demo-table-expand">
                 <el-form-item label="Release:">
@@ -39,7 +40,7 @@
       <el-main style="padding: 0 20px;">
         <el-row :gutter="20" class="rowMargin">
           <el-col :span="24">
-            <estimation-chart :sprintinfo="sprintinfo" @updatepints= "fetchData"></estimation-chart>
+            <estimation-chart :sprintinfo="sprintinfo" @updatepints= "fetchData" ref="estimationChartRef"></estimation-chart>
           </el-col>
         </el-row>
       </el-main>
@@ -92,6 +93,9 @@
             type: 'error'
           });
         });
+      },
+      refreshData: function () {
+        this.$refs.estimationChartRef.refresh();
       }
     },
     components: {

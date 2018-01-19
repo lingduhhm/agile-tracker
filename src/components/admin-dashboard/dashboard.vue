@@ -7,6 +7,7 @@
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span class="font">Current Sprint</span>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="refreshData">Refresh</el-button>
               </div>
               <el-form inline label-position="left" class="demo-table-expand">
                 <el-form-item label="Release:">
@@ -51,7 +52,7 @@
 
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="24">
-        <worklog-chart :sprintinfo="sprintinfo"></worklog-chart>
+        <worklog-chart :sprintinfo="sprintinfo" ref="worklogChartRef"></worklog-chart>
       </el-col>
     </el-row>
 
@@ -107,6 +108,9 @@
             type: 'error'
           });
         });
+      },
+      refreshData: function () {
+        this.$refs.worklogChartRef.refresh();
       }
     },
     components: {
