@@ -7,6 +7,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import Story from '@/components/admin-story/story';
 import Dashboard from '@/components/admin-dashboard/dashboard';
 import Planning from '@/components/admin-planning/planning';
+import Configuration from '@/components/admin-configuration/config';
 import Cookies from 'js-cookie';
 
 Vue.use(Router);
@@ -34,6 +35,10 @@ const routerObj = new Router({
         {
           path: '/story/:category',
           component: Story
+        },
+        {
+          path: '/configuration',
+          component: Configuration
         }
       ],
       meta: { requiresAuth: true }

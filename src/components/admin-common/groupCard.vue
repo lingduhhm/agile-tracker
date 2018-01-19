@@ -90,7 +90,6 @@
 
 <script>
   export default {
-    props: ['sprintinfo'],
     data () {
       return {
         options: [
@@ -116,19 +115,16 @@
       };
     },
     created: function () {
+      this.fetchData();
     },
     watch: {
-      sprintinfo: function (newVal, oldVal) {
-        if (!oldVal) {
-          this.fetchData();
-        }
-      }
+      '$route': 'fetchData'
     },
     methods: {
       fetchData: function () {
         var that = this;
-        var sprintid = this.sprintinfo._id;
-        this.axios.get('/admin/groups/' + sprintid)
+        var module = this.$root.module;
+        this.axios.get('/admin/groups/' + module)
         .then(function (response) {
           if (response.data.status === 'success') {
             that.groupList = response.data.resData;
@@ -192,7 +188,7 @@
             });
           });
         } else {
-          this.form.sprintid = this.sprintinfo._id;
+          this.form.module = this.$root.module;
           this.axios.post('/admin/groups', this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
@@ -221,7 +217,7 @@
 
       handleDelete: function (data) {
         var that = this;
-        this.axios.delete('/admin/groups?objid=' + this.deleteObjId + '&sprintid=' + this.sprintinfo._id)
+        this.axios.delete('/admin/groups?objid=' + this.deleteObjId + '&module=' + this.$root.module)
         .then(function (response) {
           if (response.data.status === 'success') {
             that.groupList = response.data.resData;

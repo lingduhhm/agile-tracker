@@ -19,6 +19,10 @@
             <i :class="[item.status === 'done'? 'el-icon-check' : 'el-icon-tickets']"></i>
             <span slot="title">{{(item && item.release) || ''}}/{{item.sprint}}</span>
           </el-menu-item>
+          <el-menu-item index="configuration" route="/configuration">
+            <i class="el-icon-setting"></i>
+            <span slot="title">Configuration</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <el-container>
@@ -149,7 +153,7 @@
       };
     },
     watch: {
-      $routes: 'fetchData'
+      $route: 'fetchData'
     },
     computed: {
       avaliableDays: function () {
@@ -193,12 +197,12 @@
         .catch((err) => {
           console.log(err);
           that.$message({
-            message: '数据获取失败！',
+            message: 'Data fetch failed!',
             type: 'error'
           });
         });
 
-        this.axios.get('/api/v1/getAllGroups').then((response) => {
+        this.axios.get('/admin/groups/' + this.$root.module).then((response) => {
           if (response.data.status === 'success') {
             that.groups = response.data.resData;
           } else {
@@ -211,7 +215,7 @@
         .catch((err) => {
           console.log(err);
           that.$message({
-            message: '数据获取失败！',
+            message: 'Data fetch failed!',
             type: 'error'
           });
         });
@@ -230,7 +234,7 @@
         return mapRes;
       },
       handleSelect (key, keyPath) {
-        if ((key === 'dashboard') || (key === 'planning')) {
+        if ((key === 'dashboard') || (key === 'planning') || (key === 'configuration')) {
           this.sprintObjId = '';
           this.$router.push('/' + key);
         } else if (key) {
