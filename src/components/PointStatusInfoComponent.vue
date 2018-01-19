@@ -9,8 +9,8 @@
           <span class="pointInfoTitle">Point Status</span>
         </el-col>
         <el-col :span="6">
-          <i class="el-icon-circle-plus-outline pointContent" @click="openDialog"></i>
-          <add-point-dialog :dialogDisplay="dialogDisplay"></add-point-dialog>
+          <i ref="addIcon" v-show="showAddIcon" class="el-icon-circle-plus-outline pointContent" @click="openDialog"></i>
+          <add-point-dialog @newItemAdded="updateChangeItems" :dialogDisplay="dialogDisplay"></add-point-dialog>
         </el-col>
       </el-row>
     </el-header>
@@ -19,40 +19,40 @@
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="9">
             <i class="el-icon-caret-bottom successContent"></i>
-            <span class="successContent">2</span>
+            <span class="successContent">{{reduceCount}}</span>
           </el-col>
           <el-col :span="9">
             <i class="el-icon-caret-top blockContent"></i>
-            <span class="blockContent">5</span>
+            <span class="blockContent">{{addCount}}</span>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="height: 30px;line-height: 30px;">
           <el-col :span="9">
-            <span class="pointInfoTitle listItem">Current Points:</span>
+            <span class="pointInfoTitle listItem">Today Points:</span>
           </el-col>
           <el-col :span="9">
-            <span class="pointContent">{{testData[4].currentPoint}} points</span>
+            <span class="pointContent">{{currentPoint}} points</span>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="height: 30px;line-height: 30px;">
           <el-col :span="9">
-            <span class="pointInfoTitle">Previous Points:</span>
+            <span class="pointInfoTitle">LastDay Points:</span>
           </el-col>
           <el-col :span="9">
-            <span class="successContent">{{testData[4].previousPoint}} points</span>
+            <span class="successContent">{{previousPoint}} points</span>
           </el-col>
         </el-row>
       </div>
       <div class="pointChangedItem">
         <el-row type="flex" class="row-bg" justify="space-around">
           <el-col :span="21">
-            <span class="pointInfoTitle">Changed Items  ( {{testData[4].changedItem.length}} )</span>
+            <span class="pointInfoTitle">Changed Items  ( {{changedItems.length}} )</span>
           </el-col>
         </el-row>
-        <el-table :data="testData[4].changedItem" class="changeItemTab" style="width: 100%" :show-header="false" :row-class-name="tableRowClassName">
-          <el-table-column prop="storyId" style="width: 30%"></el-table-column>
-          <el-table-column prop="points" style="width: 30%"></el-table-column>
-          <el-table-column prop="status"></el-table-column>
+        <el-table :data="changedItems" class="changeItemTab" style="width: 100%" :show-header="false" :row-class-name="tableRowClassName">
+          <el-table-column prop="storykey" width="120"></el-table-column>
+          <el-table-column prop="points" width="50"></el-table-column>
+          <el-table-column prop="status" ></el-table-column>
         </el-table>
       </div>
     </el-main>
@@ -64,51 +64,22 @@ import AddDialogContent from '@/components/AddPointDialogComponent';
 export default {
   data () {
     return {
+      group: '',
+      showAddIcon: false,
       dialogDisplay: false,
-      testData: [{
-        currentPoint: 40,
-        previousPoint: 40,
-        changedItem: []
-      }, {
-        currentPoint: 35,
-        previousPoint: 40,
-        changedItem: [{
-          storyId: 'CDP-4815',
-          points: 5,
-          status: 'Done'
-        }]
-      }, {
-        currentPoint: 35,
-        previousPoint: 35,
-        changedItem: []
-      }, {
-        currentPoint: 20,
-        previousPoint: 35,
-        changedItem: [{
-          storyId: 'CDP-4812',
-          points: 15,
-          status: 'Done'
-        }]
-      }, {
-        currentPoint: 20,
-        previousPoint: 20,
-        changedItem: [{
-          storyId: 'CDP-4819',
-          points: 5,
-          status: 'Done'
-        }, {
-          storyId: 'CDP-5819',
-          points: 5,
-          status: 'Add'
-        }]
-      }, {
-        currentPoint: 10,
-        previousPoint: 10,
-        changedItem: []
-      }]
+      reduceCount: 0,
+      addCount: 0,
+      currentPoint: 0,
+      previousPoint: 0,
+      changedItems: [],
+      currentData: {},
+      previousData: {}
     };
   },
   created: function () {
+    if (this.$root.eventHub) {
+      this.$root.eventHub.$on('getDaySummary', this.getDayStorySummary);
+    }
   },
   mounted: function () {
   },
@@ -121,15 +92,38 @@ export default {
       });
     },
     tableRowClassName ({row, rowIndex}) {
-      var tableRowList = this.testData[4].changedItem;
+      var tableRowList = this.changedItems;
       if (tableRowList[rowIndex].status === 'Add') {
         return 'blockContent';
-      } else if (tableRowList[rowIndex].status === 'Done') {
+      } else if (tableRowList[rowIndex].status === 'Ready for testing') {
         return 'successContent';
       }
       return '';
     },
-    handleClose () {}
+    updateChangeItems (item) {
+      item.points = item.storypoints;
+      this.reduceCount += item.points;
+      this.changedItems.unshift(item);
+      this.currentPoint -= item.points;
+      this.currentData.points['red'] += item.points;
+    },
+    getDayStorySummary (day, group, todayObj, previousObj, type) {
+      this.group = group;
+      this.currentData = todayObj['groups'][group];
+      this.previousData = previousObj['groups'][group];
+      this.reduceCount = this.currentData['points']['red'];
+      this.addCount = this.currentData['points']['add'];
+      this.currentPoint = this.currentData.currentPoint;
+      this.previousPoint = this.previousData.currentPoint;
+
+      this.changedItems = todayObj.storyList;
+      var length = this.$root.summary.summary.length - 1;
+      if (day === length) {
+        this.showAddIcon = true;
+      } else {
+        this.showAddIcon = false;
+      }
+    }
   },
   components: {
     'add-point-dialog': AddDialogContent

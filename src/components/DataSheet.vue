@@ -89,6 +89,9 @@ export default {
         }
       }
       this.followupLabel = 'Follows (' + followupCount + ')';
+
+      var pointCount = todayObj['groups'][group]['currentPoint'];
+      this.pointLabel = 'Points (' + pointCount + ')';
     }
   },
   created: function () {

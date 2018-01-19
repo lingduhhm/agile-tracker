@@ -5,7 +5,7 @@
         title="Add Point Dialog"
         :visible.sync="dialogVisible"
         width="30%"
-        :before-close="handleClose"
+        @close="handleClose"
         class="addPointDialog">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="grid-content">
           <el-form-item prop="biSelected" label="BI Number" class="addPointDialogContent">
@@ -14,27 +14,28 @@
               <el-select v-model="ruleForm.biSelected" filterable allow-create placeholder="Please select BI">
                 <el-option
                   v-for="item in biList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
+                  :key="item.storykey"
+                  :label="item.storykey"
+                  :value="item.storykey">
                 </el-option>
               </el-select>
               </el-col>
               <el-col :span="5">
                 <div><a target="_blank" :href='biSelectedURL'>{{ruleForm.biSelected}}</a>&nbsp;</div>
               </el-col>
-              <el-col :span="4"><div>10 Point</div></el-col>
+              <el-col :span="4"><div>{{selectedPointsLabel}}</div></el-col>
             </el-row>
           </el-form-item>
           <el-form-item prop="statusSelected" class="addPointDialogContent">
             <el-radio-group v-model="ruleForm.statusSelected">
-              <el-radio :label="status.key" border size="medium" v-for="status in statusList" :key="status.key">{{status.label}}
+              <el-radio :label="status.key" border size="medium" v-for="status in statusList" :key="status.key"
+              :disabled="status.groupId != group">{{status.label}}
               </el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item class="addPointDialogFooter">
-            <el-button type="primary" @click="dialogVisible = false">Cancel</el-button>
-            <el-button @click="submitForm('ruleForm')">Confirm</el-button>
+            <el-button @click="dialogVisible = false">Cancel</el-button>
+            <el-button type="primary" @click="submitForm('ruleForm')">Confirm</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
@@ -53,25 +54,17 @@ export default {
   data () {
     return {
       biSelectedURL: '',
-      biList: [{
-        value: 'CDP-8411',
-        label: 'CDP-8411'
-      }, {
-        value: 'CDP-8412',
-        label: 'CDP-8412'
-      }, {
-        value: 'CDP-8413',
-        label: 'CDP-8413'
-      }, {
-        value: 'CDP-8414',
-        label: 'CDP-8414'
-      }],
+      selectedBi: {},
+      selectedPointsLabel: '',
+      biList: [],
       dialogVisible: false,
       statusList: [{
-        key: 'devcomplete',
+        groupId: 'Dev',
+        key: 'Devcomplete',
         label: 'Dev Complete'
       }, {
-        key: 'testcomplete',
+        groupId: 'QA',
+        key: 'Done',
         label: 'Test Complete'
       }],
       ruleForm: {
@@ -89,13 +82,39 @@ export default {
     };
   },
   methods: {
-    handleClose: function () {},
+    handleClose () {
+      this.ruleForm.biSelected = '';
+    },
+    getSprintFormatDay () {
+      var currentDate = new Date();
+      var oYear = currentDate.getFullYear();
+      var oMonth = currentDate.getMonth() + 1;
+      var oDate = currentDate.getDate();
+      return oYear + '-' + oMonth + '-' + oDate;
+    },
+    updateAllStroyList (day, group, todayObj, previousObj, type) {
+      this.biList = this.$root.summary.storyList;
+      this.group = group;
+    },
     submitForm (formName) {
+      var self = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          var newItem = {
+            storykey: self.ruleForm.biSelected,
+            storyname: self.selectedBi.name,
+            storypoints: self.selectedBi.points,
+            issuetype: 'story',
+            summary: self.selectedBi.summary,
+            sprint: self.selectedBi.sprint,
+            ingoup: self.group,
+            changeinsprintday: self.getSprintFormatDay(),
+            status: self.ruleForm.statusSelected
+          };
+          console.log(newItem);
           alert('submit!');
-          this.ruleForm.biSelected = '';
           this.dialogVisible = false;
+          // self.$root.eventHub.$emit('sprintDataChanged', newItem);
         } else {
           console.log('error submit!!');
           return false;
@@ -104,6 +123,9 @@ export default {
     }
   },
   created: function () {
+    if (this.$root.eventHub) {
+      this.$root.eventHub.$on('getDaySummary', this.updateAllStroyList);
+    }
   },
   mounted: function () {
   },
@@ -115,6 +137,12 @@ export default {
   watch: {
     biSelected: function (newValue) {
       this.biSelectedURL = 'https://jira.successfactors.com/browse/' + newValue;
+      for (var i = 0; i < this.biList.length; i++) {
+        if (this.biList[i].storykey === newValue) {
+          this.selectedBi = this.biList[i];
+          this.selectedPointsLabel = this.selectedBi.points + ' Points';
+        }
+      }
     },
     dialogDisplay: function () {
       if (this.dialogDisplay == null) {
