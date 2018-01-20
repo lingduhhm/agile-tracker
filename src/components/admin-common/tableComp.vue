@@ -2,34 +2,18 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span>Groups Management (Optional)</span>
-        <el-button style="float: right; padding: 3px 0" type="text" @click="handleClick({}, 'add')">Add Group</el-button>
+        <span>{{configObj.title}}</span>
+        <el-button style="float: right; padding: 3px 0" type="text" @click="handleClick({}, 'add')">Add {{configObj.name}}</el-button>
       </div>
       <el-table border 
-        :data="groupList"
+        :data="itemList"
         style="width: 100%" fit>
-        <el-table-column
-          label="Name"
-          prop="groupname"
+        <el-table-column v-for="column in configObj.columns" key="only"
+          :label="column.label"
+          :prop="column.key"
          >
         </el-table-column>
-        <el-table-column
-          label="Category"
-          prop="groupcategory"
-         >
-        </el-table-column>     
-        <el-table-column
-          label="Description"
-          prop="description"
-         >
-        </el-table-column>     
-        <el-table-column
-          label="Trigger" >
-          <template slot-scope="scope">
-            {{scope.row.grouppointstatus.join('/')}}
-          </template>
-        </el-table-column>
-        <el-table-column label="Actions">
+        <el-table-column label="Actions" >
           <template slot-scope="scope">
             <el-button-group>
               <el-button
@@ -51,24 +35,8 @@
     center>
       <span>
         <el-form ref="form" :model="form" label-width="80px">
-          <el-form-item label="Name">
-            <el-input v-model="form.groupname"></el-input>
-          </el-form-item>
-          <el-form-item label="Category">
-            <el-input v-model="form.groupcategory"></el-input>
-          </el-form-item>
-          <el-form-item label="Description">
-            <el-input v-model="form.description"></el-input>
-          </el-form-item>
-          <el-form-item label="Trigger">
-            <el-select v-model="form.grouppointstatus" multiple placeholder="Select">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
+          <el-form-item :label="[value.label]" v-for="value in configObj.columns" key="item">
+            <el-input v-model="form[value.key]"></el-input>
           </el-form-item>
         </el-form>
       </span>
@@ -92,32 +60,28 @@
 
 <script>
   export default {
+    props: ['configObj'],
     data () {
       return {
-        options: [
-          {
-            value: 'initial',
-            label: 'Initial'
-          },
-          {
-            value: 'ready_for_testing',
-            label: 'Ready for Testing'
-          },
-          {
-            value: 'done',
-            label: 'Done'
-          }
-        ],
-        groupList: [],
+        itemList: [],
         popupVisible: false,
         deleteVisible: false,
         form: {},
-        title: 'Add Group',
+        title: 'Add ' + this.configObj.name,
         deleteObjId: ''
       };
     },
     created: function () {
       this.fetchData();
+    },
+    computed: {
+      fetchLabelByKey: function (key) {
+        for (var value in this.configObj.columns) {
+          if (value.key === key) {
+            return value.label;
+          }
+        }
+      }
     },
     watch: {
       '$route': 'fetchData'
@@ -126,10 +90,10 @@
       fetchData: function () {
         var that = this;
         var module = this.$root.module;
-        this.axios.get('/admin/groups/' + module)
+        this.axios.get(this.configObj.path + module)
         .then(function (response) {
           if (response.data.status === 'success') {
-            that.groupList = response.data.resData;
+            that.itemList = response.data.resData;
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -148,11 +112,11 @@
 
       handleClick: function (data, type) {
         if (type === 'edit') {
-          this.title = 'Add Group';
+          this.title = 'Add ' + this.configObj.name;
           this.form = data;
           this.popupVisible = true;
         } else if (type === 'add') {
-          this.title = 'Edit Group';
+          this.title = 'Edit ' + this.configObj.name;
           this.form = {
             'grouppointstatus': []
           };
@@ -166,10 +130,10 @@
       handleEdit: function (data) {
         var that = this;
         if (this.form._id) {
-          this.axios.put('/admin/groups', this.form)
+          this.axios.put(this.configObj.path, this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
-              that.groupList = response.data.resData;
+              that.itemList = response.data.resData;
               that.$message({
                 message: response.data.resMsg,
                 type: response.data.status
@@ -191,10 +155,10 @@
           });
         } else {
           this.form.module = this.$root.module;
-          this.axios.post('/admin/groups', this.form)
+          this.axios.post(this.configObj.path, this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
-              that.groupList = response.data.resData;
+              that.itemList = response.data.resData;
               that.$message({
                 message: response.data.resMsg,
                 type: response.data.status
@@ -219,10 +183,10 @@
 
       handleDelete: function (data) {
         var that = this;
-        this.axios.delete('/admin/groups?objid=' + this.deleteObjId + '&module=' + this.$root.module)
+        this.axios.delete(this.configObj.path + '?objid=' + this.deleteObjId + '&module=' + this.$root.module)
         .then(function (response) {
           if (response.data.status === 'success') {
-            that.groupList = response.data.resData;
+            that.itemList = response.data.resData;
             that.$message({
               message: response.data.resMsg,
               type: response.data.status
