@@ -40,7 +40,7 @@
       <el-main style="padding: 0 20px;">
         <el-row :gutter="20" class="rowMargin">
           <el-col :span="24">
-            <estimation-chart :sprintinfo="sprintinfo" @updatepints= "fetchData" ref="estimationChartRef"></estimation-chart>
+            <estimation-chart @updatepints= "fetchData" ref="estimationChartRef"></estimation-chart>
           </el-col>
         </el-row>
       </el-main>
@@ -79,6 +79,7 @@
           if (response.data.status === 'success') {
             that.sprintinfo = response.data.resData;
             that.sprintinfo.totalpoints = response.data.totalPoints;
+            that.$refs.estimationChartRef.fetchData('', that.sprintinfo);
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -95,7 +96,7 @@
         });
       },
       refreshData: function () {
-        this.$refs.estimationChartRef.refresh();
+        this.$refs.estimationChartRef.refresh(this.sprintinfo);
       }
     },
     components: {

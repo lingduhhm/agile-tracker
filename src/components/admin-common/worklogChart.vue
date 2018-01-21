@@ -13,13 +13,8 @@
   require('echarts');
 
   export default {
-    props: ['sprintinfo'],
-    watch: {
-      sprintinfo: 'fetchData'
-    },
     mounted () {
       this.myChart = echarts.init(document.getElementById('worklogChart'));
-      this.fetchData('');
       this.myChart.setOption(
         {
           title: {
@@ -108,8 +103,14 @@
         });
     },
     methods: {
-      fetchData: function (isRefresh) {
-        if (!this.sprintinfo) {
+      fetchData: function (isRefresh, sprintinfo) {
+        this.sprintinfo = sprintinfo;
+        if (!this.sprintinfo._id) {
+          this.setData({
+            resData: {
+              data: {}
+            }
+          });
           return false;
         }
         var loading = Loading.service({fullscreen: true,
@@ -142,8 +143,8 @@
         this.fetchData('y');
       },
       setData: function (originalData) {
-        var data = originalData.resData.data;
-        var usermap = originalData.usermap;
+        var data = originalData.resData ? originalData.resData.data : {};
+        var usermap = originalData.usermap || {};
         var xAxis = [];
         var leftArr = [];
         var loggedArr = [];

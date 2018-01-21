@@ -52,7 +52,7 @@
 
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="24">
-        <worklog-chart :sprintinfo="sprintinfo" ref="worklogChartRef"></worklog-chart>
+        <worklog-chart ref="worklogChartRef"></worklog-chart>
       </el-col>
     </el-row>
 
@@ -94,6 +94,7 @@
             var responseData = response.data.resData;
             that.dashboard = responseData;
             that.sprintinfo = responseData.sprintData;
+            this.$refs.worklogChartRef.fetchData('', this.sprintinfo);
           } else {
             that.$message({
               message: response.data.resMsg,
