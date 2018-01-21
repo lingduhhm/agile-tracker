@@ -11,7 +11,7 @@
       <div class="header">
         {{displayYear}} - {{displayMonth + 1}}
       </div>
-      <div class="headerLeftArrow" @click="nextMonth">
+      <div class="headerRightArrow" @click="nextMonth">
         <span v-if="isHaveNextMonth">></span>
       </div>
     </div>
@@ -42,15 +42,15 @@ export default {
   props: {
     dateSelected: {
       type: Array,
-      default: ['2017-12-20', '2017-12-26']
+      default: ['']
     },
     'startDate': {
       type: String,
-      default: '2017-11-10'
+      default: ''
     },
     'endDate': {
       type: String,
-      default: '2018-03-03'
+      default: ''
     }
   },
   data () {
@@ -113,10 +113,16 @@ export default {
       }
     },
     calculateMonthCalendar: function (year, month) {
-      console.log(this.startDate);
-      var startDateObj = new Date(this.startDate + ' 00:00:00');
-      var endDateObj = new Date(this.endDate + ' 00:00:00');
-
+      var startDateObj = null;
+      var endDateObj = null;
+      console.log(':' + this.startDate + ':' + this.endDate + ':');
+      if (this.startDate === '' || this.endDate === '' || this.startDate === null || this.endDate === null) {
+        startDateObj = null;
+        endDateObj = null;
+      } else {
+        startDateObj = new Date(this.startDate + ' 00:00:00');
+        endDateObj = new Date(this.endDate + ' 00:00:00');
+      }
       var date = new Date(year, month, 1);
       var startDay = date.getDay();
       var dayCharacter = 1;
@@ -158,13 +164,15 @@ export default {
               if (cellItem.dateObj < startDateObj || cellItem.dateObj > endDateObj) {
                 cellItem.disabled = true;
               }
-
             } else {
               cellItem.character = '';
               cellItem.dateObj = null;
               cellItem.disabled = true;
               cellItem.selected = false;
             }
+          }
+          if (startDateObj === null || endDateObj === null) {
+            cellItem.disabled = true;
           }
         }
       }
@@ -273,12 +281,14 @@ export default {
 @import '../css/globalDefine';
 .DatePicker .calendarHeader .headerLeftArrow {
   display: inline-block;
-  width: 20px;
+  width: 15%;
   text-align: center;
+  text-align: left;
 }
-.DatePicker .calendarHeader .headerLeftArrow {
+.DatePicker .calendarHeader .headerRightArrow {
   display: inline-block;
-  width: 20px;
+  width: 15%;
+  text-align: right;
 }
 .DatePicker .calendarHeader .header {
   display: inline-block;
