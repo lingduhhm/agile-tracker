@@ -105,7 +105,7 @@
         </el-form-item> -->
         <el-form-item label="Date">
           Total Day: 12<br/>
-          <datepicker :dateSelected="selectedDays"></datepicker>
+          <datepicker :dateSelected="selectedDays" :startDate="form.start" :endDate="form.end"></datepicker>
         </el-form-item>
         <el-form-item label="Groups">
           <el-select v-model="form.sprintgroups" multiple placeholder="Select">

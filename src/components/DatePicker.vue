@@ -28,7 +28,7 @@
     </div>
     <div class="calendarBody">
       <div class="calendarRow" v-for="(rowItem, rowIdx) in displayCalendar" v-if="!(rowItem[0].character==='' && rowIdx>1)">
-        <div class="calendarCell" v-for="(cellItem, colIdx) in rowItem" :celldisabled="cellItem.disabled" :rowIdx="rowIdx" :colIdx="colIdx" @click="cellClicked(rowIdx, colIdx, cellItem);" :class="{weekend: cellItem.weekend, selected: cellItem.selected}">
+        <div class="calendarCell" v-for="(cellItem, colIdx) in rowItem" :celldisabled="cellItem.disabled" :rowIdx="rowIdx" :colIdx="colIdx" @click="cellClicked(rowIdx, colIdx, cellItem);" :class="{weekend: cellItem.weekend, selected: cellItem.selected, disabled: cellItem.disabled}">
           {{cellItem.character}}
         </div>
       </div>
@@ -43,6 +43,14 @@ export default {
     dateSelected: {
       type: Array,
       default: ['2017-12-20', '2017-12-26']
+    },
+    'startDate': {
+      type: String,
+      default: '2017-11-10'
+    },
+    'endDate': {
+      type: String,
+      default: '2018-03-03'
     }
   },
   data () {
@@ -50,8 +58,6 @@ export default {
       'displayCalendar': [],
       'displayYear': new Date().getFullYear(),
       'displayMonth': new Date().getMonth(),
-      'startDate': '2017-11-10',
-      'endDate': '2018-03-01',
       'calendarDateSelected': []
     };
   },
@@ -107,6 +113,9 @@ export default {
       }
     },
     calculateMonthCalendar: function (year, month) {
+      var startDateObj = new Date(this.startDate);
+      var endDateObj = new Date(this.endDate);
+
       var date = new Date(year, month, 1);
       var startDay = date.getDay();
       var dayCharacter = 1;
@@ -141,6 +150,11 @@ export default {
                 cellItem.selected = true;
               } else {
                 cellItem.selected = false;
+              }
+
+              console.log((cellItem.dateObj < startDateObj) + ':' + (cellItem.dateObj > endDateObj));
+              if (cellItem.dateObj < startDateObj || cellItem.dateObj > endDateObj) {
+                cellItem.disabled = true;
               }
             } else {
               cellItem.character = '';
