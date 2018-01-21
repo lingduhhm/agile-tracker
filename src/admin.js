@@ -10,7 +10,7 @@ import '@/css/admin.less';
 Vue.config.productionTip = false;
 
 Vue.use(VueAxios, axios);
-
+var eventHub = new Vue();
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -18,6 +18,7 @@ new Vue({
   template: '<App/>',
   components: { App },
   data: {
-    module: 'CDP'
+    module: 'CDP',
+    eventHub: eventHub
   }
 });

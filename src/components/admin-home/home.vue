@@ -93,7 +93,7 @@
             placeholder="select">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="Work Days">
+        <!-- <el-form-item label="Work Days">
           <el-select v-model="form.workdays" multiple placeholder="Select">
             <el-option
               v-for="day in avaliableDays"
@@ -102,6 +102,10 @@
               :value="day.value">
             </el-option>
           </el-select>
+        </el-form-item> -->
+        <el-form-item label="Date">
+          Total Day: 12<br/>
+          <datepicker :dateSelected="selectedDays"></datepicker>
         </el-form-item>
         <el-form-item label="Groups">
           <el-select v-model="form.sprintgroups" multiple placeholder="Select">
@@ -134,6 +138,7 @@
 
 <script>
   import { Loading } from 'element-ui';
+  import DatePicker from '@/components/DatePicker';
 
   export default {
     data () {
@@ -152,10 +157,23 @@
         groups: []
       };
     },
+    components: {
+      'datepicker': DatePicker
+    },
     watch: {
       $route: 'fetchData'
     },
     computed: {
+      selectedDays: function () {
+        var dateArray = [];
+        for (var i = 0; i < this.avaliableDays.length; i++) {
+          var d = new Date(this.avaliableDays[i].value).getDay();
+          if (d !== 0 && d !== 6) {
+            dateArray.push(this.avaliableDays[i].value);
+          }
+        }
+        return dateArray;
+      },
       avaliableDays: function () {
         var dateArray = [];
         var start = this.form.start || '';
@@ -181,6 +199,9 @@
       }
     },
     methods: {
+      calendarDateSelected: function (dateArr) {
+        this.form.workdays = dateArr;
+      },
       fetchData () {
         var that = this;
         this.axios.get('/admin/sprint?limit=8&module=' + this.$root.module).then((response) => {
@@ -323,6 +344,9 @@
     created: function () {
       this.handleSelect();
       this.fetchData();
+      if (this.$root.eventHub) {
+        this.$root.eventHub.$on('datePickerChanged', this.calendarDateSelected);
+      }
     }
   };
 </script>
