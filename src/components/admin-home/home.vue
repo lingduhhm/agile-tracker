@@ -31,7 +31,7 @@
             <el-col :span="1">
               <span style='font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; color: #409EFF; font-size: 18px;'>{{module}}</span>
             </el-col>
-            <el-col :span="2">
+            <el-col :span="2" v-if="$route.query.status!='configuration'">
               <el-dropdown style="float: right;"  @command="action">
                 <span class="el-dropdown-link">
                   Action<i class="el-icon-arrow-down el-icon--right"></i>
@@ -39,6 +39,7 @@
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item command="add" v-if="!$route.params.category">Add</el-dropdown-item>
                   <el-dropdown-item command="edit" v-if="$route.params.category">Edit</el-dropdown-item>
+                  <el-dropdown-item command="proceed">Proceed</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </el-col>
@@ -117,11 +118,7 @@
           <el-input v-model="form.jql"></el-input>
         </el-form-item>
         <el-form-item label="Status">
-          <el-select v-model="form.status" placeholder="Status">
-            <el-option label="Planning" value="planning" v-if="!isHadPlanning"></el-option>
-            <el-option label="Inprogress" value="inprogress" v-if="!isHadInprogress"></el-option>
-            <el-option label="Done" value="done"></el-option>
-          </el-select>
+          <el-input v-model="form.status" disabled></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -187,6 +184,7 @@
           if (response.data.status === 'success') {
             that.menu = response.data.resData;
             that.menuMap = that.jsonfy(that.menu);
+            this.form = this.$route.params.category ? this.menuMap[this.$route.params.category] : {};
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -236,14 +234,14 @@
       handleSelect (key, keyPath) {
         if ((key === 'dashboard') || (key === 'planning') || (key === 'configuration')) {
           this.sprintObjId = '';
-          this.$router.push('/' + key);
+          this.$router.push('/' + key + '?status=' + (key === 'dashboard' ? 'inprogress' : key));
         } else if (key) {
           this.sprintObjId = key;
           this.form = this.menuMap[key];
           this.$router.push('/story/' + key);
         } else {
           this.sprintObjId = '';
-          this.$router.push('/dashboard');
+          this.$router.push('/dashboard?status=inprogress');
         }
       },
       action (command) {
@@ -251,27 +249,30 @@
           this.dialogVisible = true;
           this.title = 'Edit Sprint';
         } else if (command === 'add') {
-          this.form = {};
+          this.form = {
+            'status': 'planning'
+          };
           this.title = 'Add Sprint';
           this.dialogVisible = true;
-        } else if (command === 'scan') {
+        } else if (command === 'proceed') {
           var loading = Loading.service({fullscreen: true,
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)',
             text: 'Scanning...'});
           var that = this;
-          this.axios.patch('/admin/sprint?sprint=' + that.sprintObjId).then((response) => {
+          this.axios.put('/admin/sprint/proceed?status=' + this.$route.query.status + '&module=' + this.$root.module + '&sprintid=' + this.$route.params.category).then((response) => {
             loading.close();
             that.$message({
               message: response.data.resMsg,
               type: response.data.status
             });
+            this.fetchData();
             this.$refs.sprintPage.fetchData();
           })
           .catch((err) => {
             console.log(err);
             that.$message({
-              message: '数据保存失败！',
+              message: 'Data error!',
               type: 'error'
             });
           });
@@ -294,11 +295,12 @@
           .catch((err) => {
             console.log(err);
             that.$message({
-              message: '数据保存失败！',
+              message: 'Data error！',
               type: 'error'
             });
           });
         } else {
+          this.form.module = this.$root.module;
           this.axios.post('/admin/sprint', this.form).then((response) => {
             that.$message({
               message: response.data.resMsg,

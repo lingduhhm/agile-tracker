@@ -13,17 +13,13 @@
   require('echarts');
 
   export default {
-    props: ['sprintinfo'],
-    watch: {
-      sprintinfo: function (newVal, oldVal) {
-        if (!oldVal) {
-          this.fetchData();
-        }
-      }
+    data () {
+      return {
+        sprintinfo: {}
+      };
     },
     mounted () {
       this.myChart = echarts.init(document.getElementById('estimationChart'));
-      this.fetchData('');
       this.myChart.setOption(
         {
           title: {
@@ -113,8 +109,14 @@
         });
     },
     methods: {
-      fetchData: function (isRefresh) {
-        if (!this.sprintinfo) {
+      fetchData: function (isRefresh, sprintinfo) {
+        this.sprintinfo = sprintinfo;
+        if (!this.sprintinfo._id) {
+          this.setData({
+            resData: {
+              data: {}
+            }
+          });
           return false;
         }
         var loading = Loading.service({fullscreen: true,
@@ -148,13 +150,13 @@
           });
         });
       },
-      refresh: function () {
-        this.fetchData('y');
+      refresh: function (sprintinfo) {
+        this.fetchData('y', sprintinfo);
       },
       setData: function (originalData) {
         var data = originalData.resData.data;
-        var capacity = originalData.capacity;
-        var usermap = originalData.usermap;
+        var capacity = originalData.capacity || {};
+        var usermap = originalData.usermap || {};
         var xAxis = [];
         var capacityArr = [];
         var estimatedArr = [];

@@ -8,7 +8,7 @@
       <el-table border 
         :data="itemList"
         style="width: 100%" fit>
-        <el-table-column v-for="column in configObj.columns" key="only"
+        <el-table-column v-for="column in configObj.columns" :key="column.domKey"
           :label="column.label"
           :prop="column.key"
          >
@@ -35,7 +35,7 @@
     center>
       <span>
         <el-form ref="form" :model="form" label-width="80px">
-          <el-form-item :label="[value.label]" v-for="value in configObj.columns" key="item">
+          <el-form-item :label="[value.label]" v-for="value in configObj.columns" :key="value.domKey">
             <el-input v-model="form[value.key]"></el-input>
           </el-form-item>
         </el-form>
@@ -73,15 +73,6 @@
     },
     created: function () {
       this.fetchData();
-    },
-    computed: {
-      fetchLabelByKey: function (key) {
-        for (var value in this.configObj.columns) {
-          if (value.key === key) {
-            return value.label;
-          }
-        }
-      }
     },
     watch: {
       '$route': 'fetchData'

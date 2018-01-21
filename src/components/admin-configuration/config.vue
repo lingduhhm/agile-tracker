@@ -25,15 +25,18 @@
           columns: [
             {
               label: 'User Id',
-              key: 'userid'
+              key: 'userid',
+              domKey: new Date().valueOf() + Math.random()
             },
             {
               label: 'Name',
-              key: 'displayname'
+              key: 'displayname',
+              domKey: new Date().valueOf() + Math.random()
             },
             {
               label: 'Capacity',
-              key: 'capacity'
+              key: 'capacity',
+              domKey: new Date().valueOf() + Math.random()
             }
           ]
         }
