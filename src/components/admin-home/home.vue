@@ -281,7 +281,7 @@
             background: 'rgba(0, 0, 0, 0.7)',
             text: 'Scanning...'});
           var that = this;
-          this.axios.put('/admin/sprint/proceed?status=' + this.$route.query.status + '&module=' + this.$root.module + '&sprintid=' + this.$route.params.category).then((response) => {
+          this.axios.put('/admin/sprint/proceed?status=' + this.$route.query.status + '&module=' + this.$root.module + '&sprintid=' + (this.$route.params.category || '')).then((response) => {
             loading.close();
             that.$message({
               message: response.data.resMsg,
