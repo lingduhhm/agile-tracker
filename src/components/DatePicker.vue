@@ -113,8 +113,9 @@ export default {
       }
     },
     calculateMonthCalendar: function (year, month) {
-      var startDateObj = new Date(this.startDate);
-      var endDateObj = new Date(this.endDate);
+      console.log(this.startDate);
+      var startDateObj = new Date(this.startDate + ' 00:00:00');
+      var endDateObj = new Date(this.endDate + ' 00:00:00');
 
       var date = new Date(year, month, 1);
       var startDay = date.getDay();
@@ -130,6 +131,7 @@ export default {
             cellItem.character = '';
             cellItem.dateObj = null;
             cellItem.disabled = true;
+            cellItem.selected = false;
           } else {
             if (dayCharacter <= lastDayOfTheMonth) {
               cellItem.disabled = false;
@@ -141,7 +143,7 @@ export default {
               dayCharacterStr = dayCharacterStr.length > 1 ? dayCharacterStr : ('0' + dayCharacterStr);
               var dateString = year + '-' + monthStr + '-' + dayCharacterStr;
 
-              cellItem.dateObj = new Date(year, month, dayCharacter);
+              cellItem.dateObj = new Date(year + '-' + monthStr + '-' + dayCharacter + ' 00:00:00');
               cellItem.character = dayCharacter++;
               if (j === 0 || j === 6) {
                 cellItem.weekend = true;
@@ -152,14 +154,16 @@ export default {
                 cellItem.selected = false;
               }
 
-              console.log((cellItem.dateObj < startDateObj) + ':' + (cellItem.dateObj > endDateObj));
+              console.log(cellItem.dateObj + ':' + startDateObj + ':' + endDateObj);
               if (cellItem.dateObj < startDateObj || cellItem.dateObj > endDateObj) {
                 cellItem.disabled = true;
               }
+
             } else {
               cellItem.character = '';
               cellItem.dateObj = null;
               cellItem.disabled = true;
+              cellItem.selected = false;
             }
           }
         }

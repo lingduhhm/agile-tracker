@@ -105,7 +105,7 @@
           </el-select>
         </el-form-item> -->
         <el-form-item label="Date">
-          Total Day: 12<br/>
+          Total Day: {{sprintSelectedDaysCount}}<br/>
           <datepicker :dateSelected="selectedDays" :startDate="form.start" :endDate="form.end"></datepicker>
         </el-form-item>
         <el-form-item label="Groups">
@@ -151,7 +151,8 @@
         },
         sprintObjId: '',
         module: this.$root.module,
-        groups: []
+        groups: [],
+        sprintSelectedDaysCount: 0
       };
     },
     components: {
@@ -198,6 +199,7 @@
     methods: {
       calendarDateSelected: function (dateArr) {
         this.form.workdays = dateArr;
+        this.sprintSelectedDaysCount = this.form.workdays.length;
       },
       fetchData () {
         var that = this;
