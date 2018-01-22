@@ -9,8 +9,6 @@
           <span class="pointInfoTitle">Point Status</span>
         </el-col>
         <el-col :span="6">
-          <i ref="addIcon" v-show="showAddIcon" class="el-icon-circle-plus-outline pointContent" @click="openDialog"></i>
-          <add-point-dialog @newItemAdded="updateChangeItems" :dialogDisplay="dialogDisplay"></add-point-dialog>
         </el-col>
       </el-row>
     </el-header>
@@ -36,7 +34,7 @@
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="height: 30px;line-height: 30px;">
           <el-col :span="9">
-            <span class="pointInfoTitle">LastDay Points:</span>
+            <span class="pointInfoTitle">Last Day Points:</span>
           </el-col>
           <el-col :span="9">
             <span class="successContent">{{previousPoint}} points</span>
@@ -60,13 +58,10 @@
 </template>
 
 <script>
-import AddDialogContent from '@/components/AddPointDialogComponent';
 export default {
   data () {
     return {
       group: '',
-      showAddIcon: false,
-      dialogDisplay: false,
       reduceCount: 0,
       addCount: 0,
       currentPoint: 0,
@@ -84,13 +79,6 @@ export default {
   mounted: function () {
   },
   methods: {
-    openDialog: function () {
-      this.dialogDisplay = true;
-      var self = this;
-      setTimeout(function () {
-        self.dialogDisplay = null;
-      });
-    },
     tableRowClassName ({row, rowIndex}) {
       var tableRowList = this.changedItems;
       if (tableRowList[rowIndex].status === 'Add') {
@@ -99,13 +87,6 @@ export default {
         return 'successContent';
       }
       return '';
-    },
-    updateChangeItems (item) {
-      item.points = item.storypoints;
-      this.reduceCount += item.points;
-      this.changedItems.unshift(item);
-      this.currentPoint -= item.points;
-      this.currentData.points['red'] += item.points;
     },
     getDayStorySummary (day, group, todayObj, previousObj, type) {
       this.group = group;
@@ -117,16 +98,7 @@ export default {
       this.previousPoint = this.previousData.currentPoint;
 
       this.changedItems = todayObj.storyList;
-      var length = this.$root.summary.summary.length - 1;
-      if (day === length) {
-        this.showAddIcon = true;
-      } else {
-        this.showAddIcon = false;
-      }
     }
-  },
-  components: {
-    'add-point-dialog': AddDialogContent
   }
 };
 </script>
