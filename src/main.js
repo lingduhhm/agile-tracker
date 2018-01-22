@@ -23,15 +23,19 @@ new Vue({
   data: {
     eventHub: eventHub,
     sprintSelected: null,
+    allGroups: [],
     summary: null
   },
   methods: {
     querySummaryData: function (params) {
       var self = this;
       var sprintid = params._id;
-      this.axios.get('/api/v1/summary?sprintid=' + sprintid).then(function (summarydata) {
-        self.summary = summarydata.data.resData;
-        self.eventHub.$emit('sprintChanged', summarydata.data);
+      this.axios.get('/api/v1/getGroups?sprintid=' + sprintid).then(function (groupsData) {
+        self.allGroups = groupsData.data.resData;
+        self.axios.get('/api/v1/summary?sprintid=' + sprintid).then(function (summarydata) {
+          self.summary = summarydata.data.resData;
+          self.eventHub.$emit('sprintChanged', summarydata.data);
+        });
       });
     }
   },

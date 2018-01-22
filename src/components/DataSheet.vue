@@ -64,6 +64,9 @@ export default {
       });
     },
     getDaySummary: function (day, group, todayObj, previousObj) {
+      if (todayObj == null) {
+        return;
+      }
       this.day = day;
       this.groupName = group;
       var blockCount = 0;
