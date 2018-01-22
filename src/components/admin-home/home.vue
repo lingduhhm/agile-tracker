@@ -176,22 +176,21 @@
         var dateArray = [];
         var start = this.form.start || '';
         var end = this.form.end || '';
-        var getDate = function (datestr) {
-          var temp = datestr.split('-');
-          var date = new Date(temp[0], temp[1], temp[2]);
-          return date;
-        };
-        var startTime = getDate(start);
-        var endTime = getDate(end);
+        var startTime = new Date(start + ' 00:00:00');
+        var endTime = new Date(end + ' 00:00:00');
         while ((endTime.getTime() - startTime.getTime()) >= 0) {
           var year = startTime.getFullYear();
-          var month = startTime.getMonth().toString().length === 1 ? '0' + startTime.getMonth().toString() : startTime.getMonth();
+          var month = startTime.getMonth() + 1;
+          var monthStr = month + '';
+          if (month <= 10) {
+            monthStr = '0' + month;
+          }
           var day = startTime.getDate().toString().length === 1 ? '0' + startTime.getDate() : startTime.getDate();
           dateArray.push({
-            'value': year + '-' + month + '-' + day,
-            'label': year + '-' + month + '-' + day
+            'value': year + '-' + monthStr + '-' + day,
+            'label': year + '-' + monthStr + '-' + day
           });
-          startTime.setDate(startTime.getDate() + 1);
+          startTime.setTime(startTime.getTime() + 86400000);
         }
         return dateArray;
       }

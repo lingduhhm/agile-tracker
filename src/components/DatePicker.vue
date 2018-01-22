@@ -158,8 +158,6 @@ export default {
               } else {
                 cellItem.selected = false;
               }
-
-              console.log(cellItem.dateObj + ':' + startDateObj + ':' + endDateObj);
               if (cellItem.dateObj < startDateObj || cellItem.dateObj > endDateObj) {
                 cellItem.disabled = true;
               }
