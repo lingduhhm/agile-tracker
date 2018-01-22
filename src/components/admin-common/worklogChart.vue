@@ -139,8 +139,8 @@
           });
         });
       },
-      refresh: function () {
-        this.fetchData('y');
+      refresh: function (sprintinfo) {
+        this.fetchData('y', sprintinfo);
       },
       setData: function (originalData) {
         var data = originalData.resData ? originalData.resData.data : {};

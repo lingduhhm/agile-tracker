@@ -111,7 +111,7 @@
         });
       },
       refreshData: function () {
-        this.$refs.worklogChartRef.refresh();
+        this.$refs.worklogChartRef.refresh(this.sprintinfo);
       }
     },
     components: {
