@@ -9,6 +9,10 @@ module.exports = {
   env: {
     browser: true,
   },
+  "globals": {
+    "$": false,
+    "jQuery": false
+  },
   // https://github.com/standard/standard/blob/master/docs/RULES-en.md
   extends: 'standard',
   // required to lint *.vue files
