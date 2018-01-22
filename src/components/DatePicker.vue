@@ -17,13 +17,13 @@
     </div>
     <div class="calendarText">
       <div class="calendarRow">
-        <div class="calendarCell weekend">日</div>
-        <div class="calendarCell">一</div>
-        <div class="calendarCell">二</div>
-        <div class="calendarCell">三</div>
-        <div class="calendarCell">四</div>
-        <div class="calendarCell">五</div>
-        <div class="calendarCell weekend">六</div>
+        <div class="calendarCell weekend">Sun</div>
+        <div class="calendarCell">Mon</div>
+        <div class="calendarCell">Tue</div>
+        <div class="calendarCell">Wed</div>
+        <div class="calendarCell">Thu</div>
+        <div class="calendarCell">Fri</div>
+        <div class="calendarCell weekend">Sat</div>
       </div>
     </div>
     <div class="calendarBody">
@@ -115,7 +115,6 @@ export default {
     calculateMonthCalendar: function (year, month) {
       var startDateObj = null;
       var endDateObj = null;
-      console.log(':' + this.startDate + ':' + this.endDate + ':');
       if (this.startDate === '' || this.endDate === '' || this.startDate === null || this.endDate === null) {
         startDateObj = null;
         endDateObj = null;
@@ -196,7 +195,7 @@ export default {
     this.calculateMonthCalendar(this.displayYear, this.displayMonth);
   },
   mounted: function () {
-    $('.DatePicker .calendarRow .calendarCell').hover(function () {
+    $('.DatePicker .calendarBody .calendarRow .calendarCell').hover(function () {
       if ($(this).attr('celldisabled') !== 'true' && !$(this).hasClass('selected')) {
         $(this).addClass('hover');
       }
@@ -205,7 +204,7 @@ export default {
     });
   },
   updated: function () {
-    $('.DatePicker .calendarRow .calendarCell').hover(function () {
+    $('.DatePicker .calendarBody .calendarRow .calendarCell').hover(function () {
       if ($(this).attr('celldisabled') !== 'true' && !$(this).hasClass('selected')) {
         $(this).addClass('hover');
       }
@@ -294,29 +293,37 @@ export default {
   display: inline-block;
   width: calc( 100% - 40px );
   text-align: center;
+  font-size: 1.1rem;
+}
+.DatePicker .calendarText .calendarRow {
+  border-bottom: 1px solid rgb(235, 238, 245);
 }
 .DatePicker .calendarRow {
   width: 100%;
   display: flex;
-  border-bottom: 1px solid black;
-  padding: 2px 0px;
+  padding: 8px 0px;
 }
 .DatePicker .calendarRow .calendarCell {
   text-align: center;
   width: 14.2%;
-  min-height: 30px;
-  line-height: 30px;
+  min-height: 1rem;
+  line-height: 1rem;
   padding: 5px 0px;
+  margin: 0px 10px;
   margin-left: 2px;
-  border-radius: 20px;
+  border-radius: 1rem;
+  font-size: 0.8rem;
 }
-.DatePicker .calendarRow .weekend,
+.DatePicker .calendarRow .weekend {
+  color: #f26e75;
+}
 .DatePicker .calendarRow .disabled.weekend {
-  color: red;
+  color: #c8898c;
 }
 .DatePicker .calendarRow .selected {
   background-color: #409eff;
   opacity: 0.8;
+  color: black;
 }
 .DatePicker .calendarRow .disabled {
   color: #c0c4cc;
