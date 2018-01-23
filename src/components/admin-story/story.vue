@@ -37,8 +37,8 @@
         width="150">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row, 'edit')" type="text" size="small">Edit</el-button>
-          <el-button @click="handleClick(scope.row, 'delete')" type="text" size="small">Delete</el-button>
-          <el-button @click="handleClick(scope.row, 'add')" type="text" size="small">add</el-button>
+          <el-button @click="handleClick(scope.row, 'delete')" type="text" size="small" v-if="false">Delete</el-button>
+          <el-button @click="handleClick(scope.row, 'add')" type="text" size="small" v-if="false">add</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -117,7 +117,7 @@
       fetchData: function () {
         var that = this;
         var objId = this.$route.params.category;
-        this.axios.get('/admin/stories/' + objId)
+        this.axios.get('/admin/stories/' + objId + '?module=' + this.$root.module)
         .then(function (response) {
           if (response.data.status === 'success') {
             that.tableData = response.data.resData;
@@ -175,7 +175,7 @@
           .catch(function (err) {
             console.log(err);
             that.$message({
-              message: '数据获取失败！',
+              message: 'Data fetch failed!',
               type: 'error'
             });
           });
@@ -200,7 +200,7 @@
           .catch(function (err) {
             console.log(err);
             that.$message({
-              message: '数据获取失败！',
+              message: 'Data fetch failed!',
               type: 'error'
             });
           });
@@ -228,7 +228,7 @@
         .catch(function (err) {
           console.log(err);
           that.$message({
-            message: '数据获取失败！',
+            message: 'Data fetch failed!',
             type: 'error'
           });
         });

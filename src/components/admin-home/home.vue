@@ -108,16 +108,6 @@
           Total Day: {{sprintSelectedDaysCount}}<br/>
           <datepicker :dateSelected="selectedDays" :startDate="form.start" :endDate="form.end"></datepicker>
         </el-form-item>
-        <el-form-item label="Groups">
-          <el-select v-model="form.sprintgroups" multiple placeholder="Select">
-            <el-option
-              v-for="group in groups"
-              :key="group._id"
-              :label="group.groupname"
-              :value="group._id">
-            </el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="JQL">
           <el-input v-model="form.jql"></el-input>
         </el-form-item>
@@ -207,24 +197,6 @@
             that.menu = response.data.resData;
             that.menuMap = that.jsonfy(that.menu);
             this.form = this.$route.params.category ? this.menuMap[this.$route.params.category] : {};
-          } else {
-            that.$message({
-              message: response.data.resMsg,
-              type: response.data.status
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          that.$message({
-            message: 'Data fetch failed!',
-            type: 'error'
-          });
-        });
-
-        this.axios.get('/admin/groups/' + this.$root.module).then((response) => {
-          if (response.data.status === 'success') {
-            that.groups = response.data.resData;
           } else {
             that.$message({
               message: response.data.resMsg,
