@@ -67,11 +67,6 @@
       width="30%" 
       center>
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="Module">
-          <el-select v-model="form.module" placeholder="module">
-            <el-option label="CDP" value="CDP"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="Release">
           <el-input v-model="form.release"></el-input>
         </el-form-item>
