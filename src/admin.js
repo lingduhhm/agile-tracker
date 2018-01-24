@@ -18,7 +18,7 @@ new Vue({
   template: '<App/>',
   components: { App },
   data: {
-    module: 'CDP',
+    module: window.localStorage.getItem('module'),
     eventHub: eventHub
   }
 });

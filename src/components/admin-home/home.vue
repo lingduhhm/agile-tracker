@@ -28,8 +28,8 @@
       <el-container>
         <el-header style="font-size: 12px; background: #e4e4e4; padding: 20px;">
           <el-row>
-            <el-col :span="1">
-              <span style='font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; color: #409EFF; font-size: 18px;'>{{module}}</span>
+            <el-col :span="2">
+              <span style='font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; color: #409EFF; font-size: 18px;'>{{$root.module}}</span>
             </el-col>
             <el-col :span="2" v-if="$route.query.status!='configuration'">
               <el-dropdown style="float: right;"  @command="action">
@@ -42,6 +42,9 @@
                   <el-dropdown-item command="proceed">Proceed</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
+            </el-col>
+            <el-col :span="1" :offset="19">
+              <el-button icon="el-icon-back" size="mini" @click="backToMainBoard">Back</el-button>
             </el-col>
             <template v-if="sprintObjId">
               <el-col :span="2" :offset="1">
@@ -135,7 +138,6 @@
           workdays: []
         },
         sprintObjId: '',
-        module: this.$root.module,
         groups: [],
         sprintSelectedDaysCount: 0
       };
@@ -266,6 +268,9 @@
             });
           });
         }
+      },
+      backToMainBoard () {
+        window.location.href = '/';
       },
       actionExec () {
         var that = this;
