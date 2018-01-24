@@ -136,6 +136,9 @@ VUEChart.prototype.init = function (width, height) {
     self.fireEvent('chartClicked', {ele: this, data: this.pointdata});
   });
 };
+VUEChart.prototype.destory = function () {
+  $(this.ele).empty();
+};
 VUEChart.prototype.clearChartArea = function () {
   $(this.ele).find('.chart .chartArea').empty();
 };
