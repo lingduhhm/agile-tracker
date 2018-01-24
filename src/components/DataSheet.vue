@@ -29,8 +29,6 @@
         </el-tab-pane>
       </el-tabs>
     </el-main>
-    <div @click="openDialog">opendialog</div>
-    <sprint-select-dialog :dialogDisplay="dialogDisplay"></sprint-select-dialog>
   </div>
 </template>
 

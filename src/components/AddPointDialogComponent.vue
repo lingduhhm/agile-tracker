@@ -7,8 +7,9 @@
         width="30%"
         @close="handleClose"
         class="addPointDialog">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="grid-content">
-          <el-form-item prop="biSelected" label="BI Number" class="addPointDialogContent">
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="grid-content"
+        :label-position="labelPosition">
+          <el-form-item prop="biSelected" label="BI Number:" class="addPointDialogContent">
             <el-row>
               <el-col :span="15">
               <el-select v-model="ruleForm.biSelected" filterable allow-create placeholder="Please select BI">
@@ -26,7 +27,7 @@
               <el-col :span="4"><div>{{selectedPointsLabel}}</div></el-col>
             </el-row>
           </el-form-item>
-          <el-form-item prop="statusSelected" class="addPointDialogContent">
+          <el-form-item prop="statusSelected" class="addPointDialogContent" label="BI Change:">
             <el-radio-group v-model="ruleForm.statusSelected">
               <el-radio :label="status.key" border size="medium" v-for="status in statusList" :key="status.key"
               :disabled="status.groupId != group">{{status.label}}
@@ -45,12 +46,6 @@
 
 <script>
 export default {
-  props: {
-    'dialogDisplay': {
-      type: Boolean,
-      default: true
-    }
-  },
   data () {
     return {
       biSelectedURL: '',
@@ -67,6 +62,7 @@ export default {
         key: 'Done',
         label: 'Test Complete'
       }],
+      labelPosition: 'left',
       ruleForm: {
         biSelected: '',
         statusSelected: ''
@@ -101,19 +97,35 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           var newItem = {
-            storykey: self.ruleForm.biSelected,
-            storyname: self.selectedBi.name,
+            storykey: 'CDP-2222', // self.ruleForm.biSelected,
+            storyname: 'test add story', // self.selectedBi.name,
             storypoints: self.selectedBi.points,
             issuetype: 'story',
-            summary: self.selectedBi.summary,
-            sprint: self.selectedBi.sprint,
+            summary: 'test add story', // self.selectedBi.summary,
+            sprint: '5a54863a5170323f38f3432d', // self.selectedBi.sprint,
             ingoup: self.group,
-            changeinsprintday: self.getSprintFormatDay(),
-            status: self.ruleForm.statusSelected
+            changeinsprintday: '2018-01-17', // self.getSprintFormatDay(),
+            status: 'Ready for testing' // self.ruleForm.statusSelected
           };
-          console.log(newItem);
+          console.log('newItem:' + newItem);
+          this.axios.post('/api/v1/addStory', newItem).then((response) => {
+            if (response.data.status === 'success') {
+              this.dialogVisible = false;
+              this.$emit('newItemAdded', newItem);
+            } else {
+              self.$message({
+                message: response.data.resMsg,
+                type: response.data.status
+              });
+            }
+          }).catch((err) => {
+            console.log(err);
+            self.$message({
+              message: '数据保存失败！',
+              type: 'error'
+            });
+          });
           alert('submit!');
-          this.dialogVisible = false;
           // self.$root.eventHub.$emit('sprintDataChanged', newItem);
         } else {
           console.log('error submit!!');
@@ -143,12 +155,6 @@ export default {
           this.selectedPointsLabel = this.selectedBi.points + ' Points';
         }
       }
-    },
-    dialogDisplay: function () {
-      if (this.dialogDisplay == null) {
-        return;
-      }
-      this.dialogVisible = this.dialogDisplay;
     }
   }
 };

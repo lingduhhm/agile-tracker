@@ -4,8 +4,10 @@
 
 <template>
   <div class="mainPage">
-    <div class="toDashboard">
+    <div class="toDashboard">     
+      <el-button type="success" plain icon="el-icon-edit" @click="openDialog">Change Sprint</el-button>
       <el-button type="primary" plain icon="el-icon-menu" @click="toDashbord">Dashboard</el-button>
+      <sprint-select-dialog :dialogDisplay="dialogDisplay"></sprint-select-dialog>
     </div>
     <el-container>
       <el-header>
@@ -28,11 +30,13 @@
 
 <script>
 import VUEChart from '@/chartjs/VUEChart.js';
+import SprintDialogContent from '@/components/SprintSelectComponent';
 
 export default {
   name: 'ChartMainPage',
   data () {
     return {
+      dialogDisplay: false,
       chart: null,
       allPoints: [],
       allLines: [],
@@ -40,6 +44,13 @@ export default {
     };
   },
   methods: {
+    openDialog: function () {
+      this.dialogDisplay = true;
+      var self = this;
+      setTimeout(function () {
+        self.dialogDisplay = null;
+      });
+    },
     getLatestSummaryData: function () {
       var allGroups = this.$root.sprintSelected.sprintgroups;
       var allSummaryLength = this.allData.summary.length;
@@ -231,6 +242,7 @@ export default {
     this.prepareChart();
   },
   components: {
+    'sprint-select-dialog': SprintDialogContent
   }
 };
 </script>
