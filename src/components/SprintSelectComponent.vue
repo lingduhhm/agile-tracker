@@ -5,15 +5,41 @@
         title="Select Sprint"
         :visible.sync="dialogVisible"
         width="30%"
-        :before-close="handleClose"
-        class="addPointDialog">
-        <el-alert style="margin: -20px 0px 20px 0px" title="The issue number and owner are required!" 
-        type="warning" v-show="isShowAlert" @close="isShowAlert=false"></el-alert>
-        <el-row>
-          <el-col :span="24" v-for='sprintItem in sprintList' :key='sprintItem._id'>
-            <div @click='selectSprint(sprintItem)'>{{sprintItem.release}} - {{sprintItem.sprint}}</div>
-          </el-col>
-        </el-row>
+        :show-close="false"
+        :close-on-click-modal="false"
+        center>
+        <span>
+          <el-alert style="margin: -20px 0px 20px 0px" title="The Module are required!" 
+        type="warning" v-show="isShowAlert" @close="isShowAlert=false">
+          </el-alert>
+        </span>
+        <span>
+          <el-form ref="form" :model="form" label-width="80px">
+            <el-form-item label="Module">
+              <el-select v-model="form.module" filterable placeholder="Select">
+                <el-option 
+                  v-for="moduletItem in moduleList"
+                  :key="moduletItem._id"
+                  :label="moduletItem.key"
+                  :value="moduletItem.key">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="Sprint">
+              <el-select v-model="form.sprint" placeholder="Select" :disabled="selectedSprintList.length==0">
+                <el-option 
+                  v-for="sprintItem in selectedSprintList"
+                  :key="sprintItem.id" 
+                  :label="sprintItem.value" 
+                  :value="sprintItem.id">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </span>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click='selectSprint'>Confirm</el-button>
+        </span>
       </el-dialog>
     </div>
   </div>
@@ -29,40 +55,82 @@ export default {
   },
   data () {
     return {
-      biSelected: '',
-      ownerSelected: '',
       isShowAlert: false,
       sprintList: [],
+      moduleList: [],
       sprintSelected: '',
-      dialogVisible: false
+      dialogVisible: false,
+      isDisabled: true,
+      form: {
+        module: [],
+        sprint: []
+      }
     };
   },
   methods: {
-    handleClose: function () {},
-    selectSprint: function (sprintItem) {
-      this.sprintItem = sprintItem;
-      if (this.$root.eventHub) {
-        this.$root.eventHub.$emit('sprintSelected', sprintItem);
-      }
-      this.dialogVisible = false;
-    },
     queryData: function () {
       var self = this;
       this.axios.get('/api/v1/sprints').then(function (data) {
-        console.log(data);
         self.sprintList = data.data.resData;
+        self.moduleList = data.data.moduleList;
       });
+    },
+    selectSprint: function () {
+      if (this.form.module && this.form.sprint) {
+        this.isShowAlert = false;
+        this.dialogVisible = false;
+        window.localStorage.module = this.form.module;
+        window.localStorage.sprint = this.form.sprint;
+        var selectedSprint = {};
+        for (var i = 0; i < this.sprintList.length; i++) {
+          if (this.sprintList[i]._id === this.form.sprint) {
+            selectedSprint = this.sprintList[i];
+            break;
+          }
+        }
+        if (this.$root.eventHub) {
+          this.$root.eventHub.$emit('sprintSelected', selectedSprint);
+        };
+      } else if (this.form.module) {
+        window.localStorage.module = this.form.module;
+        window.localStorage.sprint = '';
+        window.location.href = '/admin#/dashboard';
+      } else {
+        this.isShowAlert = true;
+      }
     }
   },
   created: function () {
-    this.dialogVisible = true;
+    if (!window.localStorage.module || !window.localStorage.sprint) {
+      if (window.localStorage.module) {
+        this.form.module = window.localStorage.module;
+      }
+      this.dialogVisible = true;
+    } else {
+      this.form.module = window.localStorage.module;
+      this.form.sprint = window.localStorage.sprint;
+    };
     this.queryData();
   },
   mounted: function () {
   },
+  computed: {
+    selectedSprintList () {
+      var arr = [];
+      for (var i = 0; i < this.sprintList.length; i++) {
+        if (this.sprintList[i].module === this.form.module) {
+          arr.push({
+            id: this.sprintList[i]._id,
+            value: this.sprintList[i].release + ' - ' + this.sprintList[i].sprint
+          });
+        } else {
+          this.form.sprint = '';
+        }
+      }
+      return arr;
+    }
+  },
   watch: {
-    biSelected: function () {
-    },
     dialogDisplay: function () {
       if (this.dialogDisplay == null) {
         return;
