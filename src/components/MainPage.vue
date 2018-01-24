@@ -76,6 +76,7 @@ export default {
       return returnSummary;
     },
     updateData: function (response) {
+      this.chart.clearChartArea();
       this.allData = response.resData;
       var summary = response.resData.summary;
       var constances = response.resData.constances;

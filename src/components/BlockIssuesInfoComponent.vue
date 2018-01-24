@@ -6,9 +6,8 @@
           <span class="pointInfoTitle">Block issues</span>
         </el-col>
         <el-col :span="6">
-          <i class="el-icon-circle-plus-outline addIssueIcon" @click="openDialog"></i>
-          <add-block-dialog :dialogDisplay="dialogDisplay" :blockIssues="issues" 
-          @blockIssueAdded="addBlockFromDialog"></add-block-dialog>
+          <i class="el-icon-circle-plus-outline addIssueIcon"  v-show="isShowAction" @click="openDialog"></i>
+          <add-block-dialog :dialogDisplay="dialogDisplay" :blockIssues="issues"></add-block-dialog>
         </el-col>
       </el-row>
     </el-header>
@@ -28,7 +27,7 @@
           <el-col :span="12">
             <span class="pointInfoTitle">Today Blockers：</span>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="10">
             <span class="textDangerColor">{{getCurrentBlockersNum}}</span>
           </el-col>
         </el-row>
@@ -36,7 +35,7 @@
           <el-col :span="12">
             <span class="pointInfoTitle">Last Day Blockers：</span>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="10">
             <span class="textDangerColor">{{getPreviousBlockersnum}}</span>
           </el-col>
         </el-row>
@@ -52,18 +51,14 @@
           </el-switch>
         </el-col>
         </el-row>
-        <el-table :data="filterIssues"
-       :show-header=false 
-       :row-class-name="tableRowClassName"
-        max-height="300" 
-        style="width: 100%">
+        <el-table :data="filterIssues" :show-header=false  :row-class-name="tableRowClassName"   max-height="300"  style="width: 100%">
         <el-table-column prop="issuekey" style="width: 30%">
         </el-table-column>
         <el-table-column prop="follower" style="width: 30%">
         </el-table-column>
         <el-table-column prop="status">
           <template slot-scope="scope">
-            <el-popover popper-class="popoverMinWidth" ref="popoverStatus" trigger="click">
+            <el-popover popper-class="popoverMinWidth" ref="popoverStatus" trigger="click" :disabled = "!isShowAction">
               <el-row>
                 <el-button type="text" v-show="scope.row.status !== 'Resolved'" @click="updateIssueStatus(scope.row, 'Resolved')">Resolved</el-button>
               </el-row>
@@ -71,7 +66,7 @@
                 <el-button type="text" v-show="scope.row.status !== 'Open'" @click="updateIssueStatus(scope.row, 'Open')">Blocking</el-button>
               </el-row>
               <el-row>
-                <el-button type="text" v-show="scope.row.status !== 'Followup'" @click="updateIssueStatus(scope.row, 'Followup')">Followup</el-button>
+                <el-button type="text" @click="updateIssueStatus(scope.row, 'Followup')">Followup</el-button>
               </el-row>
             </el-popover>
             <span v-popover:popoverStatus>{{scope.row.status}}</span>
@@ -88,6 +83,7 @@ export default {
   components: { 'add-block-dialog': AddDialogContent },
   data () {
     return {
+      isShowAction: true,
       issues: [],
       previousIssues: [],
       currentblockersnum: 0,
@@ -97,10 +93,6 @@ export default {
     };
   },
   methods: {
-    updateBlockData (data) {
-      var dayLength = data.resData.summary.length - 1;
-      this.$root.eventHub.$emit('getDaySummary', dayLength, 'QA', data.resData.summary[dayLength], data.resData.summary[dayLength - 1]);
-    },
     tableRowClassName ({row, rowIndex}) {
       if (this.issues) {
         if (this.issues[rowIndex].status === 'Open') {
@@ -112,7 +104,40 @@ export default {
       return '';
     },
     updateIssueStatus (row, status) {
-      row.status = status;
+  //     var formData = req.body;
+  // var sprintid = formData.sprintid;
+  // var issueid = formData.issueid; // The Object id for the issue
+  // var changereason = formData.changereason; // reason of the change
+  // var changefield = formData.changefield; // field name
+  // var dataafterchange = formData.dataafterchange;
+  // var changeinsprintday = formData.changeinsprintday; // 10
+      var sprint = this.$root.sprintSelected._id;
+      var changeinsprintday = this.$root.summary.summary.length - 1;
+      var updateInfo = {
+        sprintid: sprint,
+        issueid: row._id,
+        changefield: 'status',
+        dataafterchange: status,
+        changeinsprintday: changeinsprintday
+      };
+      var self = this;
+      this.axios.post('/api/v1/updateIssue', updateInfo).then(function (response) {
+        if (response.data.status === 'success') {
+          self.$root.eventHub.$emit('sprintDataChanged');
+          // row.status = status;
+        } else {
+          self.$message({
+            message: response.data.resMsg,
+            type: 'error'
+          });
+        }
+      }).catch(function (error) {
+        console.log(error);
+        self.$message({
+          message: 'Server Error',
+          type: 'error'
+        });
+      });
     },
     changeShowAll: function () {
       this.isShowAll = !this.isShowAll;
@@ -124,11 +149,14 @@ export default {
         self.dialogDisplay = null;
       });
     },
-    addBlockFromDialog: function (data) {
-      this.issues.unshift(data);
-    },
     getDayBlockSummary: function (day, clickedGroup, todayData, previousData) {
       console.log(arguments);
+      var dayLength = this.$root.summary.summary.length - 1;
+      if (day === dayLength) {
+        this.isShowAction = true;
+      } else {
+        this.isShowAction = false;
+      }
       this.issues = todayData.groups[clickedGroup].blocker || [];
       this.previousIssues = previousData.groups[clickedGroup].blocker || [];
     }
@@ -219,7 +247,7 @@ export default {
   },
   created: function () {
     if (this.$root.eventHub) {
-      this.$root.eventHub.$on('sprintChanged', this.updateBlockData);
+      console.log(this.$route);
       this.$root.eventHub.$on('getDaySummary', this.getDayBlockSummary);
     }
   },
