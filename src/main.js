@@ -37,6 +37,18 @@ new Vue({
           self.eventHub.$emit('sprintChanged', summarydata.data);
         });
       });
+    },
+    getDayDataDay: function (day) {
+      var summaryReturnItem = null;
+      for (var i = 0; i < this.summary.summary.length; i++) {
+        var summaryItem = this.summary.summary[i];
+        var summaryday = summaryItem.day;
+        if (summaryday === day) {
+          summaryReturnItem = summaryItem;
+          break;
+        }
+      }
+      return summaryReturnItem;
     }
   },
   created: function () {

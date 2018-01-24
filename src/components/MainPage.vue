@@ -190,6 +190,7 @@ export default {
       let constances = evt.data.pointdata.constances;
       let clickedGroup = evt.data.pointdata.group;
       let point = evt.data.point.y;
+      var day = evt.data.point.x;
       let x = evt.data.point.positionX;
       let y = evt.data.point.positionY;
       let blocker = evt.data.pointdata.summarydata.groups[clickedGroup]['blocker'];
@@ -213,7 +214,7 @@ export default {
           }
         }
       }
-      let displayContent = '<div>' + clickedGroup + '</div><div>Point:' + point + '</div><div>Blocker:' + blockerCount + '&nbsp;&nbsp;Followup:' + followupCount + '</div>';
+      let displayContent = '<div>Day ' + day + ': ' + clickedGroup + '</div><div>Point: ' + point + '</div><div>Blocker: ' + blockerCount + '&nbsp;&nbsp;Followup: ' + followupCount + '</div>';
       console.log(displayContent);
       chart.displayPopover(x, y, displayContent);
     });
