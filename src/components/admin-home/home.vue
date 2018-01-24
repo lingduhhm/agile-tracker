@@ -275,7 +275,7 @@
       actionExec () {
         var that = this;
         if (this.form._id) {
-          this.axios.put('/admin/sprint', this.form).then((response) => {
+          this.axios.put('/admin/sprint?module=' + this.$root.module, this.form).then((response) => {
             that.$message({
               message: response.data.resMsg,
               type: response.data.status
@@ -295,7 +295,7 @@
           });
         } else {
           this.form.module = this.$root.module;
-          this.axios.post('/admin/sprint', this.form).then((response) => {
+          this.axios.post('/admin/sprint?module=' + this.$root.module, this.form).then((response) => {
             that.$message({
               message: response.data.resMsg,
               type: response.data.status

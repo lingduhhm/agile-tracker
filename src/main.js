@@ -29,6 +29,8 @@ new Vue({
   methods: {
     querySummaryData: function (params) {
       var self = this;
+      this.summary = null;
+      this.allGroups = [];
       var sprintid = params._id;
       this.axios.get('/api/v1/getGroups?sprintid=' + sprintid).then(function (groupsData) {
         self.allGroups = groupsData.data.resData;
@@ -37,6 +39,18 @@ new Vue({
           self.eventHub.$emit('sprintChanged', summarydata.data);
         });
       });
+    },
+    getDayDataDay: function (day) {
+      var summaryReturnItem = null;
+      for (var i = 0; i < this.summary.summary.length; i++) {
+        var summaryItem = this.summary.summary[i];
+        var summaryday = summaryItem.day;
+        if (summaryday === day) {
+          summaryReturnItem = summaryItem;
+          break;
+        }
+      }
+      return summaryReturnItem;
     }
   },
   created: function () {

@@ -136,6 +136,12 @@ VUEChart.prototype.init = function (width, height) {
     self.fireEvent('chartClicked', {ele: this, data: this.pointdata});
   });
 };
+VUEChart.prototype.clearChartArea = function () {
+  $(this.ele).find('.chart .chartArea').empty();
+};
+VUEChart.prototype.clearAllPoint = function () {
+  $(this.ele).find('.chart .chartArea').empty();
+};
 VUEChart.prototype.addPopoverContainer = function () {
   if ($('.chart .chartArea .popoverContainer').length === 0) {
     var popupContainer = $('<div class="popoverContainer" style="position:absolute;display:none;"><div class="popoverContent">test1818181818</div><div class="calloutpoint"></div></div>');

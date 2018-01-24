@@ -53,6 +53,26 @@
           <el-table-column prop="status" ></el-table-column>
         </el-table>
       </div>
+      <div class="workingInProgressItem">
+        <el-row type="flex" class="row-bg" justify="space-around">
+          <el-col :span="10">
+            <span class="pointInfoTitle">Processing Items  ( {{inProgressItems.length}} )</span>
+          </el-col>
+          <el-col :span="8">
+            <span>Show</span>
+            <el-switch
+              v-model="isShowAllProcessingItem"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+            </el-switch>
+          </el-col>
+        </el-row>
+        <el-table :data="inProgressItems" class="changeItemTab" style="width: 100%" :show-header="false" v-show="isShowAllProcessingItem">
+          <el-table-column prop="storykey" width="120"></el-table-column>
+          <el-table-column prop="points" width="50"></el-table-column>
+          <el-table-column prop="status" ></el-table-column>
+        </el-table>
+      </div>
     </el-main>
   </div>
 </template>
@@ -68,7 +88,9 @@ export default {
       previousPoint: 0,
       changedItems: [],
       currentData: {},
-      previousData: {}
+      previousData: {},
+      inProgressItems: [],
+      isShowAllProcessingItem: false
     };
   },
   created: function () {
@@ -81,7 +103,7 @@ export default {
   methods: {
     tableRowClassName ({row, rowIndex}) {
       var tableRowList = this.changedItems;
-      if (tableRowList[rowIndex].status === 'Add') {
+      if (tableRowList[rowIndex] && tableRowList[rowIndex].status === 'Add') {
         return 'blockContent';
       } else if (tableRowList[rowIndex].status === 'Ready for testing') {
         return 'successContent';
@@ -97,7 +119,95 @@ export default {
       this.currentPoint = this.currentData.currentPoint;
       this.previousPoint = this.previousData.currentPoint;
 
-      this.changedItems = todayObj.storyList;
+      // this.changedItems = todayObj.storyList;
+      this.getChangedItems(day, group, todayObj);
+      this.getInProgressItems(todayObj, group);
+    },
+    prepareDataForGroupWorkingStatus: function () {
+      var groups = this.$root.allGroups;
+      var groupWorkingStatusMap = {};
+      for (let i = 0; i < groups.length; i++) {
+        let groupItem = groups[i];
+        let groupName = groupItem.groupname;
+        let groupWorkingStatus = groupItem.groupworkingstatus;
+        if (groupWorkingStatusMap[groupName] === undefined) {
+          groupWorkingStatusMap[groupName] = {};
+        }
+        for (let j = 0; j < groupWorkingStatus.length; j++) {
+          let groupWorkingStatusText = groupWorkingStatus[j];
+          groupWorkingStatusMap[groupName][groupWorkingStatusText] = true;
+        }
+      }
+      return groupWorkingStatusMap;
+    },
+    getInProgressItems: function (todayObj, group) {
+      var inProgressItems = [];
+      var todayUserStory = todayObj.storyList;
+      var groupWorkingAvailability = this.prepareDataForGroupWorkingStatus();
+      for (let i = 0; i < todayUserStory.length; i++) {
+        let userStoryItem = todayUserStory[i];
+        let status = userStoryItem.status;
+        if (groupWorkingAvailability[group] !== null && groupWorkingAvailability[group][status] !== undefined) {
+          inProgressItems.push(userStoryItem);
+        }
+      }
+      this.inProgressItems = inProgressItems;
+    },
+    getChangedItems: function (day, group, todayObj) {
+      var previousDay = day;
+      if (day > 0) {
+        previousDay = day - 1;
+      } else {}
+      var previousDayObj = this.$root.getDayDataDay(previousDay);
+
+      var todayUserStory = todayObj.storyList;
+      var previousUserStory = previousDayObj.storyList;
+      var added = [];
+      var changed = [];
+      for (let i = 0; i < todayUserStory.length; i++) {
+        let todayItem = todayUserStory[i];
+        let todayid = todayItem._id;
+        let isfound = false;
+        let todayGroups = todayItem.ingroup;
+        for (let j = 0; j < previousUserStory.length; j++) {
+          let prevItem = previousUserStory[j];
+          let previd = prevItem._id;
+          if (todayid === previd) {
+            isfound = true;
+            break;
+          }
+        }
+        let isProperGroup = false;
+        for (let k = 0; k < todayGroups.length; k++) {
+          var groupItem = todayGroups[k];
+          var groupname = groupItem.groupname;
+          if (groupname === group) {
+            isProperGroup = true;
+          }
+        }
+        if (!isfound && isProperGroup) {
+          added.push(todayItem);
+        }
+      }
+      for (let i = 0; i < previousUserStory.length; i++) {
+        let prevItem = previousUserStory[i];
+        let previd = prevItem._id;
+        let prevstatus = prevItem.status;
+        let isfound = false;
+        for (let j = 0; j < todayUserStory.length; j++) {
+          let todayItem = todayUserStory[j];
+          let todayid = todayItem._id;
+          let todaystatus = todayItem.status;
+          if (todayid === previd && prevstatus !== todaystatus) {
+            isfound = true;
+            break;
+          }
+        }
+        if (isfound) {
+          changed.push(prevItem);
+        }
+      }
+      this.changedItems = added.concat(changed);
     }
   }
 };
@@ -106,14 +216,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
 @import '../css/globalDefine';
-.dataSheet {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: stretch;
-}
-.dataSheet > div {
-  flex-grow: 1;
-  flex: flex-grow;
+.changeItemTab {
+  border-bottom: 1px solid @borderColor;
 }
 header.pointStatus {
   line-height: 25px;
@@ -128,16 +232,17 @@ header.pointStatus {
 }
 .pointStatus,
 .pointChangedHis,
-.pointChangedItem{
+.pointChangedItem,
+.workingInProgressItem {
   line-height: 40px;
   border-bottom: 1px solid @borderColor;
 }
-.pointChangedItem {
+.pointChangedItem,
+.workingInProgressItem {
   border: none;
 }
-.pointInfoTitle{
-  display: block;
-  font-size: 14px;
+.pointInfoTitle {
+  font-size: 0.9rem;
   font-weight: 600;
   text-align: left;
 }
