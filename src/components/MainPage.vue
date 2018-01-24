@@ -76,6 +76,7 @@ export default {
       return returnSummary;
     },
     updateData: function (response) {
+      this.chart.clearChartArea();
       this.allData = response.resData;
       var summary = response.resData.summary;
       var constances = response.resData.constances;
@@ -114,7 +115,7 @@ export default {
       this.chart.renderBar();
       this.chart.reScaleChart();
       for (let group in initialPoints) {
-        lines = this.chart.addAllLine(group);
+        lines = lines.concat(this.chart.addAllLine(group));
       }
       for (i = 0; i < lines.length; i++) {
         var line = lines[i];
@@ -127,8 +128,7 @@ export default {
           if (groupBlocker != null && groupBlocker.length > 0) {
             for (var j = 0; j < groupBlocker.length; j++) {
               var groupBlockerItem = groupBlocker[j];
-              console.log(groupBlockerItem);
-              if (groupBlockerItem.status !== issueResovledStatus) {
+              if (groupBlockerItem.status !== issueResovledStatus && lineEndPoint.extraData.group === groupid) {
                 console.log('we have block issue at sprint day:' + i);
                 ifLineBlock = true;
                 break;

@@ -29,6 +29,8 @@ new Vue({
   methods: {
     querySummaryData: function (params) {
       var self = this;
+      this.summary = null;
+      this.allGroups = [];
       var sprintid = params._id;
       this.axios.get('/api/v1/getGroups?sprintid=' + sprintid).then(function (groupsData) {
         self.allGroups = groupsData.data.resData;

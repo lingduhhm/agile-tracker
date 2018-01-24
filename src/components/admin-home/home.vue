@@ -28,8 +28,8 @@
       <el-container>
         <el-header style="font-size: 12px; background: #e4e4e4; padding: 20px;">
           <el-row>
-            <el-col :span="1">
-              <span style='font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; color: #409EFF; font-size: 18px;'>{{module}}</span>
+            <el-col :span="2">
+              <span style='font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; color: #409EFF; font-size: 18px;'>{{$root.module}}</span>
             </el-col>
             <el-col :span="2" v-if="$route.query.status!='configuration'">
               <el-dropdown style="float: right;"  @command="action">
@@ -42,6 +42,9 @@
                   <el-dropdown-item command="proceed">Proceed</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
+            </el-col>
+            <el-col :span="1" :offset="19">
+              <el-button icon="el-icon-back" size="mini" @click="backToMainBoard">Back</el-button>
             </el-col>
             <template v-if="sprintObjId">
               <el-col :span="2" :offset="1">
@@ -67,11 +70,6 @@
       width="30%" 
       center>
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="Module">
-          <el-select v-model="form.module" placeholder="module">
-            <el-option label="CDP" value="CDP"></el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="Release">
           <el-input v-model="form.release"></el-input>
         </el-form-item>
@@ -108,16 +106,6 @@
           Total Day: {{sprintSelectedDaysCount}}<br/>
           <datepicker :dateSelected="selectedDays" :startDate="form.start" :endDate="form.end"></datepicker>
         </el-form-item>
-        <el-form-item label="Groups">
-          <el-select v-model="form.sprintgroups" multiple placeholder="Select">
-            <el-option
-              v-for="group in groups"
-              :key="group._id"
-              :label="group.groupname"
-              :value="group._id">
-            </el-option>
-          </el-select>
-        </el-form-item>
         <el-form-item label="JQL">
           <el-input v-model="form.jql"></el-input>
         </el-form-item>
@@ -150,7 +138,6 @@
           workdays: []
         },
         sprintObjId: '',
-        module: this.$root.module,
         groups: [],
         sprintSelectedDaysCount: 0
       };
@@ -207,24 +194,6 @@
             that.menu = response.data.resData;
             that.menuMap = that.jsonfy(that.menu);
             this.form = this.$route.params.category ? this.menuMap[this.$route.params.category] : {};
-          } else {
-            that.$message({
-              message: response.data.resMsg,
-              type: response.data.status
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          that.$message({
-            message: 'Data fetch failed!',
-            type: 'error'
-          });
-        });
-
-        this.axios.get('/admin/groups/' + this.$root.module).then((response) => {
-          if (response.data.status === 'success') {
-            that.groups = response.data.resData;
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -300,10 +269,13 @@
           });
         }
       },
+      backToMainBoard () {
+        window.location.href = '/';
+      },
       actionExec () {
         var that = this;
         if (this.form._id) {
-          this.axios.put('/admin/sprint', this.form).then((response) => {
+          this.axios.put('/admin/sprint?module=' + this.$root.module, this.form).then((response) => {
             that.$message({
               message: response.data.resMsg,
               type: response.data.status
@@ -323,7 +295,7 @@
           });
         } else {
           this.form.module = this.$root.module;
-          this.axios.post('/admin/sprint', this.form).then((response) => {
+          this.axios.post('/admin/sprint?module=' + this.$root.module, this.form).then((response) => {
             that.$message({
               message: response.data.resMsg,
               type: response.data.status
