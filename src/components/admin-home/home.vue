@@ -28,6 +28,9 @@
       <el-container>
         <el-header style="font-size: 12px; background: #e4e4e4; padding: 20px;">
           <el-row>
+            <el-col :span="1">
+              <el-button icon="el-icon-back" type="primary" @click="backToMainBoard" size="mini" style="padding: 5px 15px;" plain></el-button>
+            </el-col>
             <el-col :span="2">
               <span style='font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; color: #409EFF; font-size: 18px;'>{{$root.module}}</span>
             </el-col>
@@ -42,9 +45,6 @@
                   <el-dropdown-item command="proceed">Proceed</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-            </el-col>
-            <el-col :span="1" :offset="19">
-              <el-button icon="el-icon-back" size="mini" @click="backToMainBoard">Back</el-button>
             </el-col>
             <template v-if="sprintObjId">
               <el-col :span="2" :offset="1">
@@ -199,6 +199,9 @@
               message: response.data.resMsg,
               type: response.data.status
             });
+            if (response.data.redirect) {
+              window.location.href = response.data.redirect;
+            }
           }
         })
         .catch((err) => {
@@ -304,6 +307,7 @@
               that.menu = response.data.resData;
               that.menuMap = that.jsonfy(that.menu);
               that.dialogVisible = false;
+              that.$refs.sprintPage.fetchData();
             }
           })
           .catch((err) => {
@@ -317,6 +321,10 @@
       }
     },
     created: function () {
+      console.log('created');
+    },
+    mounted: function () {
+      console.log('mounted');
       this.handleSelect();
       this.fetchData();
       if (this.$root.eventHub) {
