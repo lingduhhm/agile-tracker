@@ -166,7 +166,7 @@
       handleEdit: function (data) {
         var that = this;
         if (this.form._id) {
-          this.axios.put('/admin/groups', this.form)
+          this.axios.put('/admin/groups?module=' + this.$root.module, this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
               that.groupList = response.data.resData;
@@ -191,7 +191,7 @@
           });
         } else {
           this.form.module = this.$root.module;
-          this.axios.post('/admin/groups', this.form)
+          this.axios.post('/admin/groups?module=' + this.$root.module, this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
               that.groupList = response.data.resData;

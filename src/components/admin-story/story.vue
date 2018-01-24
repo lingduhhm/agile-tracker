@@ -156,7 +156,7 @@
       handleEdit: function (data) {
         var that = this;
         if (this.form._id) {
-          this.axios.put('/admin/stories', this.form)
+          this.axios.put('/admin/stories?module=' + this.$root.module, this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
               that.tableData = response.data.resData;
@@ -181,7 +181,7 @@
           });
         } else {
           this.form.sprint = this.$route.params.category;
-          this.axios.post('/admin/stories', this.form)
+          this.axios.post('/admin/stories?module=' + this.$root.module, this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
               that.tableData = response.data.resData;
@@ -209,7 +209,7 @@
 
       handleDelete: function (data) {
         var that = this;
-        this.axios.delete('/admin/stories?objid=' + this.deleteObjId + '&sprintid=' + this.$route.params.category)
+        this.axios.delete('/admin/stories?objid=' + this.deleteObjId + '&sprintid=' + this.$route.params.category + '&module=' + this.$root.module)
         .then(function (response) {
           if (response.data.status === 'success') {
             that.tableData = response.data.resData;
