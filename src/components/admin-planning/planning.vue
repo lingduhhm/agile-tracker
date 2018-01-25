@@ -66,7 +66,7 @@
         sprintinfo: ''
       };
     },
-    created: function () {
+    mounted: function () {
       this.fetchData();
     },
     watch: {

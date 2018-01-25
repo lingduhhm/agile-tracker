@@ -316,7 +316,7 @@
           .catch((err) => {
             console.log(err);
             that.$message({
-              message: '数据保存失败！',
+              message: 'Data fetched failed！',
               type: 'error'
             });
           });
