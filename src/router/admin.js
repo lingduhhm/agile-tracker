@@ -60,6 +60,8 @@ routerObj.beforeEach((to, from, next) => {
         path: '/login',
         query: { redirect: to.fullPath }
       });
+    } else if (!window.localStorage.getItem('module')) {
+      window.location.href = '/';
     } else {
       next();
     }
