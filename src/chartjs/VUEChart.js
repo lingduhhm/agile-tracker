@@ -7,6 +7,8 @@ import EventProvider from './EventProvider.js';
 function VUEChart (element, width, height) {
   this.groups = {};
   this.points = [];
+  this.groupVisible = {};
+  this.currentActivePoint = null;
   this.createInitialDom(element);
   this.init(width, height);
 };
@@ -360,8 +362,9 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
   var positionY = this.chartAreaHeight - yPixel - this.pointHeight / 2;
 
   var color = group.color;
+  let pointsLength = points.length;
   var point = {
-    idx: points.length,
+    idx: pointsLength,
     x: x,
     y: y,
     positionX: xPixel,
@@ -371,7 +374,7 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
   if (isAdd) {
     points.push(point);
   }
-  var pointItem = $('<div></div>').attr('groupid', groupid).attr('type', 'point').addClass('chartPoint').height(this.pointHeight).width(this.pointWidth).css('color', color).css('backgroundColor', color).css('top', positionY + 'px').css('left', positionX + 'px').css('border-radius', this.pointWidth / 2 + 'px');
+  var pointItem = $('<div></div>').attr('pointid', 'point_id_' + point.x + '-' + point.y).attr('groupid', groupid).attr('type', 'point').addClass('chartPoint').height(this.pointHeight).width(this.pointWidth).css('color', color).css('backgroundColor', color).css('top', positionY + 'px').css('left', positionX + 'px').css('border-radius', this.pointWidth / 2 + 'px');
 
   pointItem.click(function (evt) {
     var isClicked = $(this).hasClass('pointHighlited');
@@ -380,8 +383,8 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
       $(this).removeClass('pointHighlited');
     } else {
       $(this).addClass('pointHighlited');
+      self.currentActivePoint = this.pointdata;
     }
-
     evt.stopPropagation();
   })
   .hover(function () {
@@ -408,7 +411,9 @@ VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
   var groupid = point1.groupid;
   var group = this.groups[groupid];
   var color = group.color;
-  var lineItem = $('<div style="border-top:1px solid ' + color + ';transform-origin:0% 0%;"></div>').attr('groupid', groupid).attr('type', 'line').addClass('chartLines');
+  var point2Ele = point2.ele;
+  var point2EleId = point2Ele.attr('pointid');
+  var lineItem = $('<div style="border-top:1px solid ' + color + ';transform-origin:0% 0%;"></div>').attr('lineid', 'line_id_' + point2EleId).attr('groupid', groupid).attr('type', 'line').addClass('chartLines');
   var point1X = point1.positionX;
   var point1Y = point1.positionY;
   var point2X = point2.positionX;
@@ -499,6 +504,9 @@ VUEChart.prototype.renderBar = function () {
   var self = this;
   $(this.ele).find('.chartBar').empty();
   for (var groupid in this.groups) {
+    if (this.groupVisible[groupid] === undefined) {
+      this.groupVisible[groupid] = true;
+    }
     var groupItem = this.groups[groupid];
     var groupColor = groupItem.color;
     var groupEle = $('<div class="chartBarItem"><div class="colorspan" style="display:inline-block;"></div><span class="textspan"></span></div>');
@@ -512,11 +520,34 @@ VUEChart.prototype.renderBar = function () {
       $(this).toggleClass('disabled');
       if ($(this).hasClass('disabled')) {
         self.setVisible(theGroupId, false);
+        self.groupVisible[groupid] = false;
       } else {
         self.setVisible(theGroupId, true);
+        self.groupVisible[groupid] = false;
       }
     });
+    $(this).removeClass('disabled');
+    if (this.groupVisible[groupid] === false) {
+      groupEle.addClass('disabled');
+      this.setVisible(groupid, false);
+    }
   }
+};
+VUEChart.prototype.reRenderGroupVisible = function () {
+  for (let groupid in this.groupVisible) {
+    var visibleStatus = this.groupVisible[groupid];
+    this.setVisible(groupid, visibleStatus);
+  }
+};
+VUEChart.prototype.reActivePoint = function () {
+  var currentPoint = this.currentActivePoint;
+  if (currentPoint == null) {
+    return;
+  }
+  var groupid = currentPoint.groupid;
+  var x = currentPoint.x;
+  var y = currentPoint.y;
+  $('[pointid="point_id_' + x + '-' + y + '"][groupid="' + groupid + '"]').click();
 };
 VUEChart.prototype.getMaxXY = function () {
   var maxX = 0;

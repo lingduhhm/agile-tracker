@@ -122,9 +122,9 @@ export default {
           }
         }
       }
-      var lines = [];
       this.chart.renderBar();
       this.chart.reScaleChart();
+      var lines = [];
       for (let group in initialPoints) {
         lines = lines.concat(this.chart.addAllLine(group));
       }
@@ -151,7 +151,10 @@ export default {
           line.ele.css('border-bottom', '1px solid red');
         }
       }
+
+      this.chart.reRenderGroupVisible();
       this.getLatestSummaryData();
+      this.chart.reActivePoint();
     },
     addNewGroup: function (groupname, index) {
       var i = 0;
