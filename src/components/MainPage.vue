@@ -87,7 +87,7 @@ export default {
       return returnSummary;
     },
     updateData: function (response) {
-      this.chart.clearChartArea();
+      this.chart.emptyData();
       this.allData = response.resData;
       var summary = response.resData.summary;
       var constances = response.resData.constances;
@@ -167,6 +167,70 @@ export default {
     },
     toDashbord: function () {
       window.location.href = '/admin#/dashboard';
+    },
+    prepareChart: function () {
+      var self = this;
+      let chart = new VUEChart('.chart', 1000, 500);
+      chart.addEventListener('pointclicked', function (evt) {
+        chart.clearAllClickedPoint();
+        let todayData = evt.data.data.extraData.summarydata;
+        let day = evt.data.data.extraData.summarydata.day;
+        let previousDay = (day === 0 ? 0 : day - 1);
+        let previousData = self.getSummaryByDate(previousDay);
+        let clickedGroup = evt.data.data.extraData.group;
+        let type = evt.data.data.extraData.type;
+        let isClicked = evt.data.isClicked;
+        if (isClicked) {
+          if (self.$root.eventHub) {
+            self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData, type);
+          }
+        } else {
+          self.getLatestSummaryData();
+        }
+      });
+      chart.addEventListener('chartClicked', function (evt) {
+        self.getLatestSummaryData();
+      });
+      chart.addEventListener('pointhoverenter', function (evt) {
+        let constances = evt.data.pointdata.constances;
+        let clickedGroup = evt.data.pointdata.group;
+        let point = evt.data.point.y;
+        var day = evt.data.point.x;
+        let x = evt.data.point.positionX;
+        let y = evt.data.point.positionY;
+        let blocker = evt.data.pointdata.summarydata.groups[clickedGroup]['blocker'];
+        let blockerCount = 0;
+        if (blocker != null) {
+          for (let i = 0; i < blocker.length; i++) {
+            let blockerItem = blocker[i];
+            if (blockerItem.status !== constances.storyIssueResovledStatus) {
+              blockerCount++;
+            }
+          }
+        }
+
+        let followup = evt.data.pointdata.summarydata.groups[clickedGroup]['followup'];
+        let followupCount = 0;
+        if (followup != null) {
+          for (let i = 0; i < followup.length; i++) {
+            let followupItem = followup[i];
+            if (followupItem.status !== constances.storyIssueResovledStatus) {
+              followupCount++;
+            }
+          }
+        }
+        let displayContent = '<div>Day ' + day + ': ' + clickedGroup + '</div><div>Point: ' + point + '</div><div>Blocker: ' + blockerCount + '&nbsp;&nbsp;Followup: ' + followupCount + '</div>';
+        console.log(displayContent);
+        chart.displayPopover(x, y, displayContent);
+      });
+      chart.addEventListener('pointhoverleave', function (evt) {
+        console.log('hide');
+        chart.hidePopover();
+      });
+      /* chart.addGroup('null', {color: 'green'});
+      chart.addPoint(0, 10, 'null');
+      chart.renderBar(); */
+      this.chart = chart;
     }
   },
   created: function () {
@@ -175,68 +239,7 @@ export default {
     }
   },
   mounted: function () {
-    var self = this;
-    let chart = new VUEChart('.chart', 1000, 500);
-    chart.addEventListener('pointclicked', function (evt) {
-      chart.clearAllClickedPoint();
-      let todayData = evt.data.data.extraData.summarydata;
-      let day = evt.data.data.extraData.summarydata.day;
-      let previousDay = (day === 0 ? 0 : day - 1);
-      let previousData = self.getSummaryByDate(previousDay);
-      let clickedGroup = evt.data.data.extraData.group;
-      let type = evt.data.data.extraData.type;
-      let isClicked = evt.data.isClicked;
-      if (isClicked) {
-        if (self.$root.eventHub) {
-          self.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousData, type);
-        }
-      } else {
-        self.getLatestSummaryData();
-      }
-    });
-    chart.addEventListener('chartClicked', function (evt) {
-      self.getLatestSummaryData();
-    });
-    chart.addEventListener('pointhoverenter', function (evt) {
-      let constances = evt.data.pointdata.constances;
-      let clickedGroup = evt.data.pointdata.group;
-      let point = evt.data.point.y;
-      var day = evt.data.point.x;
-      let x = evt.data.point.positionX;
-      let y = evt.data.point.positionY;
-      let blocker = evt.data.pointdata.summarydata.groups[clickedGroup]['blocker'];
-      let blockerCount = 0;
-      if (blocker != null) {
-        for (let i = 0; i < blocker.length; i++) {
-          let blockerItem = blocker[i];
-          if (blockerItem.status !== constances.storyIssueResovledStatus) {
-            blockerCount++;
-          }
-        }
-      }
-
-      let followup = evt.data.pointdata.summarydata.groups[clickedGroup]['followup'];
-      let followupCount = 0;
-      if (followup != null) {
-        for (let i = 0; i < followup.length; i++) {
-          let followupItem = followup[i];
-          if (followupItem.status !== constances.storyIssueResovledStatus) {
-            followupCount++;
-          }
-        }
-      }
-      let displayContent = '<div>Day ' + day + ': ' + clickedGroup + '</div><div>Point: ' + point + '</div><div>Blocker: ' + blockerCount + '&nbsp;&nbsp;Followup: ' + followupCount + '</div>';
-      console.log(displayContent);
-      chart.displayPopover(x, y, displayContent);
-    });
-    chart.addEventListener('pointhoverleave', function (evt) {
-      console.log('hide');
-      chart.hidePopover();
-    });
-    /* chart.addGroup('null', {color: 'green'});
-    chart.addPoint(0, 10, 'null');
-    chart.renderBar(); */
-    this.chart = chart;
+    this.prepareChart();
   },
   components: {
     'sprint-select-dialog': SprintDialogContent

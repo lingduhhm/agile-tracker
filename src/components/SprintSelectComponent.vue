@@ -73,7 +73,22 @@ export default {
       this.axios.get('/api/v1/sprints').then(function (data) {
         self.sprintList = data.data.resData;
         self.moduleList = data.data.moduleList;
+        if (window.localStorage.module && window.localStorage.sprint) {
+          self.sendSprintData();
+        }
       });
+    },
+    sendSprintData: function () {
+      var selectedSprint = [];
+      for (var i = 0; i < this.sprintList.length; i++) {
+        if (this.sprintList[i]._id === this.form.sprint) {
+          selectedSprint = this.sprintList[i];
+          break;
+        }
+      }
+      if (this.$root.eventHub) {
+        this.$root.eventHub.$emit('sprintSelected', selectedSprint);
+      };
     },
     selectSprint: function () {
       if (this.form.module && this.form.sprint) {
@@ -81,16 +96,7 @@ export default {
         this.dialogVisible = false;
         window.localStorage.module = this.form.module;
         window.localStorage.sprint = this.form.sprint;
-        var selectedSprint = {};
-        for (var i = 0; i < this.sprintList.length; i++) {
-          if (this.sprintList[i]._id === this.form.sprint) {
-            selectedSprint = this.sprintList[i];
-            break;
-          }
-        }
-        if (this.$root.eventHub) {
-          this.$root.eventHub.$emit('sprintSelected', selectedSprint);
-        };
+        this.sendSprintData();
       } else if (this.form.module) {
         window.localStorage.module = this.form.module;
         window.localStorage.sprint = '';
