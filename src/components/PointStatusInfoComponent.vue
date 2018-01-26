@@ -142,7 +142,7 @@ export default {
         }
       }
       if (groupObj !== null) {
-        this.defaultAddIssueValues['issueGroup'] = {'groupname': groupObj.groupname, '_id': groupObj._id};
+        this.defaultAddIssueValues['issueGroup'] = [{'groupname': groupObj.groupname, '_id': groupObj._id}];
         var self = this;
         setTimeout(function () {
           self.dialogDisplay = null;
