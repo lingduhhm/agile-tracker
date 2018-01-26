@@ -139,6 +139,7 @@
         },
         sprintObjId: '',
         groups: [],
+        defaultJql: '',
         sprintSelectedDaysCount: 0
       };
     },
@@ -193,6 +194,7 @@
           if (response.data.status === 'success') {
             that.menu = response.data.resData;
             that.menuMap = that.jsonfy(that.menu);
+            that.defaultJql = response.data.defaultJql.replace('{module}', this.$root.module);
             this.form = this.$route.params.category ? this.menuMap[this.$route.params.category] : {};
           } else {
             that.$message({
@@ -244,7 +246,8 @@
           this.title = 'Edit Sprint';
         } else if (command === 'add') {
           this.form = {
-            'status': 'planning'
+            'status': 'planning',
+            'jql': this.defaultJql
           };
           this.title = 'Add Sprint';
           this.dialogVisible = true;
@@ -313,18 +316,14 @@
           .catch((err) => {
             console.log(err);
             that.$message({
-              message: '数据保存失败！',
+              message: 'Data fetched failed！',
               type: 'error'
             });
           });
         }
       }
     },
-    created: function () {
-      console.log('created');
-    },
     mounted: function () {
-      console.log('mounted');
       this.handleSelect();
       this.fetchData();
       if (this.$root.eventHub) {
