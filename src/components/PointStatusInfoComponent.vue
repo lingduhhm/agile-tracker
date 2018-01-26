@@ -3,6 +3,7 @@
 */
 <template>
   <div class="pointInfoContainer">
+    <add-block-dialog :dialogDisplay="dialogDisplay" :defaultValues="defaultAddIssueValues" :category="addIssueCategory"></add-block-dialog>
     <el-header class="pointStatus" style="height: 40px;">
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="12">
@@ -70,7 +71,27 @@
         <el-table :data="inProgressItems" class="changeItemTab" style="width: 100%" :show-header="false" v-show="isShowAllProcessingItem">
           <el-table-column prop="storykey" width="120"></el-table-column>
           <el-table-column prop="points" width="50"></el-table-column>
-          <el-table-column prop="status" ></el-table-column>
+          <el-table-column prop="status">
+            <template slot-scope="scope">
+            <el-popover
+              ref="storyFunction"
+              placement="bottom"
+              width="200"
+              trigger="click"
+              popper-class="popoverMinWidth">
+              <el-row>
+                <el-button type="text" @click="viewIssues('', scope.row)">View issues</el-button>
+              </el-row>
+              <el-row>
+                <el-button type="text" @click="addIssue('block', scope.row)">Add a block</el-button>
+              </el-row>
+              <el-row>
+                <el-button type="text" @click="addIssue('followup')">Add a followup</el-button>
+              </el-row>
+            </el-popover>
+            <span v-popover:storyFunction>{{scope.row.status}}</span>
+          </template>
+          </el-table-column>
         </el-table>
       </div>
     </el-main>
@@ -78,7 +99,11 @@
 </template>
 
 <script>
+import AddDialogContent from '@/components/AddIssueDialog';
 export default {
+  components: {
+    'add-block-dialog': AddDialogContent
+  },
   data () {
     return {
       group: '',
@@ -90,7 +115,10 @@ export default {
       currentData: {},
       previousData: {},
       inProgressItems: [],
-      isShowAllProcessingItem: false
+      isShowAllProcessingItem: false,
+      dialogDisplay: false,
+      defaultAddIssueValues: {},
+      addIssueCategory: 'block'
     };
   },
   created: function () {
@@ -101,6 +129,30 @@ export default {
   mounted: function () {
   },
   methods: {
+    addIssue: function (category, storyItem) {
+      this.dialogDisplay = true;
+      this.defaultAddIssueValues['biSelected'] = {'storykey': storyItem.storykey, '_id': storyItem._id};
+      var groups = this.$root.allGroups;
+      var groupObj = null;
+      for (var i = 0; i < groups.length; i++) {
+        var groupItem = groups[i];
+        if (this.group === groupItem.groupname) {
+          groupObj = groupItem;
+          break;
+        }
+      }
+      if (groupObj !== null) {
+        this.defaultAddIssueValues['issueGroup'] = {'groupname': groupObj.groupname, '_id': groupObj._id};
+        var self = this;
+        setTimeout(function () {
+          self.dialogDisplay = null;
+        });
+        this.addIssueCategory = 'block';
+      }
+    },
+    viewIssues: function () {
+
+    },
     tableRowClassName ({row, rowIndex}) {
       var tableRowList = this.changedItems;
       if (tableRowList[rowIndex] && tableRowList[rowIndex].status === 'Add') {
@@ -245,5 +297,14 @@ header.pointStatus {
   font-size: 0.9rem;
   font-weight: 600;
   text-align: left;
+}
+.popoverMinWidth {
+  min-width: 80px;
+  padding: 6px;
+  text-align: center;
+}
+
+.popoverMinWidth .el-button--text {
+  color: #606266;
 }
 </style>
