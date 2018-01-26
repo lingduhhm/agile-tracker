@@ -523,7 +523,7 @@ VUEChart.prototype.renderBar = function () {
         self.groupVisible[groupid] = false;
       } else {
         self.setVisible(theGroupId, true);
-        self.groupVisible[groupid] = false;
+        self.groupVisible[groupid] = true;
       }
     });
     $(this).removeClass('disabled');
@@ -534,6 +534,7 @@ VUEChart.prototype.renderBar = function () {
   }
 };
 VUEChart.prototype.reRenderGroupVisible = function () {
+  console.log(this.groupVisible);
   for (let groupid in this.groupVisible) {
     var visibleStatus = this.groupVisible[groupid];
     this.setVisible(groupid, visibleStatus);
