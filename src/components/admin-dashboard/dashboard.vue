@@ -89,7 +89,7 @@
     methods: {
       fetchData () {
         var that = this;
-        this.axios.get('/admin/dashboard?module=' + this.$root.module).then((response) => {
+        this.axios.get('/admin/dashboard?module=' + this.$root.module + '&sprintid=' + this.$route.params.sprintid).then((response) => {
           if (response.data.status === 'success') {
             var responseData = response.data.resData;
             that.dashboard = responseData;

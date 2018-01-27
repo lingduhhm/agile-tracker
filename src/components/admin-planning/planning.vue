@@ -75,7 +75,7 @@
     methods: {
       fetchData () {
         var that = this;
-        this.axios.get('/admin/planning?module=' + this.$root.module).then((response) => {
+        this.axios.get('/admin/planning?module=' + this.$root.module + '&sprintid=' + this.$route.params.sprintid).then((response) => {
           if (response.data.status === 'success') {
             that.sprintinfo = response.data.resData;
             that.sprintinfo.totalpoints = response.data.totalPoints;

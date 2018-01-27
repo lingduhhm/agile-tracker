@@ -116,7 +116,7 @@
     methods: {
       fetchData: function () {
         var that = this;
-        var objId = this.$route.params.category;
+        var objId = this.$route.params.sprintid;
         this.axios.get('/admin/stories/' + objId + '?module=' + this.$root.module)
         .then(function (response) {
           if (response.data.status === 'success') {
@@ -180,7 +180,7 @@
             });
           });
         } else {
-          this.form.sprint = this.$route.params.category;
+          this.form.sprint = this.$route.params.sprintid;
           this.axios.post('/admin/stories?module=' + this.$root.module, this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
@@ -209,7 +209,7 @@
 
       handleDelete: function (data) {
         var that = this;
-        this.axios.delete('/admin/stories?objid=' + this.deleteObjId + '&sprintid=' + this.$route.params.category + '&module=' + this.$root.module)
+        this.axios.delete('/admin/stories?objid=' + this.deleteObjId + '&sprintid=' + this.$route.params.sprintid + '&module=' + this.$root.module)
         .then(function (response) {
           if (response.data.status === 'success') {
             that.tableData = response.data.resData;

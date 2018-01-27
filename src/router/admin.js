@@ -25,15 +25,15 @@ const routerObj = new Router({
       component: Home,
       children: [
         {
-          path: '/dashboard',
+          path: '/dashboard/:sprintid',
           component: Dashboard
         },
         {
-          path: '/planning',
+          path: '/planning/:sprintid',
           component: Planning
         },
         {
-          path: '/story/:category',
+          path: '/story/:sprintid',
           component: Story
         },
         {
