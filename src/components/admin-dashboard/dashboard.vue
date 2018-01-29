@@ -58,7 +58,7 @@
 
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="24">
-        <line-chart></line-chart>
+        <line-chart ref="historyChartRef"></line-chart>
       </el-col>
     </el-row>
 
@@ -95,6 +95,7 @@
             that.dashboard = responseData;
             that.sprintinfo = responseData.sprintData;
             this.$refs.worklogChartRef.fetchData('', this.sprintinfo);
+            this.$refs.historyChartRef.fetchData('', this.sprintinfo);
           } else {
             that.$message({
               message: response.data.resMsg,

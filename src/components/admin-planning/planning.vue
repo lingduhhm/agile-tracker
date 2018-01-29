@@ -48,7 +48,7 @@
 
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="24">
-        <history-chart :sprintinfo="sprintinfo"></history-chart>
+        <history-chart :sprintinfo="sprintinfo" ref="historyChartRef"></history-chart>
       </el-col>
     </el-row>
 
@@ -80,6 +80,7 @@
             that.sprintinfo = response.data.resData;
             that.sprintinfo.totalpoints = response.data.totalPoints;
             that.$refs.estimationChartRef.fetchData('', that.sprintinfo);
+            that.$refs.historyChartRef.fetchData('', that.sprintinfo);
           } else {
             that.$message({
               message: response.data.resMsg,

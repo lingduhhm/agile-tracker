@@ -74,7 +74,7 @@
           <datepicker :dateSelected="selectedDays" :startDate="form.start" :endDate="form.end"></datepicker>
         </el-form-item>
         <el-form-item label="JQL">
-          <el-input v-model="form.jql"></el-input>
+          <el-input type="textarea" :rows="2" v-model="form.jql"></el-input>
         </el-form-item>
         <el-form-item label="Status">
           <el-input v-model="form.status" disabled></el-input>
