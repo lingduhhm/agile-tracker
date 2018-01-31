@@ -4,6 +4,7 @@
 <template>
   <div class="pointInfoContainer">
     <add-block-dialog :dialogDisplay="dialogDisplay" :defaultValues="defaultAddIssueValues" :category="addIssueCategory"></add-block-dialog>
+    <view-issues-dialog :dialogDisplay="viewIssueDialogDisplay" :group="group" :userStoryId="currentSelectedUserStoryId" :day="currentSelectedDay"></view-issues-dialog>
     <el-header class="pointStatus" style="height: 40px;">
       <el-row type="flex" class="row-bg" justify="space-around">
         <el-col :span="12">
@@ -100,9 +101,11 @@
 
 <script>
 import AddDialogContent from '@/components/AddIssueDialog';
+import ViewIssuesDialog from '@/components/ViewIssuesDialog';
 export default {
   components: {
-    'add-block-dialog': AddDialogContent
+    'add-block-dialog': AddDialogContent,
+    'view-issues-dialog': ViewIssuesDialog
   },
   data () {
     return {
@@ -118,7 +121,10 @@ export default {
       isShowAllProcessingItem: false,
       dialogDisplay: false,
       defaultAddIssueValues: {},
-      addIssueCategory: 'block'
+      addIssueCategory: 'block',
+      currentSelectedUserStoryId: '',
+      currentSelectedDay: '',
+      viewIssueDialogDisplay: false
     };
   },
   created: function () {
@@ -147,11 +153,15 @@ export default {
         setTimeout(function () {
           self.dialogDisplay = null;
         });
-        this.addIssueCategory = 'block';
+        this.addIssueCategory = category;
       }
     },
     viewIssues: function () {
-
+      var self = this;
+      this.viewIssueDialogDisplay = true;
+      setTimeout(function () {
+        self.viewIssueDialogDisplay = null;
+      });
     },
     tableRowClassName ({row, rowIndex}) {
       var tableRowList = this.changedItems;

@@ -30,7 +30,7 @@
               </el-col>
               <el-col :span="10">
                 <div>
-                  <a target="_blank" :href="'https://jira.successfactors.com/browse/'+ruleForm.biSelected">{{ruleForm.biSelected.storykey}}</a>
+                  <a target="_blank" :href="'https://jira.successfactors.com/browse/'+ruleForm.biSelected.storykey">{{ruleForm.biSelected.storykey}}</a>
                 </div>
               </el-col>
             </el-row>
@@ -118,6 +118,15 @@ export default {
     getRootData: function () {
       this.biList = this.$root.summary.storyList;
       this.groupList = this.$root.allGroups;
+
+      if (this.defaultValues === null) {
+        return;
+      }
+      for (var key in this.defaultValues) {
+        if (this.ruleForm[key] !== undefined) {
+          this.ruleForm[key] = this.defaultValues[key];
+        }
+      }
     },
     handleClose: function (formName) {
       this.$refs[formName].resetFields();
@@ -183,14 +192,6 @@ export default {
         return;
       }
       this.dialogVisible = this.dialogDisplay;
-      if (this.defaultValues === null) {
-        return;
-      }
-      for (var key in this.defaultValues) {
-        if (this.ruleForm[key] !== undefined) {
-          this.ruleForm[key] = this.defaultValues[key];
-        }
-      }
     }
   }
 };

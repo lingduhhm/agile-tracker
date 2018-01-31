@@ -17,14 +17,14 @@
       </div> -->
     </el-header>
     <el-main class="tabContainer">
-      <el-tabs type="border-card" class="dataSheetTabs">
+      <el-tabs name="pointTab" type="border-card" class="dataSheetTabs" v-model="dataSheetTabs">
         <el-tab-pane :label="pointLabel" class="dataSheetTabItem">
           <point-status></point-status>
         </el-tab-pane>
-        <el-tab-pane :label="blockLabel" class="dataSheetTabItem">
+        <el-tab-pane name="blockTab" :label="blockLabel" class="dataSheetTabItem">
           <block-issues></block-issues>
         </el-tab-pane>
-        <el-tab-pane :label="followupLabel" class="dataSheetTabItem">
+        <el-tab-pane name="followupTab" :label="followupLabel" class="dataSheetTabItem">
           <followups></followups>
         </el-tab-pane>
       </el-tabs>
@@ -50,7 +50,8 @@ export default {
       groupName: '',
       pointLabel: 'Points',
       blockLabel: 'Blockers',
-      followupLabel: 'Follows'
+      followupLabel: 'Follows',
+      dataSheetTabs: ''
     };
   },
   methods: {
@@ -93,11 +94,17 @@ export default {
 
       var pointCount = todayObj['groups'][group]['currentPoint'];
       this.pointLabel = 'Points (' + pointCount + ')';
+    },
+    changeTab: function () {
+      this.dataSheetTabs = 'blockTab';
     }
   },
   created: function () {
     if (this.$root.eventHub) {
       this.$root.eventHub.$on('getDaySummary', this.getDaySummary);
+    }
+    if (this.$root.eventHub) {
+      this.$root.eventHub.$on('changeTab', this.changeTab);
     }
   },
   mounted: function () {

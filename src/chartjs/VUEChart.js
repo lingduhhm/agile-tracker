@@ -13,6 +13,9 @@ function VUEChart (element, width, height) {
   this.init(width, height);
 };
 VUEChart.prototype = new EventProvider();
+VUEChart.prototype.getGroupsData = function () {
+  return this.groups;
+};
 VUEChart.prototype.createInitialDom = function (element) {
   var domStr = '<div class="chartMain" style="display:inline-block">' +
                 '  <div class="chartTitle" style="font-size: 25px;text-align:center;margin-bottom:15px;">' +
@@ -319,8 +322,6 @@ VUEChart.prototype.reAddAllPoint = function () {
       var changedPoint = this.addPoint(x, y, group, pointExtraData, false);
       newPoints.push(changedPoint);
     }
-    console.log(group);
-    console.log(newPoints);
     groupItem.points = newPoints;
   }
 };

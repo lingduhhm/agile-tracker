@@ -112,21 +112,32 @@ export default {
           dataByGroup[groupid]['blocker'] = groupObj['blocker'];
           dataByGroup[groupid]['followup'] = groupObj['followup'];
           dataByGroup[groupid]['point'] = groupObj.points;
+          var currentPoint = groupObj.currentPoint;
 
-          initialPoints[groupid] = initialPoints[groupid] - groupObj['points']['red'];
-          this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'red', group: groupid, summarydata: summ, constances: constances}));
+          this.allPoints.push(this.chart.addPoint(i, currentPoint, groupid, {type: 'all', group: groupid, summarydata: summ, constances: constances}));
 
-          if (groupObj['points']['add'] > 0) {
-            initialPoints[groupid] = initialPoints[groupid] + groupObj['points']['add'];
-            this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'add', group: groupid, summarydata: summ, constances: constances}));
-          }
+          // if (i === 0) {
+          //   initialPoints[groupid] = initialPoints[groupid] - groupObj['points']['red'];
+          //   initialPoints[groupid] = initialPoints[groupid] + groupObj['points']['add'];
+          //   this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'add', group: groupid, summarydata: summ, constances: constances}));
+          // } else {
+          //   initialPoints[groupid] = initialPoints[groupid] - groupObj['points']['red'];
+          //   this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'red', group: groupid, summarydata: summ, constances: constances}));
+
+          //   if (groupObj['points']['add'] > 0) {
+          //     initialPoints[groupid] = initialPoints[groupid] + groupObj['points']['add'];
+          //     this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'add', group: groupid, summarydata: summ, constances: constances}));
+          //   }
+          // }
         }
       }
       this.chart.renderBar();
       this.chart.reScaleChart();
+      this.chart.reAddAllGroupLine();
+      var linesGroup = this.chart.getGroupsData();
       var lines = [];
-      for (let group in initialPoints) {
-        lines = lines.concat(this.chart.addAllLine(group));
+      for (let group in linesGroup) {
+        lines = lines.concat(linesGroup[group].lines);
       }
       for (i = 0; i < lines.length; i++) {
         var line = lines[i];
