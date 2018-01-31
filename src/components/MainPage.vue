@@ -180,7 +180,7 @@ export default {
       this.chart.addGroup(groupname, {color: selectedColor});
     },
     toDashbord: function () {
-      window.location.href = '/admin#/home';
+      window.location.href = '/#/admin/home';
     },
     prepareChart: function () {
       var self = this;
