@@ -100,7 +100,7 @@ export default {
       } else if (this.form.module) {
         window.localStorage.module = this.form.module;
         window.localStorage.sprint = '';
-        window.location.href = '/admin#/dashboard';
+        window.location.href = '/#/admin/home';
       } else {
         this.isShowAlert = true;
       }

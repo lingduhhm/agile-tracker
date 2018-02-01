@@ -144,8 +144,9 @@ export default {
         var lineEndPoint = line.endPoint;
         let groups = lineEndPoint.extraData.summarydata.groups;
         var ifLineBlock = false;
+        var groupItem;
         for (let groupid in groups) {
-          var groupItem = groups[groupid];
+          groupItem = groups[groupid];
           var groupBlocker = groupItem.blocker;
           if (groupBlocker != null && groupBlocker.length > 0) {
             for (var j = 0; j < groupBlocker.length; j++) {
@@ -161,11 +162,11 @@ export default {
 
         var ifLineFollowup = false;
         for (let groupid in groups) {
-          var groupItem = groups[groupid];
+          groupItem = groups[groupid];
           var groupFollowup = groupItem.followup;
           if (groupFollowup != null && groupFollowup.length > 0) {
-            for (var j = 0; j < groupFollowup.length; j++) {
-              var groupFollowupItem = groupFollowup[j];
+            for (var idx = 0; idx < groupFollowup.length; idx++) {
+              var groupFollowupItem = groupFollowup[idx];
               if (groupFollowupItem.status !== issueResovledStatus && lineEndPoint.extraData.group === groupid) {
                 console.log('we have followup issue at sprint day:' + i);
                 ifLineBlock = true;

@@ -64,7 +64,7 @@
           if (valid) {
             this.axios.get('/admin/login/verify?' + 'username=' + this.ruleForm.username + '&password=' + md5(this.ruleForm.password) + '&module=' + this.$root.module).then((response) => {
               if (response.data.status === 'success') {
-                that.$router.push('/dashboard');
+                that.$router.push('/admin/home');
               } else {
                 that.$message({
                   message: 'Login failed!',
