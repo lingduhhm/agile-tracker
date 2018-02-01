@@ -158,8 +158,28 @@ export default {
             }
           }
         }
+
+        var ifLineFollowup = false;
+        for (let groupid in groups) {
+          var groupItem = groups[groupid];
+          var groupFollowup = groupItem.followup;
+          if (groupFollowup != null && groupFollowup.length > 0) {
+            for (var j = 0; j < groupFollowup.length; j++) {
+              var groupFollowupItem = groupFollowup[j];
+              if (groupFollowupItem.status !== issueResovledStatus && lineEndPoint.extraData.group === groupid) {
+                console.log('we have followup issue at sprint day:' + i);
+                ifLineBlock = true;
+                break;
+              }
+            }
+          }
+        }
+
         if (ifLineBlock) {
-          line.ele.css('border-bottom', '1px solid red');
+          line.ele.css('border-bottom', '2px solid red');
+        }
+        if (ifLineFollowup) {
+          line.ele.css('border-top', '2px solid yellow');
         }
       }
 

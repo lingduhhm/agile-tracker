@@ -105,9 +105,10 @@ VUEChart.prototype.init = function (width, height) {
   this.axisXGapCount = Math.ceil(this.chartAreaWidth / this.axisXGap);
   this.axisYGapCount = Math.ceil(this.chartAreaHeight / this.axisYGap);
 
-  this.pointHeight = 10;
-  this.pointWidth = 10;
+  this.pointHeight = 7;
+  this.pointWidth = 7;
   this.pointColor = 'red';
+  this.lineHeight = 2;
 
   $(this.ele).find('.chart').width(this.axisAreaWidth).height(this.axisAreaHeight);
   $(this.ele).find('.chart .chartArea').width(this.chartAreaWidth).height(this.chartAreaHeight).css('left', this.axisLength + 'px').css('top', '0px');
@@ -414,11 +415,11 @@ VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
   var color = group.color;
   var point2Ele = point2.ele;
   var point2EleId = point2Ele.attr('pointid');
-  var lineItem = $('<div style="border-top:1px solid ' + color + ';transform-origin:0% 0%;"></div>').attr('lineid', 'line_id_' + point2EleId).attr('groupid', groupid).attr('type', 'line').addClass('chartLines');
+  var lineItem = $('<div style="height:' + this.lineHeight + 'px;background-color:' + color + ';transform-origin:0% 0%;"></div>').attr('lineid', 'line_id_' + point2EleId).attr('groupid', groupid).attr('type', 'line').addClass('chartLines');
   var point1X = point1.positionX;
-  var point1Y = point1.positionY;
+  var point1Y = point1.positionY - this.lineHeight / 2;
   var point2X = point2.positionX;
-  var point2Y = point2.positionY;
+  var point2Y = point2.positionY - this.lineHeight / 2;
   var a = point2Y - point1Y;
   var b = point2X - point1X;
   var width = Math.sqrt(a * a + b * b);
