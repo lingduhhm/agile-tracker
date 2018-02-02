@@ -29,10 +29,13 @@
       </el-aside>
       <el-main style="padding: 0 20px;">
         <el-row :gutter="20" class="rowMargin">
-          <el-col :span="12">
+          <el-col :span="8">
             <number-card label="Total Points" :value="dashboard.totalpoints" unit="points" bkcolor="#409EFF"></number-card>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
+            <number-card label="Initial Commited" :value="dashboard.initialcommited" unit="points" bkcolor="#67C23A"></number-card>
+          </el-col>
+          <el-col :span="8">
             <number-card label="Left Days" :value="dashboard.leftdays" unit="days" bkcolor="#F56C6C"></number-card>
           </el-col>
 
@@ -89,7 +92,7 @@
     methods: {
       fetchData () {
         var that = this;
-        if (this.$route.params.sprintid === 'undefined') {
+        if (this.$route.params.sprintid === undefined || this.$route.params.sprintid === 'undefined') {
           return false;
         }
         this.axios.get('/admin/dashboard?module=' + this.$root.module + '&sprintid=' + this.$route.params.sprintid).then((response) => {

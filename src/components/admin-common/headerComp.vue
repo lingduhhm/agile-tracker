@@ -154,7 +154,7 @@
     methods: {
       fetchData () {
         var that = this;
-        if (this.$route.params.sprintid !== undefined) {
+        if (this.$route.params.sprintid !== undefined && this.$route.params.sprintid !== 'undefined') {
           this.axios.get('/admin/sprint?sprintid=' + this.$route.params.sprintid + '&module=' + this.$root.module).then((response) => {
             if (response.data.status === 'success') {
               this.sprintinfo = response.data.resData.sprintinfo;
