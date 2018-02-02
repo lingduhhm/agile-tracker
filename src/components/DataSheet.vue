@@ -17,6 +17,18 @@
       </div> -->
     </el-header>
     <el-main class="tabContainer">
+      <div class="dataSheetCardContainer">
+        <el-card class="box-card" :body-style="{padding: '0px', height: '40px'}">
+          <el-row class="dataSheetCardRow">
+            <el-col :span="10" class="leftPart" :style="{background: effortData.color}">{{effortData.label}}
+            </el-col>
+            <el-col :span="14" class="rightPart">
+              <span :style="{color: effortData.color}" class="rateValue">{{effortData.value}}</span>
+              <span :style="{color: effortData.color}" class="rateIcon">%</span>
+            </el-col>
+          </el-row>
+        </el-card>
+      </div>      
       <el-tabs name="pointTab" type="border-card" class="dataSheetTabs" v-model="dataSheetTabs">
         <el-tab-pane :label="pointLabel" class="dataSheetTabItem">
           <point-status></point-status>
@@ -51,7 +63,12 @@ export default {
       pointLabel: 'Points',
       blockLabel: 'Blockers',
       followupLabel: 'Follows',
-      dataSheetTabs: ''
+      dataSheetTabs: '',
+      effortData: {
+        label: 'Effort Offset Ratio',
+        value: 0,
+        color: '#409EFF'
+      }
     };
   },
   methods: {
@@ -94,6 +111,8 @@ export default {
 
       var pointCount = todayObj['groups'][group]['currentPoint'];
       this.pointLabel = 'Points (' + pointCount + ')';
+
+      this.effortData.value = this.$root.summary.effortOffsetRatio;
     },
     changeTab: function () {
       this.dataSheetTabs = 'blockTab';
@@ -109,6 +128,11 @@ export default {
   },
   mounted: function () {
   },
+  computed: {
+    effortOffsetValue () {
+      return this.effortData.value;
+    }
+  },
   components: {
     'point-status': PointStatus,
     'block-issues': BlockIssues,
@@ -117,6 +141,15 @@ export default {
     'sprint-select-dialog': SprintDialogContent
   },
   watch: {
+    effortOffsetValue: function (value) {
+      if (value >= 25) {
+        this.effortData.color = '#F56C6C';
+      } else if (value >= 15) {
+        this.effortData.color = '#E6A23C';
+      } else {
+        this.effortData.color = '#409EFF';
+      }
+    }
   }
 };
 </script>
@@ -154,7 +187,7 @@ export default {
   padding-bottom: 5px;
 }
 .dataSheet .dataSheetTabs {
-  height: calc( 100% - 2px );
+  height: calc( 100% - 10px );
 }
 .dataSheet .dataSheetTabs .el-tabs__nav {
   width: 100%;
@@ -178,5 +211,27 @@ export default {
 .dataSheet .el-tabs__content{
   padding-left: 0px;
   padding-right: 0px;
+}
+.dataSheetCardContainer {
+  margin: 0 0 8px 0;
+}
+.dataSheetCardRow {
+  height: 100%;
+  line-height: 40px;
+  font-size: 14px;
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+.dataSheetCardRow .leftPart {
+  color: white;
+}
+.dataSheetCardRow .rightPart {
+  font-size: 0.85rem;
+}
+.dataSheetCardRow .rateValue {
+  font-size: 1.25rem;
+  font-Weight: bold;
+}
+.dataSheetCardRow .rateIcon {
+  margin: 4px;
 }
 </style>
