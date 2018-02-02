@@ -225,13 +225,13 @@ export default {
   color: white;
 }
 .dataSheetCardRow .rightPart {
-  font-size: 0.85rem;
+  height: 100%;
 }
 .dataSheetCardRow .rateValue {
   font-size: 1.25rem;
   font-Weight: bold;
 }
 .dataSheetCardRow .rateIcon {
-  margin: 4px;
+  margin: 4px 0px;
 }
 </style>
