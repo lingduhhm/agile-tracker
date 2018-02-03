@@ -55,7 +55,7 @@
 
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="24">
-        <worklog-chart ref="worklogChartRef"></worklog-chart>
+        <worklog-chart ref="worklogChartRef" @updatepints= "fetchData"></worklog-chart>
       </el-col>
     </el-row>
 

@@ -124,6 +124,9 @@
           loading.close();
           if (response.data.status === 'success') {
             that.setData(response.data);
+            if (isRefresh === 'y') {
+              that.$emit('updatepints');
+            }
           } else {
             that.$message({
               message: response.data.resMsg,
