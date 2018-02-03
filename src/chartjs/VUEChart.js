@@ -72,7 +72,7 @@ VUEChart.prototype.init = function (width, height) {
   this.axisXGapCount = 10; // count of the axis X gap to display
   this.axisYGapCount = 10; // count of the axis Y gap to display
 
-  this.minXGap = 50;  // the min pixel for x
+  this.minXGap = 25;  // the min pixel for x
   this.minYGap = 30;  // the min pixel for y
 
   this.maxXValue = 10;

@@ -116,13 +116,13 @@
       openDefaultTab (isReopen) {
         if (isReopen) {
           if (this.inprogress[0]) {
-            this.$router.push('/dashboard/' + this.inprogress[0]._id);
+            this.$router.push('/dashboard/' + (this.inprogress[0] && this.inprogress[0]._id));
             this.$refs.sidebarMenu.open('dashboard');
           } else if (this.planning[0]) {
-            this.$router.push('/planning/' + this.planning[0]._id);
+            this.$router.push('/planning/' + (this.planning[0] && this.planning[0]._id));
             this.$refs.sidebarMenu.open('planning');
           } else {
-            this.$router.push('/dashboard/' + this.done[0]._id);
+            this.$router.push('/dashboard/' + (this.done[0] && this.done[0]._id));
             this.$refs.sidebarMenu.open('done');
           }
         }

@@ -28,7 +28,7 @@
             trigger: 'axis'
           },
           legend: {
-            data: ['Planned', 'Done'],
+            data: ['Planned', 'Commited', 'Done'],
             show: true,
             left: 'center'
           },
@@ -106,14 +106,34 @@
               data: data.planned,
               itemStyle: {
                 normal: {
-                  color: '#67C23A'
+                  color: '#E6A23C'
+                }
+              }
+            },
+            {
+              name: 'Commited',
+              type: 'line',
+              data: data.commited,
+              itemStyle: {
+                normal: {
+                  color: '#409EFF'
                 }
               }
             },
             {
               name: 'Done',
               type: 'line',
-              data: data.done
+              data: data.done,
+              itemStyle: {
+                normal: {
+                  color: '#67C23A'
+                }
+              },
+              markLine: {
+                data: [
+                  {type: 'average', name: 'Average'}
+                ]
+              }
             }
           ],
           xAxis: {
