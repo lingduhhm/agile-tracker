@@ -115,8 +115,6 @@ export default {
       currentPoint: 0,
       previousPoint: 0,
       changedItems: [],
-      currentData: {},
-      previousData: {},
       inProgressItems: [],
       isShowAllProcessingItem: false,
       dialogDisplay: false,
@@ -164,27 +162,44 @@ export default {
       });
     },
     tableRowClassName ({row, rowIndex}) {
-      /* console.log(this.currentData);
-      var tableRowList = this.changedItems;
-      if (tableRowList[rowIndex] && tableRowList[rowIndex].status === 'Add') {
-        return 'blockContent';
-      } else if (tableRowList[rowIndex].status === 'Ready for testing') {
+      if (row.isRed) {
         return 'successContent';
-      } */
+      } else if (row.isAdd) {
+        return 'blockContent';
+      }
       return '';
     },
     getDayStorySummary (day, group, todayObj, previousObj, type) {
       this.group = group;
-      this.currentData = todayObj['groups'][group];
-      this.previousData = previousObj['groups'][group];
-      this.reduceCount = this.currentData['points']['red'];
-      this.addCount = this.currentData['points']['add'];
-      this.currentPoint = this.currentData.currentPoint;
-      this.previousPoint = this.previousData.currentPoint;
+      let calGroups = [group];
+      if (group === '') {
+        let allGroups = this.$root.allGroups;
+        calGroups = [];
+        for (var i = 0; i < allGroups.length; i++) {
+          calGroups.push(allGroups[i].groupname);
+        }
+      }
+      let allPoint = 0;
+      let allPrevPoint = 0;
+      let allRedCount = 0;
+      let allAddCount = 0;
+      for (let i = 0; i < calGroups.length; i++) {
+        var currentGroup = calGroups[i];
+        let currentData = todayObj['groups'][currentGroup];
+        let previousData = previousObj['groups'][currentGroup];
+        allRedCount += currentData['points']['red'];
+        allAddCount += currentData['points']['add'];
+        allPoint += currentData.currentPoint;
+        allPrevPoint += previousData.currentPoint;
+      }
+      this.reduceCount = allRedCount;
+      this.addCount = allAddCount;
+      this.currentPoint = allPoint;
+      this.previousPoint = allPrevPoint;
 
       // this.changedItems = todayObj.storyList;
-      this.getChangedItems(day, group, todayObj);
-      this.getInProgressItems(todayObj, group);
+      this.getChangedItems(day, calGroups, todayObj);
+      this.getInProgressItems(todayObj, calGroups);
     },
     prepareDataForGroupWorkingStatus: function () {
       var groups = this.$root.allGroups;
@@ -205,46 +220,54 @@ export default {
     },
     getInProgressItems: function (todayObj, group) {
       var inProgressItems = [];
-      var todayUserStory = todayObj.storyList;
-      var groupWorkingAvailability = this.prepareDataForGroupWorkingStatus();
-      for (let i = 0; i < todayUserStory.length; i++) {
-        let userStoryItem = todayUserStory[i];
-        let status = userStoryItem.status;
-        if (groupWorkingAvailability[group] !== null && groupWorkingAvailability[group][status] !== undefined) {
-          inProgressItems.push(userStoryItem);
+      for (let i = 0; i < group.length; i++) {
+        var currentGroup = group[i];
+        var todayUserStory = todayObj.storyList;
+        var groupWorkingAvailability = this.prepareDataForGroupWorkingStatus();
+        for (let i = 0; i < todayUserStory.length; i++) {
+          let userStoryItem = todayUserStory[i];
+          let status = userStoryItem.status;
+          if (groupWorkingAvailability[currentGroup] !== null && groupWorkingAvailability[currentGroup][status] !== undefined) {
+            inProgressItems.push(userStoryItem);
+          }
         }
       }
       this.inProgressItems = inProgressItems;
     },
     getChangedItems: function (day, group, todayObj) {
-      var todayRedItems = todayObj.groups[group].points.redStorys;
-      var previousDay = day;
-      if (day > 0) {
-        previousDay = day - 1;
-      } else {}
-      var previousDayObj = this.$root.getDayDataDay(previousDay);
-      var previousRedItems = previousDayObj.groups[group].points.redStorys;
       var changedItems = [];
-      for (let i = 0; i < todayRedItems.length; i++) {
-        let todayItem = todayRedItems[i];
-        let todayItemID = todayItem._id;
-        if (previousRedItems.length === 0) {
-          changedItems.push(todayItem);
-        } else {
-          let found = false;
-          for (let j = 0; j < previousRedItems.length; j++) {
-            let previousItem = previousRedItems[j];
-            let previousItemId = previousItem._id;
-            if (todayItemID === previousItemId) {
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
+      for (let i = 0; i < group.length; i++) {
+        var currentGroup = group[i];
+        var todayRedItems = todayObj.groups[currentGroup].points.redStorys;
+        var previousDay = day;
+        if (day > 0) {
+          previousDay = day - 1;
+        } else {}
+        var previousDayObj = this.$root.getDayDataDay(previousDay);
+        var previousRedItems = previousDayObj.groups[currentGroup].points.redStorys;
+        for (let i = 0; i < todayRedItems.length; i++) {
+          let todayItem = JSON.parse(JSON.stringify(todayRedItems[i]));
+          todayItem.isRed = true;
+          let todayItemID = todayItem._id;
+          if (previousRedItems.length === 0) {
             changedItems.push(todayItem);
+          } else {
+            let found = false;
+            for (let j = 0; j < previousRedItems.length; j++) {
+              let previousItem = previousRedItems[j];
+              let previousItemId = previousItem._id;
+              if (todayItemID === previousItemId) {
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              changedItems.push(todayItem);
+            }
           }
         }
       }
+
       this.changedItems = changedItems;
       /* var previousDay = day;
       if (day > 0) {

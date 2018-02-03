@@ -150,15 +150,29 @@ export default {
       });
     },
     getDayBlockSummary: function (day, clickedGroup, todayData, previousData) {
-      console.log(arguments);
-      var dayLength = this.$root.summary.summary.length - 1;
-      if (day === dayLength) {
-        this.isShowAction = true;
-      } else {
-        this.isShowAction = false;
+      let calGroups = [clickedGroup];
+      if (clickedGroup === '') {
+        let allGroups = this.$root.allGroups;
+        calGroups = [];
+        for (var i = 0; i < allGroups.length; i++) {
+          calGroups.push(allGroups[i].groupname);
+        }
       }
-      this.issues = todayData.groups[clickedGroup].blocker || [];
-      this.previousIssues = previousData.groups[clickedGroup].blocker || [];
+      var blockers = [];
+      var prevBlocker = [];
+      for (let i = 0; i < calGroups.length; i++) {
+        var usingGroup = calGroups[i];
+        var dayLength = this.$root.summary.summary.length - 1;
+        if (day === dayLength) {
+          this.isShowAction = true;
+        } else {
+          this.isShowAction = false;
+        }
+        blockers = blockers.concat(todayData.groups[usingGroup].blocker || []);
+        prevBlocker = prevBlocker.concat(previousData.groups[usingGroup].blocker || []);
+      }
+      this.issues = blockers;
+      this.previousIssues = prevBlocker;
     }
   },
   computed: {

@@ -118,15 +118,29 @@ export default {
       });
     },
     getDayBlockSummary: function (day, clickedGroup, todayData, previousData) {
-      console.log(arguments);
-      var dayLength = this.$root.summary.summary.length - 1;
-      if (day === dayLength) {
-        this.isShowAction = true;
-      } else {
-        this.isShowAction = false;
+      let calGroups = [clickedGroup];
+      if (clickedGroup === '') {
+        let allGroups = this.$root.allGroups;
+        calGroups = [];
+        for (var i = 0; i < allGroups.length; i++) {
+          calGroups.push(allGroups[i].groupname);
+        }
       }
-      this.issues = todayData.groups[clickedGroup].followup || [];
-      this.previousIssues = previousData.groups[clickedGroup].followup || [];
+      var followups = [];
+      var prevFollowups = [];
+      for (let i = 0; i < calGroups.length; i++) {
+        var usingGroup = calGroups[i];
+        var dayLength = this.$root.summary.summary.length - 1;
+        if (day === dayLength) {
+          this.isShowAction = true;
+        } else {
+          this.isShowAction = false;
+        }
+        followups = followups.concat(todayData.groups[usingGroup].followup || []);
+        prevFollowups = prevFollowups.concat(previousData.groups[usingGroup].followup || []);
+      }
+      this.issues = followups;
+      this.previousIssues = prevFollowups;
     }
   },
   computed: {

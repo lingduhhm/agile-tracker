@@ -52,7 +52,7 @@ export default {
       });
     },
     getLatestSummaryData: function () {
-      var allGroups = this.$root.sprintSelected.sprintgroups;
+      // var allGroups = this.$root.sprintSelected.sprintgroups;
       var allSummaryLength = this.allData.summary.length;
       var latestDay = allSummaryLength - 1;
       var previousDay = latestDay - 1;
@@ -63,10 +63,10 @@ export default {
         var todayData = this.getSummaryByDate(latestDay);
         var previousDayData = this.getSummaryByDate(previousDay);
         var clickedGroup = '';
-        for (var i = 0; i < allGroups.length; i++) {
+        /* for (var i = 0; i < allGroups.length; i++) {
           var groupItem = allGroups[i];
           clickedGroup = groupItem.groupname;
-        }
+        } */
         var day = latestDay;
         if (this.$root.eventHub) {
           this.$root.eventHub.$emit('getDaySummary', day, clickedGroup, todayData, previousDayData);

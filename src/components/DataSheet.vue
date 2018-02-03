@@ -6,7 +6,8 @@
   <div class="dataSheet">
     <el-header class="dataSheetSummary">
       <div class='title'>
-        Summary of Day {{day}} - {{groupName}}
+        Summary of {{groupName}}<br>
+        <span class='subtitle'>Day {{day}} - {{date}}</span>
       </div>
       <!-- <div class='content'>
         <el-row>
@@ -59,6 +60,7 @@ export default {
         currentTab: 'points'
       },
       day: 0,
+      date: '',
       groupName: '',
       pointLabel: 'Points',
       blockLabel: 'Blockers',
@@ -84,35 +86,53 @@ export default {
         return;
       }
       this.day = day;
-      this.groupName = group;
+      this.date = todayObj.date;
+
+      var calGroups = [group];
+      if (group === '') {
+        this.groupName = 'All Groups';
+        let allGroups = this.$root.allGroups;
+        calGroups = [];
+        for (let i = 0; i < allGroups.length; i++) {
+          calGroups.push(allGroups[i].groupname);
+        }
+      }
       var blockCount = 0;
-      var blockers = todayObj['groups'][group]['blocker'];
-      if (blockers != null) {
-        for (let i = 0; i < blockers.length; i++) {
-          let blockItem = blockers[i];
-          if (blockItem.status !== this.$root.summary['constances']['storyIssueResovledStatus']) {
-            blockCount++;
-          }
-        }
-      }
-      this.blockLabel = 'Blocks (' + blockCount + ')';
-
       var followupCount = 0;
-      var followups = todayObj['groups'][group]['followup'];
-      if (followups != null) {
-        for (let i = 0; i < followups.length; i++) {
-          let followupItem = followups[i];
-          if (followupItem.status !== this.$root.summary['constances']['storyIssueResovledStatus']) {
-            followupCount++;
+      var allPoints = 0;
+      for (let i = 0; i < calGroups.length; i++) {
+        var currentGroup = calGroups[i];
+        if (todayObj['groups'][currentGroup] === null || todayObj['groups'][currentGroup] === undefined) {
+          continue;
+        }
+        var blockers = todayObj['groups'][currentGroup]['blocker'];
+        if (blockers != null) {
+          for (let i = 0; i < blockers.length; i++) {
+            let blockItem = blockers[i];
+            if (blockItem.status !== this.$root.summary['constances']['storyIssueResovledStatus']) {
+              blockCount++;
+            }
           }
         }
+        this.blockLabel = 'Blocks (' + blockCount + ')';
+
+        var followups = todayObj['groups'][currentGroup]['followup'];
+        if (followups != null) {
+          for (let i = 0; i < followups.length; i++) {
+            let followupItem = followups[i];
+            if (followupItem.status !== this.$root.summary['constances']['storyIssueResovledStatus']) {
+              followupCount++;
+            }
+          }
+        }
+        this.followupLabel = 'Follows (' + followupCount + ')';
+
+        var pointCount = todayObj['groups'][currentGroup]['currentPoint'];
+        allPoints += pointCount;
+        this.pointLabel = 'Points (' + allPoints + ')';
+
+        this.effortData.value = this.$root.summary.effortOffsetRatio;
       }
-      this.followupLabel = 'Follows (' + followupCount + ')';
-
-      var pointCount = todayObj['groups'][group]['currentPoint'];
-      this.pointLabel = 'Points (' + pointCount + ')';
-
-      this.effortData.value = this.$root.summary.effortOffsetRatio;
     },
     changeTab: function () {
       this.dataSheetTabs = 'blockTab';
@@ -167,6 +187,10 @@ export default {
 }
 .dataSheet .dataSheetSummary .title {
   font-size: 25px;
+  font-weight: bold;
+}
+.dataSheet .dataSheetSummary .title .subtitle {
+  font-size: 20px;
   font-weight: bold;
 }
 .dataSheet .pointContent {

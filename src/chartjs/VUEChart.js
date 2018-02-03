@@ -382,6 +382,7 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
     self.fireEvent('pointclicked', {ele: this, data: this.pointdata, isClicked: !isClicked});
     if (isClicked) {
       $(this).removeClass('pointHighlited');
+      self.currentActivePoint = null;
     } else {
       $(this).addClass('pointHighlited');
       self.currentActivePoint = this.pointdata;
