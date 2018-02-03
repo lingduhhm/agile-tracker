@@ -133,7 +133,7 @@ export default {
       }
       this.chart.renderBar();
       this.chart.reScaleChart();
-      // this.chart.reAddAllGroupLine();
+      this.chart.reAddAllGroupLine();
       var linesGroup = this.chart.getGroupsData();
       var lines = [];
       for (let group in linesGroup) {

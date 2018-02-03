@@ -454,6 +454,7 @@ VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
   return line;
 };
 VUEChart.prototype.reAddAllGroupLine = function (isAdd) {
+  $(this.ele).find('.chart .chartArea [type="line"]').remove();
   for (var group in this.groups) {
     this.addAllLine(group, isAdd);
   }
