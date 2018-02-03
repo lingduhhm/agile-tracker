@@ -133,7 +133,7 @@ export default {
       }
       this.chart.renderBar();
       this.chart.reScaleChart();
-      this.chart.reAddAllGroupLine();
+      // this.chart.reAddAllGroupLine();
       var linesGroup = this.chart.getGroupsData();
       var lines = [];
       for (let group in linesGroup) {
@@ -145,10 +145,10 @@ export default {
         let groups = lineEndPoint.extraData.summarydata.groups;
         var ifLineBlock = false;
         for (let groupid in groups) {
-          var groupItem = groups[groupid];
+          let groupItem = groups[groupid];
           var groupBlocker = groupItem.blocker;
           if (groupBlocker != null && groupBlocker.length > 0) {
-            for (var j = 0; j < groupBlocker.length; j++) {
+            for (let j = 0; j < groupBlocker.length; j++) {
               var groupBlockerItem = groupBlocker[j];
               if (groupBlockerItem.status !== issueResovledStatus && lineEndPoint.extraData.group === groupid) {
                 console.log('we have block issue at sprint day:' + i);
@@ -161,14 +161,14 @@ export default {
 
         var ifLineFollowup = false;
         for (let groupid in groups) {
-          var groupItem = groups[groupid];
+          let groupItem = groups[groupid];
           var groupFollowup = groupItem.followup;
           if (groupFollowup != null && groupFollowup.length > 0) {
-            for (var j = 0; j < groupFollowup.length; j++) {
+            for (let j = 0; j < groupFollowup.length; j++) {
               var groupFollowupItem = groupFollowup[j];
               if (groupFollowupItem.status !== issueResovledStatus && lineEndPoint.extraData.group === groupid) {
                 console.log('we have followup issue at sprint day:' + i);
-                ifLineBlock = true;
+                ifLineFollowup = true;
                 break;
               }
             }
@@ -176,10 +176,18 @@ export default {
         }
 
         if (ifLineBlock) {
-          line.ele.css('border-bottom', '2px solid red');
+          let left = parseInt(line.ele.css('left')) + 1;
+          let top = parseInt(line.ele.css('top')) - 1;
+          line.ele.css('left', left + 'px');
+          line.ele.css('top', top + 'px');
+          line.ele.css('border-top', '2px solid red');
         }
         if (ifLineFollowup) {
-          line.ele.css('border-top', '2px solid yellow');
+          let left = parseInt(line.ele.css('left')) + 1;
+          let top = parseInt(line.ele.css('top')) - 1;
+          line.ele.css('left', left + 'px');
+          line.ele.css('top', top + 'px');
+          line.ele.css('border-bottom', '2px solid #F7931E');
         }
       }
 

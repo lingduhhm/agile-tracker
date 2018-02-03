@@ -164,12 +164,13 @@ export default {
       });
     },
     tableRowClassName ({row, rowIndex}) {
+      /* console.log(this.currentData);
       var tableRowList = this.changedItems;
       if (tableRowList[rowIndex] && tableRowList[rowIndex].status === 'Add') {
         return 'blockContent';
       } else if (tableRowList[rowIndex].status === 'Ready for testing') {
         return 'successContent';
-      }
+      } */
       return '';
     },
     getDayStorySummary (day, group, todayObj, previousObj, type) {
@@ -216,7 +217,36 @@ export default {
       this.inProgressItems = inProgressItems;
     },
     getChangedItems: function (day, group, todayObj) {
+      var todayRedItems = todayObj.groups[group].points.redStorys;
       var previousDay = day;
+      if (day > 0) {
+        previousDay = day - 1;
+      } else {}
+      var previousDayObj = this.$root.getDayDataDay(previousDay);
+      var previousRedItems = previousDayObj.groups[group].points.redStorys;
+      var changedItems = [];
+      for (let i = 0; i < todayRedItems.length; i++) {
+        let todayItem = todayRedItems[i];
+        let todayItemID = todayItem._id;
+        if (previousRedItems.length === 0) {
+          changedItems.push(todayItem);
+        } else {
+          let found = false;
+          for (let j = 0; j < previousRedItems.length; j++) {
+            let previousItem = previousRedItems[j];
+            let previousItemId = previousItem._id;
+            if (todayItemID === previousItemId) {
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            changedItems.push(todayItem);
+          }
+        }
+      }
+      this.changedItems = changedItems;
+      /* var previousDay = day;
       if (day > 0) {
         previousDay = day - 1;
       } else {}
@@ -269,7 +299,7 @@ export default {
           changed.push(prevItem);
         }
       }
-      this.changedItems = added.concat(changed);
+      this.changedItems = added.concat(changed); */
     }
   }
 };

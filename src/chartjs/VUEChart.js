@@ -45,10 +45,9 @@ VUEChart.prototype.createInitialDom = function (element) {
   $(element).append(this.ele);
 };
 VUEChart.colors = {};
-VUEChart.colors['lightblue'] = '#3f6688';
-VUEChart.colors['lightorange'] = '#b29666';
+VUEChart.colors['lightblue'] = 'rgba(84, 158, 248, 0.9)';
+VUEChart.colors['lightgreen'] = 'rgba(124, 191, 80, 0.9)';
 VUEChart.colors['lightred'] = '#d18080';
-VUEChart.colors['lightgreen'] = '#92b479';
 VUEChart.colors['lightpurple'] = '#af7db0';
 VUEChart.prototype.init = function (width, height) {
   var self = this;
@@ -416,9 +415,9 @@ VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
   var point2Ele = point2.ele;
   var point2EleId = point2Ele.attr('pointid');
   var lineItem = $('<div style="height:' + this.lineHeight + 'px;background-color:' + color + ';transform-origin:0% 0%;"></div>').attr('lineid', 'line_id_' + point2EleId).attr('groupid', groupid).attr('type', 'line').addClass('chartLines');
-  var point1X = point1.positionX;
+  var point1X = point1.positionX + this.lineHeight / 2;
   var point1Y = point1.positionY - this.lineHeight / 2;
-  var point2X = point2.positionX;
+  var point2X = point2.positionX + this.lineHeight / 2;
   var point2Y = point2.positionY - this.lineHeight / 2;
   var a = point2Y - point1Y;
   var b = point2X - point1X;
