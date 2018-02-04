@@ -6,9 +6,9 @@
         <span slot="title">Dashboard<span class="hint">({{inprogress.length}})</span></span>
       </template>
       <el-menu-item-group v-for="item in inprogress" :key="item._id">
-        <span slot="title" v-if="inprogress.length > 1">{{item.release}}/{{item.sprint}}</span>
-        <el-menu-item :index="'/dashboard/'+item._id" route="/dashboard/">View</el-menu-item>
-        <el-menu-item :index="'/story/'+item._id" route="/story/">Edit</el-menu-item>
+        <span slot="title">{{item.release}}/{{item.sprint}}</span>
+        <el-menu-item :index="'/dashboard/'+item._id" route="/dashboard/">View Dashboard</el-menu-item>
+        <el-menu-item :index="'/story/'+item._id" route="/story/">Edit Stories</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
 
@@ -18,9 +18,9 @@
         <span slot="title">Planning<span class="hint">({{planning.length}})</span></span>
       </template>
       <el-menu-item-group v-for="item in planning" :key="item._id">
-        <span slot="title" v-if="planning.length > 1">{{item.release}}/{{item.sprint}}</span>
-        <el-menu-item :index="'/planning/'+item._id" route="/planning/">View</el-menu-item>
-        <el-menu-item :index="'/story/'+item._id" route="/story/">Edit</el-menu-item>
+        <span slot="title">{{item.release}}/{{item.sprint}}</span>
+        <el-menu-item :index="'/planning/'+item._id" route="/planning/">View Dashboard</el-menu-item>
+        <el-menu-item :index="'/story/'+item._id" route="/story/">Edit Stories</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
 
@@ -30,9 +30,9 @@
         <span slot="title">Done<span class="hint">({{done.length}})</span></span>
       </template>
       <el-menu-item-group v-for="item in done" :key="item._id">
-        <span slot="title" v-if="done.length > 1">{{item.release}}/{{item.sprint}}</span>
-        <el-menu-item :index="'/dashboard/'+item._id" route="/dashboard/">View</el-menu-item>
-        <el-menu-item :index="'/story/'+item._id" route="/story/">Edit</el-menu-item>
+        <span slot="title">{{item.release}}/{{item.sprint}}</span>
+        <el-menu-item :index="'/dashboard/'+item._id" route="/dashboard/">View Dashboard</el-menu-item>
+        <el-menu-item :index="'/story/'+item._id" route="/story/">Edit Stories</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
 
