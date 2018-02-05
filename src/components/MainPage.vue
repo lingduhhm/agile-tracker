@@ -11,7 +11,9 @@
     </div>
     <el-container>
       <el-header>
-        Agile Workflow
+        <h1 class="title">
+        Agile Workflow ({{module}} - {{sprint}})
+        </h1>
       </el-header>
       <el-container>
         <el-main>
@@ -40,7 +42,9 @@ export default {
       chart: null,
       allPoints: [],
       allLines: [],
-      allData: null
+      allData: null,
+      module: '',
+      sprint: ''
     };
   },
   methods: {
@@ -50,6 +54,11 @@ export default {
       setTimeout(function () {
         self.dialogDisplay = null;
       });
+    },
+    sprintSelected: function (sprintSelected) {
+      let sprintName = sprintSelected.release + ' Sprint ' + sprintSelected.sprint;
+      this.module = sprintSelected.module;
+      this.sprint = sprintName;
     },
     getLatestSummaryData: function () {
       // var allGroups = this.$root.sprintSelected.sprintgroups;
@@ -278,6 +287,7 @@ export default {
   created: function () {
     if (this.$root.eventHub) {
       this.$root.eventHub.$on('sprintChanged', this.updateData);
+      this.$root.eventHub.$on('sprintSelected', this.sprintSelected);
     }
   },
   mounted: function () {

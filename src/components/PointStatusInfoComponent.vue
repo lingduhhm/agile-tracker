@@ -70,7 +70,7 @@
           </el-col>
         </el-row>
         <el-table :data="inProgressItems" class="changeItemTab" style="width: 100%" :show-header="false" v-show="isShowAllProcessingItem">
-          <el-table-column prop="storykey" width="120"></el-table-column>
+          <el-table-column prop="displayStoryKey" width="120"></el-table-column>
           <el-table-column prop="points" width="50"></el-table-column>
           <el-table-column prop="status">
             <template slot-scope="scope">
@@ -81,7 +81,7 @@
               trigger="click"
               popper-class="popoverMinWidth">
               <el-row>
-                <el-button type="text" @click="viewIssues('', scope.row)">View issues</el-button>
+                <el-button type="text" @click="viewIssues(scope.row)">View issues</el-button>
               </el-row>
               <el-row>
                 <el-button type="text" @click="addIssue('block', scope.row)">Add a block</el-button>
@@ -121,7 +121,7 @@ export default {
       defaultAddIssueValues: {},
       addIssueCategory: 'block',
       currentSelectedUserStoryId: '',
-      currentSelectedDay: '',
+      currentSelectedDay: 0,
       viewIssueDialogDisplay: false
     };
   },
@@ -154,8 +154,9 @@ export default {
         this.addIssueCategory = category;
       }
     },
-    viewIssues: function () {
+    viewIssues: function (row) {
       var self = this;
+      this.currentSelectedUserStoryId = row._id;
       this.viewIssueDialogDisplay = true;
       setTimeout(function () {
         self.viewIssueDialogDisplay = null;
@@ -170,6 +171,7 @@ export default {
       return '';
     },
     getDayStorySummary (day, group, todayObj, previousObj, type) {
+      this.currentSelectedDay = day;
       this.group = group;
       let calGroups = [group];
       if (group === '') {
@@ -225,14 +227,57 @@ export default {
         var todayUserStory = todayObj.storyList;
         var groupWorkingAvailability = this.prepareDataForGroupWorkingStatus();
         for (let i = 0; i < todayUserStory.length; i++) {
-          let userStoryItem = todayUserStory[i];
+          let userStoryItem = JSON.parse(JSON.stringify(todayUserStory[i]));
           let status = userStoryItem.status;
+          let storyKey = userStoryItem.storykey;
+          let storyID = userStoryItem._id;
+          let storyIssueCount = this._getIssueCount(todayObj, storyID, group).length;
           if (groupWorkingAvailability[currentGroup] !== null && groupWorkingAvailability[currentGroup][status] !== undefined) {
+            userStoryItem.displayStoryKey = storyKey + ' (' + storyIssueCount + ')';
             inProgressItems.push(userStoryItem);
           }
         }
       }
       this.inProgressItems = inProgressItems;
+    },
+    _getIssueCount: function (todayItem, storyID, group) {
+      this.groupList = this.$root.allGroups;
+      var allIssues = [];
+      var calGroups = [this.group];
+      if (this.group === '') {
+        let allGroups = this.$root.allGroups;
+        calGroups = [];
+        for (let i = 0; i < allGroups.length; i++) {
+          calGroups.push(allGroups[i].groupname);
+        }
+      }
+
+      for (let i = 0; i < calGroups.length; i++) {
+        var usingGroup = calGroups[i];
+        let groupData = todayItem.groups[usingGroup];
+        if (groupData == null) {
+          return;
+        }
+        let blocker = groupData.blocker;
+        let followup = groupData.followup;
+        if (blocker != null) {
+          for (let j = 0; j < blocker.length; j++) {
+            let blockItem = blocker[j];
+            if (blockItem.storyid === storyID) {
+              allIssues.push(blockItem);
+            }
+          }
+        }
+        if (followup != null) {
+          for (let j = 0; j < followup.length; j++) {
+            let followupItem = followup[j];
+            if (followupItem.storyid === storyID) {
+              allIssues.push(followupItem);
+            }
+          }
+        }
+      }
+      return allIssues;
     },
     getChangedItems: function (day, group, todayObj) {
       var changedItems = [];

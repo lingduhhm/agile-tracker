@@ -1,13 +1,13 @@
 <template>
   <div class="viewIssuesDialogContainer">
     <div class="viewIssuesContainer">
-      <el-dialog title="Add New Blocker" :visible.sync="dialogVisible" width="30%" @open="getRootData" class="addPointDialog">
+      <el-dialog :title.sync="dialogTitle" :visible.sync="dialogVisible" width="30%" @open="getRootData" class="addPointDialog">
         <template>
           <el-table
             :data="tableData"
-            style="width: 100%">
+            style="width: 100%" :row-class-name="tableRowClassName">
             <el-table-column
-              prop="issueKey"
+              prop="issuekey"
               label="Issue Key"
               width="180">
             </el-table-column>
@@ -16,7 +16,7 @@
               label="Category">
             </el-table-column>
             <el-table-column
-              prop="ingroup"
+              prop="issuegroupStr"
               label="Group"
               width="180">
             </el-table-column>
@@ -37,34 +37,85 @@ export default {
       default: true
     },
     'userStoryId': String,
-    'day': String,
+    'day': Number,
     'group': String
   },
   data () {
     return {
       groupList: [],
       dialogVisible: false,
-      tableData: []
+      tableData: [],
+      dialogTitle: ''
     };
   },
   methods: {
+    tableRowClassName: function ({row, rowIndex}) {
+      console.log(row);
+      if (row.category === 'block') {
+        return 'block';
+      } else if (row.category === 'followup') {
+        return 'followup';
+      }
+      return '';
+    },
     getRootData: function () {
       this.groupList = this.$root.allGroups;
       var todayItem = this.$root.getDayDataDay(parseInt(this.day));
       var allIssues = [];
-      let groupData = todayItem.groups[this.group];
-      if (groupData == null) {
-        return;
+      var calGroups = [this.group];
+      if (this.group === '') {
+        let allGroups = this.$root.allGroups;
+        calGroups = [];
+        for (let i = 0; i < allGroups.length; i++) {
+          calGroups.push(allGroups[i].groupname);
+        }
       }
-      let blocker = groupData.blocker;
-      let followup = groupData.followup;
-      if (blocker != null) {
-        allIssues = allIssues.concat(blocker);
+
+      for (let i = 0; i < calGroups.length; i++) {
+        var usingGroup = calGroups[i];
+        let groupData = todayItem.groups[usingGroup];
+        if (groupData == null) {
+          return;
+        }
+        let blocker = groupData.blocker;
+        let followup = groupData.followup;
+        if (blocker != null) {
+          for (let j = 0; j < blocker.length; j++) {
+            let blockItem = blocker[j];
+            if (blockItem.storyid === this.userStoryId) {
+              allIssues.push(blockItem);
+            }
+          }
+        }
+        if (followup != null) {
+          for (let j = 0; j < followup.length; j++) {
+            let followupItem = followup[j];
+            if (followupItem.storyid === this.userStoryId) {
+              allIssues.push(followupItem);
+            }
+          }
+        }
       }
-      if (followup != null) {
-        allIssues = allIssues.concat(followup);
+      for (let i = 0; i < allIssues.length; i++) {
+        let issue = allIssues[i];
+        let groups = issue.issuegroup;
+        let groupStr = '';
+        for (let j = 0; j < groups.length; j++) {
+          let theG = groups[j];
+          groupStr = groupStr + ' ' + theG.groupname;
+        }
+        issue.issuegroupStr = groupStr;
       }
       this.tableData = allIssues;
+
+      for (let i = 0; i < this.$root.summary.storyList.length; i++) {
+        let storyItem = this.$root.summary.storyList[i];
+        let storyItemID = storyItem._id;
+        if (storyItemID === this.userStoryId) {
+          this.dialogTitle = 'View Story Issues for ' + storyItem.storykey;
+          break;
+        }
+      }
     }
   },
   created: function () {
@@ -83,7 +134,8 @@ export default {
   }
 };
 </script>
-<style>
+<style lang="less">
+@import '../css/globalDefine';
 .viewIssuesDialogContainer .selections {
   /*margin-top: 20px;*/
 }
@@ -92,5 +144,13 @@ export default {
 .viewIssuesContainer a {
   text-decoration: none;
 }
-
+#app .viewIssuesDialogContainer .addPointDialog {
+  text-align: left;
+}
+.followup {
+  color: @warningColor;
+}
+.block {
+  color: @dangerColor;
+}
 </style>
