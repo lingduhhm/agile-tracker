@@ -381,8 +381,12 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
+<style lang="less">
 @import '../css/globalDefine';
+.workingInProgressItem .el-table td {
+  text-align: left;
+  padding-left: 10px;
+}
 .changeItemTab {
   border-bottom: 1px solid @borderColor;
 }
