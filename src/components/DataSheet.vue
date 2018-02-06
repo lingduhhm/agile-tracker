@@ -35,10 +35,10 @@
           <point-status></point-status>
         </el-tab-pane>
         <el-tab-pane name="blockTab" :label="blockLabel" class="dataSheetTabItem">
-          <block-issues></block-issues>
+          <issue-component type='block'></issue-component>
         </el-tab-pane>
         <el-tab-pane name="followupTab" :label="followupLabel" class="dataSheetTabItem">
-          <followups></followups>
+          <issue-component type='followup'></issue-component>
         </el-tab-pane>
       </el-tabs>
     </el-main>
@@ -47,8 +47,7 @@
 
 <script>
 import PointStatus from '@/components/PointStatusInfoComponent';
-import BlockIssues from '@/components/BlockIssuesInfoComponent';
-import Followups from '@/components/FollowupInfoComponent';
+import IssuesInfoComponent from '@/components/IssueInfoComponent';
 import AddDialogContent from '@/components/AddPointDialogComponent';
 import SprintDialogContent from '@/components/SprintSelectComponent';
 export default {
@@ -157,8 +156,7 @@ export default {
   },
   components: {
     'point-status': PointStatus,
-    'block-issues': BlockIssues,
-    'followups': Followups,
+    'issue-component': IssuesInfoComponent,
     'add-point-dialog': AddDialogContent,
     'sprint-select-dialog': SprintDialogContent
   },
