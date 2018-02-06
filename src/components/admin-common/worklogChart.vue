@@ -95,7 +95,7 @@
               data: [],
               markLine: {
                 data: [
-                  {type: 'average', name: '平均值'}
+                  {type: 'average', name: 'Average'}
                 ]
               }
             }
