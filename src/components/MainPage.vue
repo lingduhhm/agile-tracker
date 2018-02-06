@@ -108,12 +108,13 @@ export default {
         this.addNewGroup(group, groupIndex);
         groupIndex++;
       }
-      for (var i = 0; i < summary.length; i++) {
-        var summ = summary[i];
-        var day = summ.day;
+      if (summary.length > 0) {
+        let i = 0;
+        let summ = summary[i + 1];
+        let day = summ.day;
         let groups = summ.groups;
         for (let groupid in groups) {
-          var groupObj = groups[groupid];
+          let groupObj = groups[groupid];
           if (dataByGroup[groupid] == null) {
             dataByGroup[groupid] = {};
           }
@@ -121,23 +122,27 @@ export default {
           dataByGroup[groupid]['blocker'] = groupObj['blocker'];
           dataByGroup[groupid]['followup'] = groupObj['followup'];
           dataByGroup[groupid]['point'] = groupObj.points;
-          var currentPoint = groupObj.currentPoint;
+          let currentPoint = groupObj.currentPoint;
 
           this.allPoints.push(this.chart.addPoint(i, currentPoint, groupid, {type: 'all', group: groupid, summarydata: summ, constances: constances}));
+        }
+      }
+      for (let i = 1; i < summary.length; i++) {
+        let summ = summary[i];
+        let day = summ.day;
+        let groups = summ.groups;
+        for (let groupid in groups) {
+          let groupObj = groups[groupid];
+          if (dataByGroup[groupid] == null) {
+            dataByGroup[groupid] = {};
+          }
+          dataByGroup[groupid]['day'] = day;
+          dataByGroup[groupid]['blocker'] = groupObj['blocker'];
+          dataByGroup[groupid]['followup'] = groupObj['followup'];
+          dataByGroup[groupid]['point'] = groupObj.points;
+          let currentPoint = groupObj.currentPoint;
 
-          // if (i === 0) {
-          //   initialPoints[groupid] = initialPoints[groupid] - groupObj['points']['red'];
-          //   initialPoints[groupid] = initialPoints[groupid] + groupObj['points']['add'];
-          //   this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'add', group: groupid, summarydata: summ, constances: constances}));
-          // } else {
-          //   initialPoints[groupid] = initialPoints[groupid] - groupObj['points']['red'];
-          //   this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'red', group: groupid, summarydata: summ, constances: constances}));
-
-          //   if (groupObj['points']['add'] > 0) {
-          //     initialPoints[groupid] = initialPoints[groupid] + groupObj['points']['add'];
-          //     this.allPoints.push(this.chart.addPoint(i, initialPoints[groupid], groupid, {type: 'add', group: groupid, summarydata: summ, constances: constances}));
-          //   }
-          // }
+          this.allPoints.push(this.chart.addPoint(i, currentPoint, groupid, {type: 'all', group: groupid, summarydata: summ, constances: constances}));
         }
       }
       this.chart.renderBar();
@@ -148,7 +153,7 @@ export default {
       for (let group in linesGroup) {
         lines = lines.concat(linesGroup[group].lines);
       }
-      for (i = 0; i < lines.length; i++) {
+      for (let i = 0; i < lines.length; i++) {
         var line = lines[i];
         var lineEndPoint = line.endPoint;
         let groups = lineEndPoint.extraData.summarydata.groups;

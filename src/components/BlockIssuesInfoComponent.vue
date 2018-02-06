@@ -7,7 +7,7 @@
         </el-col>
         <el-col :span="6">
           <i class="el-icon-circle-plus-outline addIssueIcon"  v-show="isShowAction" @click="openDialog"></i>
-          <add-block-dialog :dialogDisplay="dialogDisplay" :blockIssues="issues" category="block"></add-block-dialog>
+          <add-block-dialog :dialogDisplay="dialogDisplay" category="block"></add-block-dialog>
         </el-col>
       </el-row>
     </el-header>
@@ -58,7 +58,7 @@
         </el-table-column>
         <el-table-column prop="status">
           <template slot-scope="scope">
-            <el-popover popper-class="popoverMinWidth" ref="popoverStatus" trigger="click" :disabled = "!isShowAction">
+            <el-popover popper-class="popoverMinWidth" ref="popoverStatus" trigger="click" :disabled = "!isShowAction" v-model="popoverdisplay">
               <el-row>
                 <el-button type="text" v-show="scope.row.status !== 'Resolved'" @click="updateIssueStatus(scope.row, 'Resolved')">Resolved</el-button>
               </el-row>
@@ -66,7 +66,7 @@
                 <el-button type="text" v-show="scope.row.status !== 'Open'" @click="updateIssueStatus(scope.row, 'Open')">Blocking</el-button>
               </el-row>
               <el-row>
-                <el-button type="text" @click="updateIssueStatus(scope.row, 'Followup')">Followup</el-button>
+                <el-button type="text" @click="updateIssueCategory(scope.row, 'followup')">Followup</el-button>
               </el-row>
             </el-popover>
             <span v-popover:popoverStatus>{{scope.row.status}}</span>
@@ -78,18 +78,19 @@
   </el-container>
 </template>
 <script>
-import AddDialogContent from '@/components/AddBlockedDialogContent';
+import AddDialogContent from '@/components/AddIssueDialog';
 export default {
   components: { 'add-block-dialog': AddDialogContent },
   data () {
     return {
-      isShowAction: true,
+      isShowAction: false,
       issues: [],
       previousIssues: [],
       currentblockersnum: 0,
       previousblockersnum: 0,
       dialogDisplay: false,
-      isShowAll: true
+      isShowAll: true,
+      popoverdisplay: false
     };
   },
   methods: {
@@ -102,6 +103,44 @@ export default {
         }
       }
       return '';
+    },
+    updateIssueCategory (row, category) {
+  //     var formData = req.body;
+  // var sprintid = formData.sprintid;
+  // var issueid = formData.issueid; // The Object id for the issue
+  // var changereason = formData.changereason; // reason of the change
+  // var changefield = formData.changefield; // field name
+  // var dataafterchange = formData.dataafterchange;
+  // var changeinsprintday = formData.changeinsprintday; // 10
+      var sprint = this.$root.sprintSelected._id;
+      var changeinsprintday = this.$root.summary.summary.length - 1;
+      var updateInfo = {
+        sprintid: sprint,
+        issueid: row._id,
+        changefield: 'category',
+        dataafterchange: category,
+        changeinsprintday: changeinsprintday
+      };
+      var self = this;
+      this.axios.post('/api/v1/updateIssue', updateInfo).then(function (response) {
+        self.popoverdisplay = false;
+        if (response.data.status === 'success') {
+          self.$root.eventHub.$emit('sprintDataChanged');
+          // row.status = status;
+        } else {
+          self.$message({
+            message: response.data.resMsg,
+            type: 'error'
+          });
+        }
+      }).catch(function (error) {
+        self.popoverdisplay = false;
+        console.log(error);
+        self.$message({
+          message: 'Server Error',
+          type: 'error'
+        });
+      });
     },
     updateIssueStatus (row, status) {
   //     var formData = req.body;
@@ -122,6 +161,7 @@ export default {
       };
       var self = this;
       this.axios.post('/api/v1/updateIssue', updateInfo).then(function (response) {
+        self.popoverdisplay = false;
         if (response.data.status === 'success') {
           self.$root.eventHub.$emit('sprintDataChanged');
           // row.status = status;
@@ -132,6 +172,7 @@ export default {
           });
         }
       }).catch(function (error) {
+        self.popoverdisplay = false;
         console.log(error);
         self.$message({
           message: 'Server Error',

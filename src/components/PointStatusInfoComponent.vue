@@ -70,28 +70,34 @@
           </el-col>
         </el-row>
         <el-table :data="inProgressItems" class="changeItemTab" style="width: 100%" :show-header="false" v-show="isShowAllProcessingItem">
-          <el-table-column prop="displayStoryKey" width="120"></el-table-column>
+          <el-table-column width="120">
+            <template slot-scope="scope">
+              <span>
+                {{scope.row.storykey}} <span v-if="scope.row.storyIssueCount > 0">({{scope.row.storyIssueCount}})</span>
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column prop="points" width="50"></el-table-column>
           <el-table-column prop="status">
             <template slot-scope="scope">
-            <el-popover
-              ref="storyFunction"
-              placement="bottom"
-              width="200"
-              trigger="click"
-              popper-class="popoverMinWidth">
-              <el-row>
-                <el-button type="text" @click="viewIssues(scope.row)">View issues</el-button>
-              </el-row>
-              <el-row>
-                <el-button type="text" @click="addIssue('block', scope.row)">Add a block</el-button>
-              </el-row>
-              <el-row>
-                <el-button type="text" @click="addIssue('followup')">Add a followup</el-button>
-              </el-row>
-            </el-popover>
-            <span v-popover:storyFunction>{{scope.row.status}}</span>
-          </template>
+              <el-popover
+                ref="storyFunction"
+                placement="bottom"
+                width="200"
+                trigger="click"
+                popper-class="popoverMinWidth">
+                <el-row>
+                  <el-button type="text" @click="viewIssues(scope.row)">View issues</el-button>
+                </el-row>
+                <el-row>
+                  <el-button type="text" @click="addIssue('block', scope.row)">Add a block</el-button>
+                </el-row>
+                <el-row>
+                  <el-button type="text" @click="addIssue('followup')">Add a followup</el-button>
+                </el-row>
+              </el-popover>
+              <span v-popover:storyFunction>{{scope.row.status}}</span>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -116,7 +122,7 @@ export default {
       previousPoint: 0,
       changedItems: [],
       inProgressItems: [],
-      isShowAllProcessingItem: false,
+      isShowAllProcessingItem: true,
       dialogDisplay: false,
       defaultAddIssueValues: {},
       addIssueCategory: 'block',
@@ -146,7 +152,7 @@ export default {
         }
       }
       if (groupObj !== null) {
-        this.defaultAddIssueValues['issueGroup'] = [{'groupname': groupObj.groupname, '_id': groupObj._id}];
+        this.defaultAddIssueValues['issueGroup'] = {'groupname': groupObj.groupname, '_id': groupObj._id};
         var self = this;
         setTimeout(function () {
           self.dialogDisplay = null;
@@ -234,6 +240,7 @@ export default {
           let storyIssueCount = this._getIssueCount(todayObj, storyID, group).length;
           if (groupWorkingAvailability[currentGroup] !== null && groupWorkingAvailability[currentGroup][status] !== undefined) {
             userStoryItem.displayStoryKey = storyKey + ' (' + storyIssueCount + ')';
+            userStoryItem.storyIssueCount = storyIssueCount;
             inProgressItems.push(userStoryItem);
           }
         }

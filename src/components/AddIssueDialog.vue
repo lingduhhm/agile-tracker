@@ -38,7 +38,7 @@
           <el-form-item label="Issue Group:" prop="issueGroup">
             <el-row>
               <el-col :span="10">
-                <el-select v-model="ruleForm.issueGroup" value-key="_id" filterable allow-create multiple placeholder="Please select group">
+                <el-select v-model="ruleForm.issueGroup" value-key="_id" filterable allow-create placeholder="Please select group">
                   <el-option v-for="item in groupList" :key="item._id" :label="item.groupname" :value="item">
                   </el-option>
                 </el-select>

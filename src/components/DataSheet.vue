@@ -96,6 +96,8 @@ export default {
         for (let i = 0; i < allGroups.length; i++) {
           calGroups.push(allGroups[i].groupname);
         }
+      } else {
+        this.groupName = group;
       }
       var blockCount = 0;
       var followupCount = 0;
