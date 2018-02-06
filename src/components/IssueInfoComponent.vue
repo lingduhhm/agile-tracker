@@ -7,7 +7,7 @@
         </el-col>
         <el-col :span="6">
           <i class="el-icon-circle-plus-outline addIssueIcon"  v-show="isShowAction" @click="openDialog"></i>
-          <add-block-dialog :dialogDisplay="dialogDisplay" category="block"></add-block-dialog>
+          <add-block-dialog :defaultValues="defaultAddIssueValues" :dialogDisplay="dialogDisplay" category="block"></add-block-dialog>
         </el-col>
       </el-row>
     </el-header>
@@ -102,7 +102,9 @@ export default {
       previousblockersnum: 0,
       dialogDisplay: false,
       isShowAll: true,
-      title: ''
+      title: '',
+      defaultAddIssueValues: {},
+      group: ''
     };
   },
   methods: {
@@ -204,12 +206,27 @@ export default {
     openDialog: function () {
       this.dialogDisplay = true;
       var self = this;
+      if (this.group !== '') {
+        var groups = this.$root.allGroups;
+        var groupObj = null;
+        for (var i = 0; i < groups.length; i++) {
+          var groupItem = groups[i];
+          if (this.group === groupItem.groupname) {
+            groupObj = groupItem;
+            break;
+          }
+        }
+        this.defaultAddIssueValues['issueGroup'] = {'groupname': groupObj.groupname, '_id': groupObj._id};
+      } else {
+        this.defaultAddIssueValues['issueGroup'] = {};
+      }
       setTimeout(function () {
         self.dialogDisplay = null;
       });
     },
     getDayBlockSummary: function (day, clickedGroup, todayData, previousData) {
       let calGroups = [clickedGroup];
+      this.group = clickedGroup;
       if (clickedGroup === '') {
         let allGroups = this.$root.allGroups;
         calGroups = [];

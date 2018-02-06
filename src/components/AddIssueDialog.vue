@@ -1,7 +1,7 @@
 <template>
   <div class="addPointDialogContainer">
     <div class="BISelectContainer">
-      <el-dialog title="Add New Blocker" :visible.sync="dialogVisible" width="30%" @open="getRootData" @close="handleClose('ruleForm')" class="addPointDialog">
+      <el-dialog :title="title" :visible.sync="dialogVisible" width="30%" @open="getRootData" @close="handleClose('ruleForm')" class="addPointDialog">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="120px" class="demo-ruleForm">
           <el-form-item label="Issue Number:" prop="issueAdded">
             <el-row>
@@ -111,11 +111,17 @@ export default {
       },
       biList: [],
       groupList: [],
-      dialogVisible: false
+      dialogVisible: false,
+      title: ''
     };
   },
   methods: {
     getRootData: function () {
+      if (this.category === 'block') {
+        this.title = 'Add New Block Issue';
+      } else if (this.category === 'followup') {
+        this.title = 'Add New Followup Issue';
+      }
       this.biList = this.$root.summary.storyList;
       this.groupList = this.$root.allGroups;
 

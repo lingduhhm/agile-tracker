@@ -169,12 +169,11 @@ export default {
       });
     },
     tableRowClassName ({row, rowIndex}) {
-      if (row.isRed) {
-        return 'successContent';
-      } else if (row.isAdd) {
+      if (row.AddStory) {
         return 'blockContent';
+      } else {
+        return 'successContent';
       }
-      return '';
     },
     getDayStorySummary (day, group, todayObj, previousObj, type) {
       this.currentSelectedDay = day;
@@ -196,10 +195,14 @@ export default {
         let currentData = todayObj['groups'][currentGroup];
         let previousData = previousObj['groups'][currentGroup];
         allRedCount += currentData['points']['red'];
-        allAddCount += currentData['points']['add'];
+        // allAddCount += currentData['points']['add'];
         allPoint += currentData.currentPoint;
         allPrevPoint += previousData.currentPoint;
+        allAddCount += this._getNewlyAddedPoints(todayObj.storyList, currentGroup);
       }
+      /* if (allAddCount > 0) {
+        allRedCount = allRedCount + allAddCount;
+      } */
       this.reduceCount = allRedCount;
       this.addCount = allAddCount;
       this.currentPoint = allPoint;
@@ -208,6 +211,24 @@ export default {
       // this.changedItems = todayObj.storyList;
       this.getChangedItems(day, calGroups, todayObj);
       this.getInProgressItems(todayObj, calGroups);
+    },
+    _getNewlyAddedPoints (storyList, group) {
+      var totalAddedPoint = 0;
+      for (let i = 0; i < storyList.length; i++) {
+        var story = storyList[i];
+        var isAdd = story.AddStory;
+        var point = story.points;
+        var ingroup = story.ingroup;
+        for (let j = 0; j < ingroup.length; j++) {
+          let groupObj = ingroup[j];
+          let groupname = groupObj.groupname;
+          if (groupname === group && isAdd === true) {
+            totalAddedPoint += point;
+            break;
+          }
+        }
+      }
+      return totalAddedPoint;
     },
     prepareDataForGroupWorkingStatus: function () {
       var groups = this.$root.allGroups;
@@ -286,8 +307,18 @@ export default {
       }
       return allIssues;
     },
+    _isStoryInList: function (storyList, story) {
+      for (let i = 0; i < storyList.length; i++) {
+        var st = storyList[i];
+        if (st._id === story._id) {
+          return true;
+        }
+      }
+      return false;
+    },
     getChangedItems: function (day, group, todayObj) {
       var changedItems = [];
+      var storyList = todayObj.storyList;
       for (let i = 0; i < group.length; i++) {
         var currentGroup = group[i];
         var todayRedItems = todayObj.groups[currentGroup].points.redStorys;
@@ -297,11 +328,12 @@ export default {
         } else {}
         var previousDayObj = this.$root.getDayDataDay(previousDay);
         var previousRedItems = previousDayObj.groups[currentGroup].points.redStorys;
+        // get reduced changed item
         for (let i = 0; i < todayRedItems.length; i++) {
           let todayItem = JSON.parse(JSON.stringify(todayRedItems[i]));
           todayItem.isRed = true;
           let todayItemID = todayItem._id;
-          if (previousRedItems.length === 0) {
+          if (previousRedItems.length === 0 && !this._isStoryInList(changedItems, todayItem)) {
             changedItems.push(todayItem);
           } else {
             let found = false;
@@ -313,13 +345,26 @@ export default {
                 break;
               }
             }
-            if (!found) {
+            if (!found && !this._isStoryInList(changedItems, todayItem)) {
               changedItems.push(todayItem);
             }
           }
         }
+        // get added changed item
+        for (let i = 0; i < storyList.length; i++) {
+          var story = storyList[i];
+          var isAdd = story.AddStory;
+          var ingroup = story.ingroup;
+          for (let j = 0; j < ingroup.length; j++) {
+            let groupObj = ingroup[j];
+            let groupname = groupObj.groupname;
+            if (groupname === currentGroup && isAdd === true && !this._isStoryInList(changedItems, story)) {
+              changedItems.push(story);
+              break;
+            }
+          }
+        }
       }
-
       this.changedItems = changedItems;
       /* var previousDay = day;
       if (day > 0) {
