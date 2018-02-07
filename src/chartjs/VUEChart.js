@@ -376,7 +376,11 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
   if (isAdd) {
     points.push(point);
   }
+
   var pointItem = $('<div></div>').attr('pointid', 'point_id_' + point.x + '-' + point.y).attr('groupid', groupid).attr('type', 'point').addClass('chartPoint').height(this.pointHeight).width(this.pointWidth).css('color', color).css('backgroundColor', color).css('top', positionY + 'px').css('left', positionX + 'px').css('border-radius', this.pointWidth / 2 + 'px');
+  if (extradata && extradata.cssstyle) {
+    pointItem.css(extradata.cssstyle);
+  }
 
   pointItem.click(function (evt) {
     var isClicked = $(this).hasClass('pointHighlited');
@@ -547,6 +551,7 @@ VUEChart.prototype.reRenderGroupVisible = function () {
 VUEChart.prototype.reActivePoint = function () {
   var currentPoint = this.currentActivePoint;
   if (currentPoint == null) {
+    this.ele.find('.chart .chartArea [type="point"]').removeClass('pointHighlited');
     return;
   }
   var groupid = currentPoint.groupid;

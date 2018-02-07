@@ -95,6 +95,24 @@ export default {
       }
       return returnSummary;
     },
+    _isHaveAddStory: function (storyList, group) {
+      var totalAddedPoint = 0;
+      for (let i = 0; i < storyList.length; i++) {
+        var story = storyList[i];
+        var isAdd = story.AddStory;
+        var point = story.points;
+        var ingroup = story.ingroup;
+        for (let j = 0; j < ingroup.length; j++) {
+          let groupObj = ingroup[j];
+          let groupname = groupObj.groupname;
+          if (groupname === group && isAdd === true) {
+            totalAddedPoint += point;
+            break;
+          }
+        }
+      }
+      return totalAddedPoint;
+    },
     updateData: function (response) {
       this.chart.emptyData();
       this.allData = response.resData;
@@ -113,6 +131,7 @@ export default {
         let summ = summary[i + 1];
         let day = summ.day;
         let groups = summ.groups;
+        let todayStoryList = summ.storyList;
         for (let groupid in groups) {
           let groupObj = groups[groupid];
           if (dataByGroup[groupid] == null) {
@@ -124,12 +143,19 @@ export default {
           dataByGroup[groupid]['point'] = groupObj.points;
           let currentPoint = groupObj.currentPoint;
 
-          this.allPoints.push(this.chart.addPoint(i, currentPoint, groupid, {type: 'all', group: groupid, summarydata: summ, constances: constances}));
+          let todayAddPoint = this._isHaveAddStory(todayStoryList, groupid);
+          let cssstyle = {};
+          if (todayAddPoint > 0) {
+            cssstyle = {'border': '2px solid black'};
+          }
+          let addedPoint = this.chart.addPoint(i, currentPoint, groupid, {cssstyle: cssstyle, type: 'all', group: groupid, summarydata: summ, constances: constances});
+          this.allPoints.push(addedPoint);
         }
       }
       for (let i = 1; i < summary.length; i++) {
         let summ = summary[i];
         let day = summ.day;
+        let todayStoryList = summ.storyList;
         let groups = summ.groups;
         for (let groupid in groups) {
           let groupObj = groups[groupid];
@@ -141,8 +167,13 @@ export default {
           dataByGroup[groupid]['followup'] = groupObj['followup'];
           dataByGroup[groupid]['point'] = groupObj.points;
           let currentPoint = groupObj.currentPoint;
+          let todayAddPoint = this._isHaveAddStory(todayStoryList, groupid);
+          let cssstyle = {};
+          if (todayAddPoint > 0) {
+            cssstyle = {'border': '2px solid rgba(245, 108, 108, 0.8)'};
+          }
 
-          this.allPoints.push(this.chart.addPoint(i, currentPoint, groupid, {type: 'all', group: groupid, summarydata: summ, constances: constances}));
+          this.allPoints.push(this.chart.addPoint(i, currentPoint, groupid, {cssstyle: cssstyle, type: 'all', group: groupid, summarydata: summ, constances: constances}));
         }
       }
       this.chart.renderBar();
