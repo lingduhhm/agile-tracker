@@ -117,6 +117,7 @@ export default {
   },
   methods: {
     getRootData: function () {
+      console.log(this.category);
       if (this.category === 'block') {
         this.title = 'Add New Block Issue';
       } else if (this.category === 'followup') {

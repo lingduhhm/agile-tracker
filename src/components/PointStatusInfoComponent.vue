@@ -333,7 +333,7 @@ export default {
           let todayItem = JSON.parse(JSON.stringify(todayRedItems[i]));
           todayItem.isRed = true;
           let todayItemID = todayItem._id;
-          if (previousRedItems.length === 0 && !this._isStoryInList(changedItems, todayItem)) {
+          if (previousRedItems.length === 0) {
             changedItems.push(todayItem);
           } else {
             let found = false;
@@ -345,7 +345,7 @@ export default {
                 break;
               }
             }
-            if (!found && !this._isStoryInList(changedItems, todayItem)) {
+            if (!found) {
               changedItems.push(todayItem);
             }
           }

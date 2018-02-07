@@ -7,7 +7,7 @@
         </el-col>
         <el-col :span="6">
           <i class="el-icon-circle-plus-outline addIssueIcon"  v-show="isShowAction" @click="openDialog"></i>
-          <add-block-dialog :defaultValues="defaultAddIssueValues" :dialogDisplay="dialogDisplay" category="block"></add-block-dialog>
+          <add-block-dialog :defaultValues="defaultAddIssueValues" :dialogDisplay="dialogDisplay" :category="type"></add-block-dialog>
         </el-col>
       </el-row>
     </el-header>
