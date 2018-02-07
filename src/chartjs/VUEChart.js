@@ -528,13 +528,13 @@ VUEChart.prototype.renderBar = function () {
       $(this).toggleClass('disabled');
       if ($(this).hasClass('disabled')) {
         self.setVisible(theGroupId, false);
-        self.groupVisible[groupid] = false;
+        self.groupVisible[theGroupId] = false;
       } else {
         self.setVisible(theGroupId, true);
-        self.groupVisible[groupid] = true;
+        self.groupVisible[theGroupId] = true;
       }
     });
-    $(this).removeClass('disabled');
+    $(groupEle).removeClass('disabled');
     if (this.groupVisible[groupid] === false) {
       groupEle.addClass('disabled');
       this.setVisible(groupid, false);
@@ -545,6 +545,7 @@ VUEChart.prototype.reRenderGroupVisible = function () {
   // console.log(this.groupVisible);
   for (let groupid in this.groupVisible) {
     var visibleStatus = this.groupVisible[groupid];
+    console.log(groupid + ':' + visibleStatus);
     this.setVisible(groupid, visibleStatus);
   }
 };

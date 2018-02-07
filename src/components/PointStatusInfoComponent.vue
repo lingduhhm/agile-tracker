@@ -23,7 +23,7 @@
           </el-col>
           <el-col :span="9">
             <i class="el-icon-caret-top blockContent"></i>
-            <span class="blockContent">{{addCount}}</span>
+            <span class="blockContent">{{removedCount}} <span class="minFontSize" v-show="addCount > 0">({{addCount}})</span></span>
           </el-col>
         </el-row>
         <el-row type="flex" class="row-bg" justify="space-around" style="height: 30px;line-height: 30px;">
@@ -117,7 +117,8 @@ export default {
     return {
       group: '',
       reduceCount: 0,
-      addCount: 0,
+      addCount: 0, // story added for the sprint in this day it means the story been added to sprint at this day
+      removedCount: 0, // story added for this day it means status changed and story been moved out from the current group
       currentPoint: 0,
       previousPoint: 0,
       changedItems: [],
@@ -186,6 +187,7 @@ export default {
           calGroups.push(allGroups[i].groupname);
         }
       }
+
       let allPoint = 0;
       let allPrevPoint = 0;
       let allRedCount = 0;
@@ -229,6 +231,39 @@ export default {
         }
       }
       return totalAddedPoint;
+    },
+    _searchStoryInList: function (storyList, story) {
+      for (let i = 0; i < storyList.length; i++) {
+        let st = storyList[i];
+        if (st._id === story._id) {
+          return st;
+        }
+      }
+      return null;
+    },
+    _getTodayRemovedFromRedStory: function (todayObj, previousObj, day) {
+      let todaySumm = this.$root.getDayDataDay(day);
+      let todayStoryList = todaySumm.storyList;
+      var removedList = [];
+      var todayRedStoryList = todayObj.points.redStorys;
+      var previousRedStoryList = previousObj.points.redStorys;
+      let removedStoryListPoint = 0;
+      for (let i = 0; i < previousRedStoryList.length; i++) {
+        let prevStory = previousRedStoryList[i];
+        if (!this._searchStoryInList(todayRedStoryList, prevStory)) {
+          let todayRemovedStory = this._searchStoryInList(todayStoryList, prevStory);
+          if (!this._searchStoryInList(removedList, todayRemovedStory)) {
+            todayRemovedStory.AddStory = true;
+            removedStoryListPoint += todayRemovedStory.points;
+            removedList.push(todayRemovedStory);
+          }
+        }
+      }
+      // if the story status changed and current reduce story do not have this, then it is only the added story not the reduce story
+      // require to delete the point from reduce count
+      this.reduceCount = this.reduceCount - removedStoryListPoint;
+      this.removedCount = removedStoryListPoint;
+      return removedList;
     },
     prepareDataForGroupWorkingStatus: function () {
       var groups = this.$root.allGroups;
@@ -319,6 +354,10 @@ export default {
     getChangedItems: function (day, group, todayObj) {
       var changedItems = [];
       var storyList = todayObj.storyList;
+      let previousData = todayObj;
+      if (day > 0) {
+        previousData = this.$root.getDayDataDay(day - 1);
+      }
       for (let i = 0; i < group.length; i++) {
         var currentGroup = group[i];
         var todayRedItems = todayObj.groups[currentGroup].points.redStorys;
@@ -364,6 +403,14 @@ export default {
               break;
             }
           }
+        }
+
+        // add removed from yesterday reduced user story
+        let previousDayData = previousData.groups[currentGroup];
+        let todayDayObj = todayObj.groups[currentGroup];
+        let removedStoryList = this._getTodayRemovedFromRedStory(todayDayObj, previousDayData, day);
+        if (removedStoryList.length > 0) {
+          changedItems = changedItems.concat(removedStoryList);
         }
       }
       changedItems = changedItems.concat(addedItems);
@@ -472,5 +519,8 @@ header.pointStatus {
 
 .popoverMinWidth .el-button--text {
   color: #606266;
+}
+.minFontSize {
+  font-size: 0.8rem;
 }
 </style>
