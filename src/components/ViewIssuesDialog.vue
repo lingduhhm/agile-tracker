@@ -50,7 +50,6 @@ export default {
   },
   methods: {
     tableRowClassName: function ({row, rowIndex}) {
-      console.log(row);
       if (row.category === 'block') {
         return 'block';
       } else if (row.category === 'followup') {

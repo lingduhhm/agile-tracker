@@ -196,7 +196,7 @@ export default {
             for (let j = 0; j < groupBlocker.length; j++) {
               var groupBlockerItem = groupBlocker[j];
               if (groupBlockerItem.status !== issueResovledStatus && lineEndPoint.extraData.group === groupid) {
-                console.log('we have block issue at sprint day:' + i);
+                // console.log('we have block issue at sprint day:' + i);
                 ifLineBlock = true;
                 break;
               }
@@ -212,7 +212,7 @@ export default {
             for (let j = 0; j < groupFollowup.length; j++) {
               var groupFollowupItem = groupFollowup[j];
               if (groupFollowupItem.status !== issueResovledStatus && lineEndPoint.extraData.group === groupid) {
-                console.log('we have followup issue at sprint day:' + i);
+                // console.log('we have followup issue at sprint day:' + i);
                 ifLineFollowup = true;
                 break;
               }
@@ -307,11 +307,11 @@ export default {
           }
         }
         let displayContent = '<div>Day ' + day + ': ' + clickedGroup + '</div><div>Point: ' + point + '</div><div>Blocker: ' + blockerCount + '&nbsp;&nbsp;Followup: ' + followupCount + '</div>';
-        console.log(displayContent);
+        // console.log(displayContent);
         chart.displayPopover(x, y, displayContent);
       });
       chart.addEventListener('pointhoverleave', function (evt) {
-        console.log('hide');
+        // console.log('hide');
         chart.hidePopover();
       });
       /* chart.addGroup('null', {color: 'green'});

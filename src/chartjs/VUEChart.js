@@ -97,7 +97,7 @@ VUEChart.prototype.init = function (width, height) {
   this.numberUnderEachXGap = Math.ceil(this.minXGap / this.eachNumberXGap);
   this.numberUnderEachYGap = Math.ceil(this.minYGap / this.eachNumberYGap);
 
-  console.log('Number of gap:' + this.numberUnderEachXGap + ':' + this.numberUnderEachYGap);
+  // console.log('Number of gap:' + this.numberUnderEachXGap + ':' + this.numberUnderEachYGap);
   this.axisXGap = this.numberUnderEachXGap * this.eachNumberXGap;
   this.axisYGap = this.numberUnderEachYGap * this.eachNumberYGap;
 
@@ -196,11 +196,11 @@ VUEChart.prototype.updateAxisX = function () {
 
   this.numberUnderEachXGap = Math.ceil(this.minXGap / this.eachNumberXGap);
 
-  console.log('Number of gap:x:' + this.numberUnderEachXGap);
+  // console.log('Number of gap:x:' + this.numberUnderEachXGap);
   this.axisXGap = this.numberUnderEachXGap * this.eachNumberXGap;
 
   this.axisXGapCount = Math.ceil(this.chartAreaWidth / this.axisXGap);
-  console.log('X----Count:' + this.axisXGapCount + ': gap:' + this.axisXGap);
+  // console.log('X----Count:' + this.axisXGapCount + ': gap:' + this.axisXGap);
   this.addAxisXGap();
   this.fireEvent('afterUpdateAxisX');
 };
@@ -212,11 +212,11 @@ VUEChart.prototype.updateAxisY = function () {
 
   this.numberUnderEachYGap = Math.ceil(this.minYGap / this.eachNumberYGap);
 
-  console.log('Number of gap:y:' + this.numberUnderEachYGap);
+  // console.log('Number of gap:y:' + this.numberUnderEachYGap);
   this.axisYGap = this.numberUnderEachYGap * this.eachNumberYGap;
 
   this.axisYGapCount = Math.ceil(this.chartAreaHeight / this.axisYGap);
-  console.log('Y----Count:' + this.axisYGapCount + ': gap:' + this.axisYGap);
+  // console.log('Y----Count:' + this.axisYGapCount + ': gap:' + this.axisYGap);
   this.addAxisYGap();
   this.fireEvent('afterUpdateAxisY');
 };
@@ -542,7 +542,7 @@ VUEChart.prototype.renderBar = function () {
   }
 };
 VUEChart.prototype.reRenderGroupVisible = function () {
-  console.log(this.groupVisible);
+  // console.log(this.groupVisible);
   for (let groupid in this.groupVisible) {
     var visibleStatus = this.groupVisible[groupid];
     this.setVisible(groupid, visibleStatus);
@@ -582,7 +582,7 @@ VUEChart.prototype.reScaleChart = function () {
   var maxX = maxXY.maxx;
   var maxY = maxXY.maxy;
   var isRescale = false;
-  console.log('maxx:' + maxX + ':maxy:' + maxY);
+  // console.log('maxx:' + maxX + ':maxy:' + maxY);
   if (maxX > this.maxXValue) {
     this.maxXValue = maxX;
     this.updateAxisX();

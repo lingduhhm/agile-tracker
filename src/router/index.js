@@ -23,7 +23,7 @@ export default new Router({
     },
     {
       path: '/index',
-      name: 'ChartMainPage',
+      name: '',
       component: MainPage,
       children: [
         {

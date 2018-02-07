@@ -230,7 +230,7 @@ export default {
   },
   created: function () {
     if (this.$root.eventHub) {
-      console.log(this.$route);
+      // console.log(this.$route);
       this.$root.eventHub.$on('getDaySummary', this.getDayBlockSummary);
     }
   },
