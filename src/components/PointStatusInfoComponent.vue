@@ -350,6 +350,7 @@ export default {
             }
           }
         }
+        var addedItems = [];
         // get added changed item
         for (let i = 0; i < storyList.length; i++) {
           var story = storyList[i];
@@ -358,13 +359,14 @@ export default {
           for (let j = 0; j < ingroup.length; j++) {
             let groupObj = ingroup[j];
             let groupname = groupObj.groupname;
-            if (groupname === currentGroup && isAdd === true && !this._isStoryInList(changedItems, story)) {
-              changedItems.push(story);
+            if (groupname === currentGroup && isAdd === true && !this._isStoryInList(addedItems, story)) {
+              addedItems.push(story);
               break;
             }
           }
         }
       }
+      changedItems = changedItems.concat(addedItems);
       this.changedItems = changedItems;
       /* var previousDay = day;
       if (day > 0) {

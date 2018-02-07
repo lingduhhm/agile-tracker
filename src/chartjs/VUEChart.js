@@ -177,6 +177,7 @@ VUEChart.prototype.clearAllClickedPoint = function () {
   if (!this.groups) {
     return;
   }
+  this.currentActivePoint = null;
   for (var groupid in this.groups) {
     var groupItem = this.groups[groupid];
     var points = groupItem.points;
