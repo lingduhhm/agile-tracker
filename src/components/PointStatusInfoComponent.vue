@@ -170,7 +170,7 @@ export default {
       });
     },
     tableRowClassName ({row, rowIndex}) {
-      if (row.AddStory) {
+      if (row.AddStory || row.RemovedRedStory) {
         return 'blockContent';
       } else {
         return 'successContent';
@@ -253,7 +253,7 @@ export default {
         if (!this._searchStoryInList(todayRedStoryList, prevStory)) {
           let todayRemovedStory = this._searchStoryInList(todayStoryList, prevStory);
           if (!this._searchStoryInList(removedList, todayRemovedStory)) {
-            todayRemovedStory.AddStory = true;
+            todayRemovedStory.RemovedRedStory = true;
             removedStoryListPoint += todayRemovedStory.points;
             removedList.push(todayRemovedStory);
           }
@@ -404,16 +404,19 @@ export default {
             }
           }
         }
+        changedItems = changedItems.concat(addedItems);
 
         // add removed from yesterday reduced user story
         let previousDayData = previousData.groups[currentGroup];
         let todayDayObj = todayObj.groups[currentGroup];
         let removedStoryList = this._getTodayRemovedFromRedStory(todayDayObj, previousDayData, day);
-        if (removedStoryList.length > 0) {
-          changedItems = changedItems.concat(removedStoryList);
+        for (let i = 0; i < removedStoryList.length; i++) {
+          let removedStoryItem = removedStoryList[i];
+          if (removedStoryList.length > 0 && !this._isStoryInList(changedItems, removedStoryItem)) {
+            changedItems.push(removedStoryItem);
+          }
         }
       }
-      changedItems = changedItems.concat(addedItems);
       this.changedItems = changedItems;
       /* var previousDay = day;
       if (day > 0) {
