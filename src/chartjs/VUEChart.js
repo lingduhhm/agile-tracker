@@ -420,7 +420,7 @@ VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
   var color = group.color;
   var point2Ele = point2.ele;
   var point2EleId = point2Ele.attr('pointid');
-  var lineItem = $('<div style="height:' + this.lineHeight + 'px;background-color:' + color + ';transform-origin:0% 0%;"></div>').attr('lineid', 'line_id_' + point2EleId).attr('groupid', groupid).attr('type', 'line').addClass('chartLines');
+  var lineItem = $('<div style="height:' + this.lineHeight + 'px;background-color:' + color + ';color:' + color + ';transform-origin:0% 0%;"></div>').attr('lineid', 'line_id_' + point2EleId).attr('groupid', groupid).attr('type', 'line').addClass('chartLines');
   var point1X = point1.positionX + this.lineHeight / 2;
   var point1Y = point1.positionY - this.lineHeight / 2;
   var point2X = point2.positionX + this.lineHeight / 2;
@@ -434,15 +434,18 @@ VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
     angleTh = -angleTh;
   }
   lineItem.width(width).css('left', point1X + 'px').css('top', point1Y + 'px').css('transform', 'rotate(' + angleTh + 'deg)')
-  .click(function () {
+  .click(function (evt) {
     self.fireEvent('lineclicked', {ele: this, data: this.linedata});
+    evt.stopPropagation();
   })
-  .hover(function () {
-    $(this).css('border-top-width', '2px');
+  .hover(function (evt) {
+    $(this).addClass('lineHighlited');
     self.fireEvent('linehoverenter', {ele: this, data: this.pointdata});
-  }, function () {
-    $(this).css('border-top-width', '1px');
+    evt.stopPropagation();
+  }, function (evt) {
+    $(this).removeClass('lineHighlited');
     self.fireEvent('linehoverleave', {ele: this, data: this.pointdata});
+    evt.stopPropagation();
   });
   var line = {
     startPoint: point1,
