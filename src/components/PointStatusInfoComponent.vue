@@ -73,7 +73,7 @@
           <el-table-column width="120">
             <template slot-scope="scope">
               <span>
-                {{scope.row.storykey}} <span v-if="scope.row.storyIssueCount > 0">({{scope.row.storyIssueCount}})</span>
+                {{scope.row.storykey}} <span v-if="scope.row.storyIssueCount > 0" class="boldFont"> ({{scope.row.storyIssueCount}}) </span>
               </span>
             </template>
           </el-table-column>
@@ -531,5 +531,8 @@ header.pointStatus {
 }
 .minFontSize {
   font-size: 0.8rem;
+}
+.boldFont {
+  font-weight: bold; 
 }
 </style>
