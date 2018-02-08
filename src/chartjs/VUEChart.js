@@ -545,7 +545,7 @@ VUEChart.prototype.reRenderGroupVisible = function () {
   // console.log(this.groupVisible);
   for (let groupid in this.groupVisible) {
     var visibleStatus = this.groupVisible[groupid];
-    console.log(groupid + ':' + visibleStatus);
+    // console.log(groupid + ':' + visibleStatus);
     this.setVisible(groupid, visibleStatus);
   }
 };
