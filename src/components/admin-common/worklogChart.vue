@@ -47,7 +47,10 @@
           },
           xAxis: {
             type: 'category',
-            data: []
+            data: [],
+            axisLabel: {
+              interval: 0
+            }
           },
           series: [
             {
@@ -159,7 +162,10 @@
         this.myChart.setOption({
           xAxis: {
             type: 'category',
-            data: xAxis
+            data: xAxis,
+            axisLabel: {
+              interval: 0
+            }
           },
           series: [
             {

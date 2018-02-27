@@ -53,7 +53,10 @@
           },
           xAxis: {
             type: 'category',
-            data: []
+            data: [],
+            axisLabel: {
+              interval: 0
+            }
           },
           series: [
             {
@@ -101,7 +104,7 @@
               data: [],
               markLine: {
                 data: [
-                  {type: 'average', name: '平均值'}
+                  {type: 'average', name: 'Average'}
                 ]
               }
             }
@@ -132,9 +135,7 @@
           }
           loading.close();
           if (response.data.status === 'success') {
-            if (response.data.resData) {
-              that.setData(response.data);
-            }
+            that.setData(response.data);
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -154,7 +155,7 @@
         this.fetchData('y', sprintinfo);
       },
       setData: function (originalData) {
-        var data = originalData.resData.data;
+        var data = (originalData.resData && originalData.resData.data) || {};
         var capacity = originalData.capacity || {};
         var usermap = originalData.usermap || {};
         var xAxis = [];
@@ -165,10 +166,20 @@
           capacityArr.push(capacity[key]);
           estimatedArr.push(data[key].leftEstimate / 3600);
         }
+        for (var userid in usermap) {
+          if (!data[userid]) {
+            xAxis.push((usermap[userid] || userid));
+            capacityArr.push(capacity[userid]);
+            estimatedArr.push(0);
+          }
+        }
         this.myChart.setOption({
           xAxis: {
             type: 'category',
-            data: xAxis
+            data: xAxis,
+            axisLabel: {
+              interval: 0
+            }
           },
           series: [
             {
