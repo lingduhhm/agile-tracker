@@ -73,7 +73,7 @@
           <el-table-column width="120">
             <template slot-scope="scope">
               <span>
-                {{scope.row.storykey}} <span v-if="scope.row.storyIssueCount > 0">({{scope.row.storyIssueCount}})</span>
+                {{scope.row.storykey}} <span v-if="scope.row.storyIssueCount > 0" class="boldFont"> ({{scope.row.storyIssueCount}}) </span>
               </span>
             </template>
           </el-table-column>
@@ -89,10 +89,10 @@
                 <el-row>
                   <el-button type="text" @click="viewIssues(scope.row)">View issues</el-button>
                 </el-row>
-                <el-row>
+                <el-row v-show="isLastDay">
                   <el-button type="text" @click="addIssue('block', scope.row)">Add a block</el-button>
                 </el-row>
-                <el-row>
+                <el-row v-show="isLastDay">
                   <el-button type="text" @click="addIssue('followup')">Add a followup</el-button>
                 </el-row>
               </el-popover>
@@ -129,7 +129,8 @@ export default {
       addIssueCategory: 'block',
       currentSelectedUserStoryId: '',
       currentSelectedDay: 0,
-      viewIssueDialogDisplay: false
+      viewIssueDialogDisplay: false,
+      isLastDay: false
     };
   },
   created: function () {
@@ -177,6 +178,11 @@ export default {
       }
     },
     getDayStorySummary (day, group, todayObj, previousObj, type) {
+      if ((this.$root.summary.summary.length - 1) === day) {
+        this.isLastDay = true;
+      } else {
+        this.isLastDay = false;
+      }
       this.currentSelectedDay = day;
       this.group = group;
       let calGroups = [group];
@@ -525,5 +531,8 @@ header.pointStatus {
 }
 .minFontSize {
   font-size: 0.8rem;
+}
+.boldFont {
+  font-weight: bold; 
 }
 </style>
