@@ -15,11 +15,18 @@
   export default {
     data () {
       return {
-        sprintinfo: {}
+        sprintinfo: {},
+        jql: ''
       };
     },
     mounted () {
+      var that = this;
       this.myChart = echarts.init(document.getElementById('estimationChart'));
+      this.myChart.on('click', function (params) {
+        if (that.jql && params.type === 'click' && params.seriesName === 'Estimated' && params.data.name) {
+          window.open('https://jira.successfactors.com/issues/?jql=' + 'assignee=' + params.data.name + ' AND ' + that.jql.replace('story', 'Sub-task'));
+        }
+      });
       this.myChart.setOption(
         {
           title: {
@@ -156,21 +163,35 @@
       },
       setData: function (originalData) {
         var data = (originalData.resData && originalData.resData.data) || {};
+        this.jql = originalData.jql;
         var capacity = originalData.capacity || {};
         var usermap = originalData.usermap || {};
+        var inummap = originalData.inummap || {};
         var xAxis = [];
         var capacityArr = [];
         var estimatedArr = [];
         for (var key in data) {
           xAxis.push((usermap[key] || key));
-          capacityArr.push(capacity[key]);
-          estimatedArr.push(data[key].leftEstimate / 3600);
+          capacityArr.push({
+            name: inummap[key],
+            value: capacity[key]
+          });
+          estimatedArr.push({
+            name: inummap[key],
+            value: data[key].leftEstimate / 3600
+          });
         }
         for (var userid in usermap) {
           if (!data[userid]) {
             xAxis.push((usermap[userid] || userid));
-            capacityArr.push(capacity[userid]);
-            estimatedArr.push(0);
+            capacityArr.push({
+              name: inummap[userid],
+              value: capacity[userid]
+            });
+            estimatedArr.push({
+              name: inummap[userid],
+              value: 0
+            });
           }
         }
         this.myChart.setOption({

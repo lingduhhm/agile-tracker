@@ -35,7 +35,7 @@
     center>
       <span>
         <el-form ref="form" :model="form" label-width="80px">
-          <el-form-item :label="[value.label]" v-for="value in configObj.columns" :key="value.domKey">
+          <el-form-item :label="value.label" v-for="value in configObj.columns" :key="value.domKey">
             <el-input v-model="form[value.key]"></el-input>
           </el-form-item>
         </el-form>
