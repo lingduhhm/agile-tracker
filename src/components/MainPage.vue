@@ -129,6 +129,9 @@ export default {
       if (summary.length > 0) {
         let i = 0;
         let summ = summary[i + 1];
+        if (summary.length === 1) {
+          summ = summary[i];
+        }
         let day = summ.day;
         let groups = summ.groups;
         let todayStoryList = summ.storyList;
