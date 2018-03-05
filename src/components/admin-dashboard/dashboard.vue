@@ -92,7 +92,8 @@
     methods: {
       fetchData () {
         var that = this;
-        if (this.$route.params.sprintid === undefined || this.$route.params.sprintid === 'undefined') {
+        if (!window.localStorage.getItem('module')) {
+          window.location.href = '/';
           return false;
         }
         this.axios.get('/admin/dashboard?module=' + this.$root.module + '&sprintid=' + this.$route.params.sprintid).then((response) => {

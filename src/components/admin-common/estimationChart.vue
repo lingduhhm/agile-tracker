@@ -15,11 +15,18 @@
   export default {
     data () {
       return {
-        sprintinfo: {}
+        sprintinfo: {},
+        jql: ''
       };
     },
     mounted () {
+      var that = this;
       this.myChart = echarts.init(document.getElementById('estimationChart'));
+      this.myChart.on('click', function (params) {
+        if (that.jql && params.type === 'click' && params.seriesName === 'Estimated' && params.data.name) {
+          window.open('https://jira.successfactors.com/issues/?jql=' + 'assignee=' + params.data.name + ' AND ' + that.jql.replace('story', 'Sub-task'));
+        }
+      });
       this.myChart.setOption(
         {
           title: {
@@ -53,7 +60,10 @@
           },
           xAxis: {
             type: 'category',
-            data: []
+            data: [],
+            axisLabel: {
+              interval: 0
+            }
           },
           series: [
             {
@@ -101,7 +111,7 @@
               data: [],
               markLine: {
                 data: [
-                  {type: 'average', name: '平均值'}
+                  {type: 'average', name: 'Average'}
                 ]
               }
             }
@@ -132,9 +142,7 @@
           }
           loading.close();
           if (response.data.status === 'success') {
-            if (response.data.resData) {
-              that.setData(response.data);
-            }
+            that.setData(response.data);
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -154,21 +162,45 @@
         this.fetchData('y', sprintinfo);
       },
       setData: function (originalData) {
-        var data = originalData.resData.data;
+        var data = (originalData.resData && originalData.resData.data) || {};
+        this.jql = originalData.jql;
         var capacity = originalData.capacity || {};
         var usermap = originalData.usermap || {};
+        var inummap = originalData.inummap || {};
         var xAxis = [];
         var capacityArr = [];
         var estimatedArr = [];
         for (var key in data) {
           xAxis.push((usermap[key] || key));
-          capacityArr.push(capacity[key]);
-          estimatedArr.push(data[key].leftEstimate / 3600);
+          capacityArr.push({
+            name: inummap[key],
+            value: capacity[key]
+          });
+          estimatedArr.push({
+            name: inummap[key],
+            value: data[key].leftEstimate / 3600
+          });
+        }
+        for (var userid in usermap) {
+          if (!data[userid]) {
+            xAxis.push((usermap[userid] || userid));
+            capacityArr.push({
+              name: inummap[userid],
+              value: capacity[userid]
+            });
+            estimatedArr.push({
+              name: inummap[userid],
+              value: 0
+            });
+          }
         }
         this.myChart.setOption({
           xAxis: {
             type: 'category',
-            data: xAxis
+            data: xAxis,
+            axisLabel: {
+              interval: 0
+            }
           },
           series: [
             {

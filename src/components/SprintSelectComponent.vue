@@ -96,10 +96,14 @@ export default {
         this.dialogVisible = false;
         window.localStorage.module = this.form.module;
         window.localStorage.sprint = this.form.sprint;
+        this.$root.module = this.form.module;
+        this.$root.sprintid = this.form.sprint;
         this.sendSprintData();
       } else if (this.form.module) {
         window.localStorage.module = this.form.module;
         window.localStorage.sprint = '';
+        this.$root.module = this.form.module;
+        this.$root.sprintid = '';
         window.location.href = '/#/admin/home';
       } else {
         this.isShowAlert = true;

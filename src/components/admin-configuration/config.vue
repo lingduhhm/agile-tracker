@@ -29,6 +29,11 @@
               domKey: new Date().valueOf() + Math.random()
             },
             {
+              label: 'Emp Id',
+              key: 'employeeid',
+              domKey: new Date().valueOf() + Math.random()
+            },
+            {
               label: 'Name',
               key: 'displayname',
               domKey: new Date().valueOf() + Math.random()

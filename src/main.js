@@ -26,7 +26,8 @@ new Vue({
     sprintSelected: null,
     allGroups: [],
     summary: null,
-    module: window.localStorage.getItem('module')
+    module: window.localStorage.getItem('module'),
+    sprintid: window.localStorage.getItem('sprint')
   },
   methods: {
     querySummaryData: function (params) {
