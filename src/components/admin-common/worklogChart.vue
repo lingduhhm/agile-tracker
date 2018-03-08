@@ -4,6 +4,12 @@
     <el-card class="box-card">
       <div id="worklogChart" style="height:400px;"></div>
     </el-card>
+    <el-dialog :title="popupTitle" :visible.sync="showPopup" >
+      <el-table :data="tableData">
+        <el-table-column v-for="item in tableColumns" align="left" :key="item.key" :prop="item.key" :label="item.label">
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -13,8 +19,64 @@
   require('echarts');
 
   export default {
+    data () {
+      return {
+        popupTitle: '',
+        showPopup: false,
+        tableData: [],
+        tableColumns: []
+      };
+    },
     mounted () {
+      var that = this;
       this.myChart = echarts.init(document.getElementById('worklogChart'));
+      this.myChart.on('click', function (params) {
+        if (params.type === 'click' && params.seriesName === 'Left') {
+          that.popupTitle = 'Remaining Tasks';
+          that.tableColumns = [{
+            label: 'Owner',
+            key: 'owner'
+          }, {
+            label: 'Remaining Effort (H)',
+            key: 'leftEstimate'
+          }, {
+            label: 'Ticket Key',
+            key: 'key'
+          }];
+          that.tableData = (params.data.list || []).map((item) => {
+            item.leftEstimate = Math.ceil(item.leftEstimate / 3600);
+            return item;
+          });
+          that.showPopup = true;
+        }
+        if (params.type === 'click' && params.seriesName === 'Logged') {
+          that.popupTitle = 'Effort Logged History';
+          that.tableColumns = [{
+            label: 'Owner',
+            key: 'owner'
+          }, {
+            label: 'Logged Effort (H)',
+            key: 'loggedEffort'
+          }, {
+            label: 'Ticket Key',
+            key: 'key'
+          }, {
+            label: 'Date',
+            key: 'created'
+          }];
+          that.tableData = (params.data.list || []).sort((item1, item2) => {
+            if (new Date(item1.created).valueOf() > new Date(item1.created).valueOf()) {
+              return 1;
+            } else {
+              return -1;
+            }
+          }).map((item) => {
+            item.created = new Date(item.created).toLocaleString();
+            return item;
+          });
+          that.showPopup = true;
+        }
+      });
       this.myChart.setOption(
         {
           title: {
@@ -156,8 +218,14 @@
         var loggedArr = [];
         for (var key in data) {
           xAxis.push((usermap[key] || key));
-          leftArr.push(data[key].leftEstimate / 3600);
-          loggedArr.push(data[key].loggedEffort / 3600);
+          leftArr.push({
+            value: data[key].leftEstimate / 3600,
+            list: data[key].leftList || []
+          });
+          loggedArr.push({
+            value: data[key].loggedEffort / 3600,
+            list: data[key].loggedHistory || []
+          });
         }
         this.myChart.setOption({
           xAxis: {
