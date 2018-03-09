@@ -96,6 +96,9 @@
           window.location.href = '/';
           return false;
         }
+        if (this.$route.params.sprintid === 'undefined' || this.$route.params.sprintid === undefined) {
+          return false;
+        }
         this.axios.get('/admin/dashboard?module=' + this.$root.module + '&sprintid=' + this.$route.params.sprintid).then((response) => {
           if (response.data.status === 'success') {
             var responseData = response.data.resData;

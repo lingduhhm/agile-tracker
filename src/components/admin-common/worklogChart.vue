@@ -65,7 +65,7 @@
             key: 'created'
           }];
           that.tableData = (params.data.list || []).sort((item1, item2) => {
-            if (new Date(item1.created).valueOf() > new Date(item1.created).valueOf()) {
+            if (new Date(item1.created).valueOf() > new Date(item2.created).valueOf()) {
               return 1;
             } else {
               return -1;

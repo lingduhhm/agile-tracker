@@ -254,6 +254,9 @@
             if (response.data.status === 'success') {
               that.$emit('refreshdata', {'type': 'add'});
               that.dialogVisible = false;
+              if (this.$route.params.sprintid === undefined || this.$route.params.sprintid === 'undefined') {
+                window.location.href = '/#/dashboard/' + response.data.resData[0]._id;
+              }
             }
           })
           .catch((err) => {
