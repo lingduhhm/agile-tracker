@@ -6,7 +6,7 @@
     </el-card>
     <el-dialog :title="popupTitle" :visible.sync="showPopup" >
       <el-table :data="tableData">
-        <el-table-column v-for="item in tableColumns" align="left" :key="item.key" :prop="item.key" :label="item.label">
+        <el-table-column v-for="item in tableColumns" align="left" :key="item.key" :formatter="item.formatter" :prop="item.key" :label="item.label">
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -31,7 +31,7 @@
       var that = this;
       this.myChart = echarts.init(document.getElementById('worklogChart'));
       this.myChart.on('click', function (params) {
-        if (params.type === 'click' && params.seriesName === 'Left') {
+        if (params.type === 'click' && params.seriesName === 'Left' && params.seriesType === 'bar') {
           that.popupTitle = 'Remaining Tasks';
           that.tableColumns = [{
             label: 'Owner',
@@ -41,7 +41,11 @@
             key: 'leftEstimate'
           }, {
             label: 'Ticket Key',
-            key: 'key'
+            key: 'key',
+            formatter: (row, column, cellValue) => {
+              var url = 'https://jira.successfactors.com/browse/' + cellValue;
+              return <a href= {url} target="_blank">{cellValue}</a>;
+            }
           }];
           that.tableData = (params.data.list || []).map((item) => {
             item.leftEstimate = Math.ceil(item.leftEstimate / 3600);
@@ -49,7 +53,7 @@
           });
           that.showPopup = true;
         }
-        if (params.type === 'click' && params.seriesName === 'Logged') {
+        if (params.type === 'click' && params.seriesName === 'Logged' && params.seriesType === 'bar') {
           that.popupTitle = 'Effort Logged History';
           that.tableColumns = [{
             label: 'Owner',
@@ -59,7 +63,11 @@
             key: 'loggedEffort'
           }, {
             label: 'Ticket Key',
-            key: 'key'
+            key: 'key',
+            formatter: (row, column, cellValue) => {
+              var url = 'https://jira.successfactors.com/browse/' + cellValue;
+              return <a href= {url} target="_blank">{cellValue}</a>;
+            }
           }, {
             label: 'Date',
             key: 'created'

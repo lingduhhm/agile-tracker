@@ -23,7 +23,7 @@
       var that = this;
       this.myChart = echarts.init(document.getElementById('estimationChart'));
       this.myChart.on('click', function (params) {
-        if (that.jql && params.type === 'click' && params.seriesName === 'Estimated' && params.data.name) {
+        if (that.jql && params.type === 'click' && params.seriesName === 'Estimated' && params.data.name && params.seriesType === 'bar') {
           window.open('https://jira.successfactors.com/issues/?jql=' + 'assignee=' + params.data.name + ' AND ' + that.jql.replace('story', 'Sub-task'));
         }
       });
