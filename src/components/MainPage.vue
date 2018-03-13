@@ -310,6 +310,7 @@ export default {
           }
         }
         let displayContent = '<div>Day ' + day + ': ' + clickedGroup + '</div><div>Point: ' + point + '</div><div>Blocker: ' + blockerCount + '&nbsp;&nbsp;Followup: ' + followupCount + '</div>';
+        displayContent += self._getStoryCountByCategory();
         // console.log(displayContent);
         chart.displayPopover(x, y, displayContent);
       });
@@ -321,6 +322,29 @@ export default {
       chart.addPoint(0, 10, 'null');
       chart.renderBar(); */
       this.chart = chart;
+    },
+    _getStoryCountByCategory: function () {
+      if (this.allData == null) {
+        return '';
+      }
+      var createHTML = '<hr><div>';
+      var storyList = this.allData.storyList;
+      var storyStatusMap = {};
+      for (var i = 0; i < storyList.length; i++) {
+        var story = storyList[i];
+        let storyStatus = story.status;
+        if (storyStatusMap[storyStatus] == null) {
+          storyStatusMap[storyStatus] = 1;
+        } else {
+          storyStatusMap[storyStatus] += 1;
+        }
+      }
+      for (let storyStatus in storyStatusMap) {
+        let count = storyStatusMap[storyStatus];
+        createHTML += '<div><span>' + storyStatus + ':  </span><span>' + count + '</span></div>';
+      }
+      createHTML += '</div>';
+      return createHTML;
     }
   },
   created: function () {

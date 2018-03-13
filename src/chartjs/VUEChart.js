@@ -104,8 +104,8 @@ VUEChart.prototype.init = function (width, height) {
   this.axisXGapCount = Math.ceil(this.chartAreaWidth / this.axisXGap);
   this.axisYGapCount = Math.ceil(this.chartAreaHeight / this.axisYGap);
 
-  this.pointHeight = 7;
-  this.pointWidth = 7;
+  this.pointHeight = 10;
+  this.pointWidth = 10;
   this.pointColor = 'red';
   this.lineHeight = 2;
 
