@@ -4,7 +4,7 @@
       <el-aside width="300px">
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-card class="box-card">
+            <el-card class="box-card" style="height:273px;">
               <div slot="header" class="clearfix">
                 <span class="font">Current Sprint</span>
                 <el-button v-if="sprintinfo.status != 'done'" style="float: right; padding: 3px 0" type="text" @click="refreshData">Refresh</el-button>
@@ -28,28 +28,7 @@
         </el-row>
       </el-aside>
       <el-main style="padding: 0 20px;">
-        <el-row :gutter="20" class="rowMargin">
-          <el-col :span="8">
-            <number-card label="Total Points" :value="dashboard.totalpoints" unit="points" bkcolor="#409EFF"></number-card>
-          </el-col>
-          <el-col :span="8">
-            <number-card label="Initial Commited" :value="dashboard.initialcommited" unit="points" bkcolor="#67C23A"></number-card>
-          </el-col>
-          <el-col :span="8">
-            <number-card label="Left Days" :value="dashboard.leftdays" unit="days" bkcolor="#F56C6C"></number-card>
-          </el-col>
-
-        </el-row>
-
-        <el-row :gutter="20" class="rowMargin">
-          <el-col :span="12">
-            <number-card label="Commited" :value="dashboard.commitedpoints" unit="points" bkcolor="#67C23A"></number-card>
-          </el-col>
-
-          <el-col :span="12">
-            <number-card label="Done" :value="dashboard.donepoints" unit="points" bkcolor="#E6A23C"></number-card>
-          </el-col>
-        </el-row>
+        <inprogressChart ref="inprogressChart"></inprogressChart>
       </el-main>
     </el-container>
 
@@ -72,6 +51,7 @@
   import numberCard from '../admin-common/numberCard.vue';
   import lineChart from '../admin-common/historyChart.vue';
   import worklogChart from '../admin-common/worklogChart.vue';
+  import inprogressChart from '../admin-common/inprogressChart.vue';
 
   export default {
     data () {
@@ -106,6 +86,7 @@
             that.sprintinfo = responseData.sprintData;
             this.$refs.worklogChartRef.fetchData('', this.sprintinfo);
             this.$refs.historyChartRef.fetchData('', this.sprintinfo);
+            this.$refs.inprogressChart.setData(response.data.resData);
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -128,7 +109,8 @@
     components: {
       'numberCard': numberCard,
       'lineChart': lineChart,
-      'worklogChart': worklogChart
+      'worklogChart': worklogChart,
+      'inprogressChart': inprogressChart
     }
   };
 </script>
