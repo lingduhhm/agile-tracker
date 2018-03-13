@@ -7,6 +7,7 @@
     <div class="toDashboard">     
       <el-button type="success" plain icon="el-icon-edit" @click="openDialog">Change Sprint</el-button>
       <el-button type="primary" plain icon="el-icon-menu" @click="toDashbord">Dashboard</el-button>
+      <el-button type="warning" plain icon="el-icon-menu" @click="toggleSummary">Toggle Summary</el-button>
       <sprint-select-dialog :dialogDisplay="dialogDisplay"></sprint-select-dialog>
     </div>
     <el-container>
@@ -20,7 +21,7 @@
           <div class="chart">
           </div>
         </el-main>
-        <el-aside width="25%">
+        <el-aside width="25%" class="mainPageSummary">
           <router-view></router-view>
         </el-aside>
       </el-container>
@@ -44,7 +45,9 @@ export default {
       allLines: [],
       allData: null,
       module: '',
-      sprint: ''
+      sprint: '',
+      cachedResponse: null,
+      isSummaryDisplay: true
     };
   },
   methods: {
@@ -114,6 +117,7 @@ export default {
       return totalAddedPoint;
     },
     updateData: function (response) {
+      this.cachedResponse = response;
       this.chart.emptyData();
       this.allData = response.resData;
       var summary = response.resData.summary;
@@ -258,9 +262,15 @@ export default {
     toDashbord: function () {
       window.location.href = '/#/admin/home';
     },
-    prepareChart: function () {
+    prepareChart: function (width, height) {
       var self = this;
-      let chart = new VUEChart('.chart', 1000, 500);
+      if (width == null) {
+        width = 1000;
+      }
+      if (height == null) {
+        height = $(window).height() - 250;
+      }
+      let chart = new VUEChart('.chart', width, height);
       chart.addEventListener('pointclicked', function (evt) {
         chart.clearAllClickedPoint();
         let todayData = evt.data.data.extraData.summarydata;
@@ -309,8 +319,9 @@ export default {
             }
           }
         }
-        let displayContent = '<div>Day ' + day + ': ' + clickedGroup + '</div><div>Point: ' + point + '</div><div>Blocker: ' + blockerCount + '&nbsp;&nbsp;Followup: ' + followupCount + '</div>';
-        displayContent += self._getStoryCountByCategory();
+        let displayContent = '<table><tr><td style="border-right:1px solid black;padding-right:5px;"><div>Day ' + day + ': ' + clickedGroup + '</div><div>Point: ' + point + '</div><div>Blocker: ' + blockerCount + '&nbsp;&nbsp;Followup: ' + followupCount + '</div></td><td style="padding-left:5px;">';
+        displayContent += self._getStoryCountByCategory(evt.data.pointdata.summarydata.storyList);
+        displayContent += '</td></tr></table>';
         // console.log(displayContent);
         chart.displayPopover(x, y, displayContent);
       });
@@ -323,12 +334,11 @@ export default {
       chart.renderBar(); */
       this.chart = chart;
     },
-    _getStoryCountByCategory: function () {
-      if (this.allData == null) {
+    _getStoryCountByCategory: function (storyList) {
+      if (storyList == null) {
         return '';
       }
-      var createHTML = '<hr><div>';
-      var storyList = this.allData.storyList;
+      var createHTML = '<div>';
       var storyStatusMap = {};
       for (var i = 0; i < storyList.length; i++) {
         var story = storyList[i];
@@ -345,6 +355,23 @@ export default {
       }
       createHTML += '</div>';
       return createHTML;
+    },
+    resizeChart: function (width, height) {
+      $('.chart').empty();
+      this.prepareChart(width);
+      this.updateData(this.cachedResponse);
+    },
+    toggleSummary: function () {
+      var windowWidth = $(window).width();
+      var window75Width = windowWidth * 0.75;
+      this.isSummaryDisplay = !this.isSummaryDisplay;
+      if (this.isSummaryDisplay === true) {
+        $('.mainPageSummary').show();
+        this.resizeChart(window75Width - 100);
+      } else {
+        $('.mainPageSummary').hide();
+        this.resizeChart(windowWidth - 100);
+      }
     }
   },
   created: function () {
@@ -384,5 +411,12 @@ a {
 .toDashboard {
   text-align: right;
   padding: 0px 20px;
+}
+.chart {
+  position: fixed;
+}
+.title {
+  position: fixed;
+  width: 100%;
 }
 </style>
