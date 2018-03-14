@@ -11,7 +11,7 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-dialog :title="popupTitle" :visible.sync="showPopup">
+    <el-dialog :title="popupTitle" :visible.sync="showPopup" width="80%" fullscreen>
       <el-table :data="tableData" max-height="800" border>
         <el-table-column sortable v-for="item in tableColumns" align="left" :key="item.key" :formatter="item.formatter" :prop="item.key" :label="item.label">
         </el-table-column>
@@ -31,8 +31,8 @@
         showPopup: false,
         tableData: [],
         tableColumns: [{
-          label: 'Owner',
-          key: 'assignee'
+          label: 'Updater',
+          key: 'updater'
         }, {
           label: 'Key',
           key: 'storykey',
@@ -47,7 +47,7 @@
           label: 'Status',
           key: 'status',
           formatter: (row, column, cellValue) => {
-            return cellValue === 'initial' ? 'inprogress' : cellValue;
+            return cellValue === 'initial' ? 'No Update' : cellValue;
           }
         }, {
           label: 'Points',
@@ -170,7 +170,7 @@
           name: 'Passed Days'
         }, {
           value: originalData.leftdays,
-          name: 'Remaining Days'        
+          name: 'Remaining Days'
         }];
         var pointsArr = [{
           value: originalData.totalpoints,
@@ -219,7 +219,7 @@
                 shadowOffsetX: 0,
                 shadowColor: 'rgba(0, 0, 0, 0.5)'
               }
-            }        
+            }
           },
           color: ['#E6A23C', '#67C23A']
         });
