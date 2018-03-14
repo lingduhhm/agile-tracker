@@ -186,12 +186,11 @@ export default {
   padding-top: 5px;
 }
 .dataSheet .dataSheetSummary .title {
-  font-size: 25px;
+  font-size: 1.2rem;
   font-weight: bold;
 }
 .dataSheet .dataSheetSummary .title .subtitle {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 1rem;
 }
 .dataSheet .pointContent {
   color: @blueColor;
