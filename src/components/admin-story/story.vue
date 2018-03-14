@@ -22,7 +22,7 @@
         label="Points" >
       </el-table-column>
       <el-table-column
-        prop="status"
+        prop="initialstatus"
         label="Status" >
       </el-table-column>
       <el-table-column
@@ -62,7 +62,7 @@
             <el-input v-model="form.points"></el-input>
           </el-form-item>
           <el-form-item label="Status">
-            <el-input v-model="form.status"></el-input>
+            <el-input v-model="form.initialstatus"></el-input>
           </el-form-item>
           <el-form-item label="Groups">
             <el-select v-model="form.ingroup" multiple placeholder="Select">

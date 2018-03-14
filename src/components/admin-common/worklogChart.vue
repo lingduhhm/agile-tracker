@@ -5,7 +5,7 @@
       <div id="worklogChart" style="height:400px;"></div>
     </el-card>
     <el-dialog :title="popupTitle" :visible.sync="showPopup" >
-      <el-table :data="tableData">
+      <el-table :data="tableData" max-height="800" border>
         <el-table-column v-for="item in tableColumns" align="left" :key="item.key" :formatter="item.formatter" :prop="item.key" :label="item.label">
         </el-table-column>
       </el-table>
