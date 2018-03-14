@@ -300,7 +300,7 @@ export default {
           let storyKey = userStoryItem.storykey;
           let storyID = userStoryItem._id;
           let storyIssueCount = this._getIssueCount(todayObj, storyID, group).length;
-          if (groupWorkingAvailability[currentGroup] !== null && groupWorkingAvailability[currentGroup][status] !== undefined) {
+          if (groupWorkingAvailability[currentGroup] != null && groupWorkingAvailability[currentGroup][status] !== undefined) {
             userStoryItem.displayStoryKey = storyKey + ' (' + storyIssueCount + ')';
             userStoryItem.storyIssueCount = storyIssueCount;
             inProgressItems.push(userStoryItem);
