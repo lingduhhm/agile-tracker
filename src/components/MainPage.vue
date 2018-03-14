@@ -418,5 +418,6 @@ a {
 .title {
   position: fixed;
   width: 100%;
+  font-weight: bold;
 }
 </style>

@@ -18,7 +18,7 @@
       </div> -->
     </el-header>
     <el-main class="tabContainer">
-      <div class="dataSheetCardContainer">
+      <div class="dataSheetCardContainer" style="display:none;">
         <el-card class="box-card" :body-style="{padding: '0px', height: '40px'}">
           <el-row class="dataSheetCardRow">
             <el-col :span="10" class="leftPart" :style="{background: effortData.color}">{{effortData.label}}
@@ -187,7 +187,6 @@ export default {
 }
 .dataSheet .dataSheetSummary .title {
   font-size: 1.2rem;
-  font-weight: bold;
 }
 .dataSheet .dataSheetSummary .title .subtitle {
   font-size: 1rem;
