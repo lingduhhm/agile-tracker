@@ -4,11 +4,11 @@
 
 <template>
   <div class="mainPage">
+    <sprint-select-dialog :dialogDisplay="dialogDisplay"></sprint-select-dialog>
     <div class="toDashboard">     
       <el-button type="success" plain icon="el-icon-edit" @click="openDialog">Change Sprint</el-button>
       <el-button type="primary" plain icon="el-icon-menu" @click="toDashbord">Dashboard</el-button>
       <!-- <el-button type="warning" plain icon="el-icon-menu" @click="toggleSummary">Toggle Summary</el-button> -->
-      <sprint-select-dialog :dialogDisplay="dialogDisplay"></sprint-select-dialog>
     </div>
     <el-container>
       <el-header>
