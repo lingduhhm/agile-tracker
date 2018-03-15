@@ -438,6 +438,7 @@ a {
   top: 20px;
   width: 100%;
   right: 50px;
+  z-index: 10;
 }
 .chart {
   position: fixed;
