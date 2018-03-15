@@ -6,7 +6,7 @@
     </el-card>
     <el-dialog :title="popupTitle" :visible.sync="showPopup" >
       <el-table :data="tableData" max-height="800" border>
-        <el-table-column v-for="item in tableColumns" align="left" :key="item.key" :formatter="item.formatter" :prop="item.key" :label="item.label">
+        <el-table-column sortable v-for="item in tableColumns" align="left" :key="item.key" :formatter="item.formatter" :prop="item.key" :label="item.label">
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -70,16 +70,13 @@
             }
           }, {
             label: 'Date',
-            key: 'created'
-          }];
-          that.tableData = (params.data.list || []).sort((item1, item2) => {
-            if (new Date(item1.created).valueOf() > new Date(item2.created).valueOf()) {
-              return 1;
-            } else {
-              return -1;
+            key: 'created',
+            formatter: (row, column, cellValue) => {
+              return new Date(cellValue).toLocaleString();
             }
-          }).map((item) => {
-            item.created = new Date(item.created).toLocaleString();
+          }];
+          that.tableData = (params.data.list || []).map((item) => {
+            item.created = new Date(item.created).valueOf();
             return item;
           });
           that.showPopup = true;
