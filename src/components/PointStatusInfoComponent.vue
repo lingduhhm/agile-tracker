@@ -50,7 +50,13 @@
           </el-col>
         </el-row>
         <el-table :data="changedItems" class="changeItemTab" style="width: 100%" :show-header="false" :row-class-name="tableRowClassName">
-          <el-table-column prop="storykey" width="120"></el-table-column>
+          <el-table-column prop="storykey" width="120">
+            <template slot-scope="changedItemData">
+              <span>
+                <a target="_blank" :href="'https://jira.successfactors.com/browse/' + changedItemData.row.storykey"> {{changedItemData.row.storykey}} </a>
+              </span>
+            </template>
+          </el-table-column>
           <el-table-column prop="points" width="50"></el-table-column>
           <el-table-column prop="status" ></el-table-column>
         </el-table>
@@ -73,7 +79,7 @@
           <el-table-column width="120">
             <template slot-scope="scope">
               <span>
-                {{scope.row.storykey}} <span v-if="scope.row.storyIssueCount > 0" class="boldFont"> ({{scope.row.storyIssueCount}}) </span>
+                <a target="_blank" :href="'https://jira.successfactors.com/browse/' + scope.row.storykey">{{scope.row.storykey}}</a> <span v-if="scope.row.storyIssueCount > 0" class="boldFont"> ({{scope.row.storyIssueCount}}) </span>
               </span>
             </template>
           </el-table-column>
