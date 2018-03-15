@@ -12,18 +12,25 @@
     </div>
     <el-container>
       <el-header>
-        <h1 class="title">
+        <h1 class="title" style="positon: fixed;">
         Agile Workflow ({{module}} - {{sprint}})
         </h1>
       </el-header>
       <el-container>
         <el-main>
-          <div class="chart">
+          <div class="chart" style="positon: fixed;">
           </div>
         </el-main>
-        <el-aside width="25%" class="mainPageSummary">
-          <router-view></router-view>
-        </el-aside>
+        <div style="display:table-cell;vertical-align: middle;padding-top: 40px;">
+          <img :src="isSummaryDisplay?foldIcon:expandIcon" style="width:30px;" @click="folderClicked" class="summaryIcon">
+        </div>
+        <transition name="slide-fade" v-on:after-leave="toggleSummary" v-on:after-enter="toggleSummary">
+          <div style="display:table-cell;padding-top: 10px;" v-if="isSummaryDisplay">
+            <el-aside width="25%" class="mainPageSummary" style="display:inline-block;">
+              <router-view></router-view>
+            </el-aside>
+          </div>
+        </transition>
       </el-container>
       <el-footer>
       </el-footer>
@@ -47,7 +54,10 @@ export default {
       module: '',
       sprint: '',
       cachedResponse: null,
-      isSummaryDisplay: true
+      expandIcon: require('@/images/expand.png'),
+      foldIcon: require('@/images/fold.png'),
+      isSummaryDisplay: true,
+      currentClickedPoint: null
     };
   },
   methods: {
@@ -117,7 +127,6 @@ export default {
       return totalAddedPoint;
     },
     updateData: function (response) {
-      this.cachedResponse = response;
       this.chart.emptyData();
       this.allData = response.resData;
       var summary = response.resData.summary;
@@ -262,17 +271,19 @@ export default {
     toDashbord: function () {
       window.location.href = '/#/admin/home';
     },
-    prepareChart: function (width, height) {
+    prepareChart: function (width, height, maxX) {
       var self = this;
+      var window75Width = $(window).width() * 0.75;
       if (width == null) {
-        width = 1000;
+        width = window75Width - 100;
       }
       if (height == null) {
-        height = $(window).height() - 250;
+        height = $(window).height() - 200;
       }
-      let chart = new VUEChart('.chart', width, height);
+      let chart = new VUEChart('.chart', width, height, maxX);
       chart.addEventListener('pointclicked', function (evt) {
         chart.clearAllClickedPoint();
+        self.currentClickedPoint = $(evt.sourceele).attr('pointid');
         let todayData = evt.data.data.extraData.summarydata;
         let day = evt.data.data.extraData.summarydata.day;
         let previousDay = (day === 0 ? 0 : day - 1);
@@ -289,6 +300,7 @@ export default {
         }
       });
       chart.addEventListener('chartClicked', function (evt) {
+        self.currentClickedPoint = null;
         self.getLatestSummaryData();
       });
       chart.addEventListener('pointhoverenter', function (evt) {
@@ -356,27 +368,38 @@ export default {
       createHTML += '</div>';
       return createHTML;
     },
-    resizeChart: function (width, height) {
+    resizeChart: function (width, height, maxX) {
       $('.chart').empty();
-      this.prepareChart(width);
+      this.prepareChart(width, height, maxX);
       this.updateData(this.cachedResponse);
+      if (this.currentClickedPoint) {
+        var currentClickedEle = $('.chart .chartArea [pointid=' + this.currentClickedPoint + ']');
+        currentClickedEle.click();
+      }
     },
     toggleSummary: function () {
       var windowWidth = $(window).width();
       var window75Width = windowWidth * 0.75;
-      this.isSummaryDisplay = !this.isSummaryDisplay;
+      var sprintTotalDayCount = this.cachedResponse.resData.sprintTotalDayCount;
       if (this.isSummaryDisplay === true) {
-        $('.mainPageSummary').show();
-        this.resizeChart(window75Width - 100);
+        // $('.mainPageSummary').show();
+        this.resizeChart(window75Width - 100, null, sprintTotalDayCount - 1);
       } else {
-        $('.mainPageSummary').hide();
-        this.resizeChart(windowWidth - 100);
+        // $('.mainPageSummary').hide();
+        this.resizeChart(windowWidth - 100, null, sprintTotalDayCount - 1);
       }
+    },
+    folderClicked: function () {
+      this.isSummaryDisplay = !this.isSummaryDisplay;
+    },
+    sprintChanged: function (response) {
+      this.cachedResponse = response;
+      this.toggleSummary();
     }
   },
   created: function () {
     if (this.$root.eventHub) {
-      this.$root.eventHub.$on('sprintChanged', this.updateData);
+      this.$root.eventHub.$on('sprintChanged', this.sprintChanged);
       this.$root.eventHub.$on('sprintSelected', this.sprintSelected);
     }
   },
@@ -411,6 +434,10 @@ a {
 .toDashboard {
   text-align: right;
   padding: 0px 20px;
+  position: fixed;
+  top: 20px;
+  width: 100%;
+  right: 50px;
 }
 .chart {
   position: fixed;
@@ -419,5 +446,35 @@ a {
   position: fixed;
   width: 100%;
   font-weight: bold;
+}
+/* 可以设置不同的进入和离开动画 */
+/* 设置持续时间和动画函数 */
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+@keyframes foldExpand
+{
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.summaryIcon {
+  /* animation: foldExpand 3s infinite; */
+  opacity: 0.8;
 }
 </style>

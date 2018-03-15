@@ -4,13 +4,13 @@
 /* global $:true */
 import EventProvider from './EventProvider.js';
 
-function VUEChart (element, width, height) {
+function VUEChart (element, width, height, maxX) {
   this.groups = {};
   this.points = [];
   this.groupVisible = {};
   this.currentActivePoint = null;
   this.createInitialDom(element);
-  this.init(width, height);
+  this.init(width, height, maxX);
 };
 VUEChart.prototype = new EventProvider();
 VUEChart.prototype.getGroupsData = function () {
@@ -49,7 +49,7 @@ VUEChart.colors['lightblue'] = 'rgba(84, 158, 248, 0.9)';
 VUEChart.colors['lightgreen'] = 'rgba(124, 191, 80, 0.9)';
 VUEChart.colors['lightred'] = '#d18080';
 VUEChart.colors['lightpurple'] = '#af7db0';
-VUEChart.prototype.init = function (width, height) {
+VUEChart.prototype.init = function (width, height, maxX) {
   var self = this;
   this.fireEvent('beforeChartInitial');
 
@@ -76,6 +76,9 @@ VUEChart.prototype.init = function (width, height) {
   this.minYGap = 30;  // the min pixel for y
 
   this.maxXValue = 10;
+  if (maxX) {
+    this.maxXValue = maxX;
+  }
   this.maxYValue = 20;
 
   this.chartAreaWidth = this.chartWidth;

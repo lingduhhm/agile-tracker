@@ -3,7 +3,7 @@
 */
 
 <template>
-  <div class="dataSheet">
+  <div class="dataSheet" style="">
     <el-header class="dataSheetSummary">
       <div class='title'>
         Summary of {{groupName}}<br>
