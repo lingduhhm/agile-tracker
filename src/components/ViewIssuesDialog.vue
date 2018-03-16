@@ -45,7 +45,10 @@ export default {
       groupList: [],
       dialogVisible: false,
       tableData: [],
-      dialogTitle: ''
+      dialogTitle: '',
+
+      allGroups: null,
+      summary: null
     };
   },
   methods: {
@@ -58,12 +61,12 @@ export default {
       return '';
     },
     getRootData: function () {
-      this.groupList = this.$root.allGroups;
-      var todayItem = this.$root.getDayDataDay(parseInt(this.day));
+      this.groupList = this.allGroups;
+      var todayItem = this.$root.getDayDataDay(parseInt(this.day), this.summary);
       var allIssues = [];
       var calGroups = [this.group];
       if (this.group === '') {
-        let allGroups = this.$root.allGroups;
+        let allGroups = this.allGroups;
         calGroups = [];
         for (let i = 0; i < allGroups.length; i++) {
           calGroups.push(allGroups[i].groupname);
@@ -107,18 +110,25 @@ export default {
       }
       this.tableData = allIssues;
 
-      for (let i = 0; i < this.$root.summary.storyList.length; i++) {
-        let storyItem = this.$root.summary.storyList[i];
+      for (let i = 0; i < this.summary.storyList.length; i++) {
+        let storyItem = this.summary.storyList[i];
         let storyItemID = storyItem._id;
         if (storyItemID === this.userStoryId) {
           this.dialogTitle = 'View Story Issues for ' + storyItem.storykey;
           break;
         }
       }
+    },
+    getDayBlockSummary: function (day, clickedGroup, todayData, previousData, type, allGroups, summary) {
+      this.summary = summary;
+      this.allGroups = allGroups;
     }
   },
   created: function () {
-
+    if (this.$root.eventHub) {
+      // console.log(this.$route);
+      this.$root.eventHub.$on('getDaySummary', this.getDayBlockSummary);
+    }
   },
   mounted: function () {
 

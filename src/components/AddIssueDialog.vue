@@ -112,7 +112,11 @@ export default {
       biList: [],
       groupList: [],
       dialogVisible: false,
-      title: ''
+      title: '',
+
+      allGroups: null,
+      summary: null,
+      sprintid: null
     };
   },
   methods: {
@@ -123,8 +127,8 @@ export default {
       } else if (this.category === 'followup') {
         this.title = 'Add New Followup Issue';
       }
-      this.biList = this.$root.summary.storyList;
-      this.groupList = this.$root.allGroups;
+      this.biList = this.summary.storyList;
+      this.groupList = this.allGroups;
 
       if (this.defaultValues === null) {
         return;
@@ -148,8 +152,8 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          var sprint = this.$root.sprintSelected._id;
-          var changeinsprintday = this.$root.summary.summary.length - 1;
+          var sprint = this.sprintid;
+          var changeinsprintday = this.summary.summary.length - 1;
           var newIssue = {
             issuekey: this.ruleForm.issueAdded,
             storyid: this.ruleForm.biSelected._id,
@@ -184,10 +188,18 @@ export default {
           return false;
         }
       });
+    },
+    getDayBlockSummary: function (day, clickedGroup, todayData, previousData, type, allGroups, summary, sprintid) {
+      this.sprintid = sprintid;
+      this.summary = summary;
+      this.allGroups = allGroups;
     }
   },
   created: function () {
-
+    if (this.$root.eventHub) {
+      // console.log(this.$route);
+      this.$root.eventHub.$on('getDaySummary', this.getDayBlockSummary);
+    }
   },
   mounted: function () {
 

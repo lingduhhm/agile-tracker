@@ -44,10 +44,10 @@ new Vue({
         });
       });
     },
-    getDayDataDay: function (day) {
+    getDayDataDay: function (day, summary) {
       var summaryReturnItem = null;
-      for (var i = 0; i < this.summary.summary.length; i++) {
-        var summaryItem = this.summary.summary[i];
+      for (var i = 0; i < summary.summary.length; i++) {
+        var summaryItem = summary.summary[i];
         var summaryday = summaryItem.day;
         if (summaryday === day) {
           summaryReturnItem = summaryItem;
@@ -60,17 +60,17 @@ new Vue({
   created: function () {
     var self = this;
     if (this.eventHub) {
-      this.eventHub.$on('sprintSelected', function (params) {
+      /*this.eventHub.$on('sprintSelected', function (params) {
         self.sprintSelected = params;
       });
       this.eventHub.$on('sprintDataChanged', function (params) {
         self.querySummaryData(self.sprintSelected);
-      });
+      });*/
     }
   },
   watch: {
     sprintSelected: function () {
-      this.querySummaryData(this.sprintSelected);
+      // this.querySummaryData(this.sprintSelected);
     }
   }
 });

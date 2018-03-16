@@ -118,10 +118,9 @@ export default {
         self.dialogDisplay = null;
       });
     },
-    getDayBlockSummary: function (day, clickedGroup, todayData, previousData) {
+    getDayBlockSummary: function (day, clickedGroup, todayData, previousData, type, allGroups, summary) {
       let calGroups = [clickedGroup];
       if (clickedGroup === '') {
-        let allGroups = this.$root.allGroups;
         calGroups = [];
         for (var i = 0; i < allGroups.length; i++) {
           calGroups.push(allGroups[i].groupname);
@@ -131,7 +130,7 @@ export default {
       var prevFollowups = [];
       for (let i = 0; i < calGroups.length; i++) {
         var usingGroup = calGroups[i];
-        var dayLength = this.$root.summary.summary.length - 1;
+        var dayLength = summary.summary.length - 1;
         if (day === dayLength) {
           this.isShowAction = true;
         } else {

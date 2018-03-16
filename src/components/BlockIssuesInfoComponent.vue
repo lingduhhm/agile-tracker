@@ -90,7 +90,10 @@ export default {
       previousblockersnum: 0,
       dialogDisplay: false,
       isShowAll: true,
-      popoverdisplay: false
+      popoverdisplay: false,
+
+      summary: null,
+      sprintid: null
     };
   },
   methods: {
@@ -112,8 +115,8 @@ export default {
   // var changefield = formData.changefield; // field name
   // var dataafterchange = formData.dataafterchange;
   // var changeinsprintday = formData.changeinsprintday; // 10
-      var sprint = this.$root.sprintSelected._id;
-      var changeinsprintday = this.$root.summary.summary.length - 1;
+      var sprint = this.sprintid;
+      var changeinsprintday = this.summary.summary.length - 1;
       var updateInfo = {
         sprintid: sprint,
         issueid: row._id,
@@ -150,8 +153,8 @@ export default {
   // var changefield = formData.changefield; // field name
   // var dataafterchange = formData.dataafterchange;
   // var changeinsprintday = formData.changeinsprintday; // 10
-      var sprint = this.$root.sprintSelected._id;
-      var changeinsprintday = this.$root.summary.summary.length - 1;
+      var sprint = this.sprintid;
+      var changeinsprintday = this.summary.summary.length - 1;
       var updateInfo = {
         sprintid: sprint,
         issueid: row._id,
@@ -190,10 +193,11 @@ export default {
         self.dialogDisplay = null;
       });
     },
-    getDayBlockSummary: function (day, clickedGroup, todayData, previousData) {
+    getDayBlockSummary: function (day, clickedGroup, todayData, previousData, type, allGroups, summary, sprintid) {
+      this.sprintid = sprintid;
+      this.summary = summary;
       let calGroups = [clickedGroup];
       if (clickedGroup === '') {
-        let allGroups = this.$root.allGroups;
         calGroups = [];
         for (var i = 0; i < allGroups.length; i++) {
           calGroups.push(allGroups[i].groupname);
@@ -203,7 +207,7 @@ export default {
       var prevBlocker = [];
       for (let i = 0; i < calGroups.length; i++) {
         var usingGroup = calGroups[i];
-        var dayLength = this.$root.summary.summary.length - 1;
+        var dayLength = this.summary.summary.length - 1;
         if (day === dayLength) {
           this.isShowAction = true;
         } else {

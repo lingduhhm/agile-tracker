@@ -88,8 +88,8 @@ export default {
       var oDate = currentDate.getDate();
       return oYear + '-' + oMonth + '-' + oDate;
     },
-    updateAllStroyList (day, group, todayObj, previousObj, type) {
-      this.biList = this.$root.summary.storyList;
+    updateAllStroyList (day, group, todayObj, previousObj, type, allGroups, summary) {
+      this.biList = this.summary.storyList;
       this.group = group;
     },
     submitForm (formName) {

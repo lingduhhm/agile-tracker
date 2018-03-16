@@ -104,7 +104,10 @@ export default {
       isShowAll: true,
       title: '',
       defaultAddIssueValues: {},
-      group: ''
+      group: '',
+
+      allGroups: null,
+      summary: null
     };
   },
   methods: {
@@ -130,8 +133,8 @@ export default {
   // var changefield = formData.changefield; // field name
   // var dataafterchange = formData.dataafterchange;
   // var changeinsprintday = formData.changeinsprintday; // 10
-      var sprint = this.$root.sprintSelected._id;
-      var changeinsprintday = this.$root.summary.summary.length - 1;
+      var sprint = this.sprintid;
+      var changeinsprintday = this.summary.summary.length - 1;
       var updateInfo = {
         sprintid: sprint,
         issueid: row._id,
@@ -169,8 +172,8 @@ export default {
   // var changefield = formData.changefield; // field name
   // var dataafterchange = formData.dataafterchange;
   // var changeinsprintday = formData.changeinsprintday; // 10
-      var sprint = this.$root.sprintSelected._id;
-      var changeinsprintday = this.$root.summary.summary.length - 1;
+      var sprint = this.sprintid;
+      var changeinsprintday = this.summary.summary.length - 1;
       var updateInfo = {
         sprintid: sprint,
         issueid: row._id,
@@ -207,7 +210,7 @@ export default {
       this.dialogDisplay = true;
       var self = this;
       if (this.group !== '') {
-        var groups = this.$root.allGroups;
+        var groups = this.allGroups;
         var groupObj = null;
         for (var i = 0; i < groups.length; i++) {
           var groupItem = groups[i];
@@ -224,11 +227,13 @@ export default {
         self.dialogDisplay = null;
       });
     },
-    getDayBlockSummary: function (day, clickedGroup, todayData, previousData) {
+    getDayBlockSummary: function (day, clickedGroup, todayData, previousData, type, allGroups, summary, sprintid) {
+      this.sprintid = sprintid;
+      this.summary = summary;
       let calGroups = [clickedGroup];
       this.group = clickedGroup;
+      this.allGroups = allGroups;
       if (clickedGroup === '') {
-        let allGroups = this.$root.allGroups;
         calGroups = [];
         for (var i = 0; i < allGroups.length; i++) {
           calGroups.push(allGroups[i].groupname);
@@ -238,7 +243,7 @@ export default {
       var prevIssue = [];
       for (let i = 0; i < calGroups.length; i++) {
         var usingGroup = calGroups[i];
-        var dayLength = this.$root.summary.summary.length - 1;
+        var dayLength = this.summary.summary.length - 1;
         if (day === dayLength) {
           this.isShowAction = true;
         } else {

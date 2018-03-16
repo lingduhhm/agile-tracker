@@ -136,7 +136,10 @@ export default {
       currentSelectedUserStoryId: '',
       currentSelectedDay: 0,
       viewIssueDialogDisplay: false,
-      isLastDay: false
+      isLastDay: false,
+
+      allGroups: null,
+      summary: null
     };
   },
   created: function () {
@@ -150,7 +153,7 @@ export default {
     addIssue: function (category, storyItem) {
       this.dialogDisplay = true;
       this.defaultAddIssueValues['biSelected'] = {'storykey': storyItem.storykey, '_id': storyItem._id};
-      var groups = this.$root.allGroups;
+      var groups = this.allGroups;
       var groupObj = null;
       for (var i = 0; i < groups.length; i++) {
         var groupItem = groups[i];
@@ -183,8 +186,10 @@ export default {
         return 'successContent';
       }
     },
-    getDayStorySummary (day, group, todayObj, previousObj, type) {
-      if ((this.$root.summary.summary.length - 1) === day) {
+    getDayStorySummary (day, group, todayObj, previousObj, type, allGroups, summary) {
+      this.summary = summary;
+      this.allGroups = allGroups;
+      if ((summary.summary.length - 1) === day) {
         this.isLastDay = true;
       } else {
         this.isLastDay = false;
@@ -193,7 +198,6 @@ export default {
       this.group = group;
       let calGroups = [group];
       if (group === '') {
-        let allGroups = this.$root.allGroups;
         calGroups = [];
         for (var i = 0; i < allGroups.length; i++) {
           calGroups.push(allGroups[i].groupname);
@@ -254,7 +258,7 @@ export default {
       return null;
     },
     _getTodayRemovedFromRedStory: function (todayObj, previousObj, day) {
-      let todaySumm = this.$root.getDayDataDay(day);
+      let todaySumm = this.$root.getDayDataDay(day, this.summary);
       let todayStoryList = todaySumm.storyList;
       var removedList = [];
       var todayRedStoryList = todayObj.points.redStorys;
@@ -278,7 +282,7 @@ export default {
       return removedList;
     },
     prepareDataForGroupWorkingStatus: function () {
-      var groups = this.$root.allGroups;
+      var groups = this.allGroups;
       var groupWorkingStatusMap = {};
       for (let i = 0; i < groups.length; i++) {
         let groupItem = groups[i];
@@ -316,11 +320,11 @@ export default {
       this.inProgressItems = inProgressItems;
     },
     _getIssueCount: function (todayItem, storyID, group) {
-      this.groupList = this.$root.allGroups;
+      this.groupList = this.allGroups;
       var allIssues = [];
       var calGroups = [this.group];
       if (this.group === '') {
-        let allGroups = this.$root.allGroups;
+        let allGroups = this.allGroups;
         calGroups = [];
         for (let i = 0; i < allGroups.length; i++) {
           calGroups.push(allGroups[i].groupname);
@@ -368,7 +372,7 @@ export default {
       var storyList = todayObj.storyList;
       let previousData = todayObj;
       if (day > 0) {
-        previousData = this.$root.getDayDataDay(day - 1);
+        previousData = this.$root.getDayDataDay(day - 1, this.summary);
       }
       for (let i = 0; i < group.length; i++) {
         var currentGroup = group[i];
@@ -377,7 +381,7 @@ export default {
         if (day > 0) {
           previousDay = day - 1;
         } else {}
-        var previousDayObj = this.$root.getDayDataDay(previousDay);
+        var previousDayObj = this.$root.getDayDataDay(previousDay, this.summary);
         var previousRedItems = previousDayObj.groups[currentGroup].points.redStorys;
         // get reduced changed item
         for (let i = 0; i < todayRedItems.length; i++) {

@@ -80,7 +80,7 @@ export default {
         self.dialogDisplay = null;
       });
     },
-    getDaySummary: function (day, group, todayObj, previousObj) {
+    getDaySummary: function (day, group, todayObj, previousObj, type, allGroups, summary) {
       if (todayObj == null) {
         return;
       }
@@ -90,7 +90,6 @@ export default {
       var calGroups = [group];
       if (group === '') {
         this.groupName = 'All Groups';
-        let allGroups = this.$root.allGroups;
         calGroups = [];
         for (let i = 0; i < allGroups.length; i++) {
           calGroups.push(allGroups[i].groupname);
@@ -110,7 +109,7 @@ export default {
         if (blockers != null) {
           for (let i = 0; i < blockers.length; i++) {
             let blockItem = blockers[i];
-            if (blockItem.status !== this.$root.summary['constances']['storyIssueResovledStatus']) {
+            if (blockItem.status !== summary['constances']['storyIssueResovledStatus']) {
               blockCount++;
             }
           }
@@ -121,7 +120,7 @@ export default {
         if (followups != null) {
           for (let i = 0; i < followups.length; i++) {
             let followupItem = followups[i];
-            if (followupItem.status !== this.$root.summary['constances']['storyIssueResovledStatus']) {
+            if (followupItem.status !== summary['constances']['storyIssueResovledStatus']) {
               followupCount++;
             }
           }
@@ -132,7 +131,7 @@ export default {
         allPoints += pointCount;
         this.pointLabel = 'Points (' + allPoints + ')';
 
-        this.effortData.value = this.$root.summary.effortOffsetRatio;
+        this.effortData.value = summary.effortOffsetRatio;
       }
     },
     changeTab: function () {
