@@ -11,11 +11,24 @@
         </el-col>
       </el-row>
     </el-card>
-    <el-dialog :title="popupTitle" :visible.sync="showPopup" width="80%" fullscreen>
-      <el-table :data="tableData" max-height="800" border>
-        <el-table-column sortable v-for="item in tableColumns" align="left" :key="item.key" :formatter="item.formatter" :prop="item.key" :label="item.label">
+    <el-dialog :title="popupTitle" :visible.sync="showPopup" width="80%">
+      <el-table :data="tableData" max-height="90%" border>
+        <el-table-column sortable align="left" :key="tableColumns[0].key" :formatter="tableColumns[0].formatter" :prop="tableColumns[0].key" :label="tableColumns[0].label" >
+        </el-table-column>
+        <el-table-column sortable align="left" :key="tableColumns[1].key" :formatter="tableColumns[1].formatter" :prop="tableColumns[1].key" :label="tableColumns[1].label" >
+        </el-table-column>
+        <el-table-column sortable align="left" :key="tableColumns[2].key" :formatter="tableColumns[2].formatter" :prop="tableColumns[2].key" :label="tableColumns[2].label">
+        </el-table-column>
+        <el-table-column sortable align="left" :key="tableColumns[3].key" :formatter="tableColumns[3].formatter" :prop="tableColumns[3].key" :label="tableColumns[3].label">
+        </el-table-column>
+        <el-table-column sortable align="left" :key="tableColumns[4].key" :formatter="tableColumns[4].formatter" :prop="tableColumns[4].key" :label="tableColumns[4].label">
+        </el-table-column>
+        <el-table-column sortable align="left" :key="tableColumns[5].key" :formatter="tableColumns[5].formatter" :prop="tableColumns[5].key" :label="tableColumns[5].label">
         </el-table-column>
       </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showPopup = false">Close</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -164,7 +177,7 @@
     },
     methods: {
       setData: function (originalData) {
-        var xAxis = ['Total', 'Commited', 'Done', 'Initial Commited'];
+        var xAxis = ['Inprogress', 'Commited', 'Done', 'Initial Commited'];
         var days = [{
           value: originalData.totaldays - originalData.leftdays,
           name: 'Passed Days'
