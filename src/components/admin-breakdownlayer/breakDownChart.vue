@@ -33,7 +33,9 @@ export default {
       allLines: [],
       allData: null,
       allGroups: null,
-      summary: null
+      summary: null,
+      localchartwidth: 0,
+      localchartheight: 0
     };
   },
   methods: {
@@ -197,11 +199,11 @@ export default {
       this.chart.addGroup(groupname, {color: selectedColor});
     },
     prepareChart: function (width, height, maxX) {
-      var chartWidth = this.chartwidth;
+      var chartWidth = this.localchartwidth;
       if (width) {
         chartWidth = width;
       }
-      var chartHeight = this.chartheight;
+      var chartHeight = this.localchartheight;
       if (height) {
         chartHeight = height;
       }
@@ -220,15 +222,16 @@ export default {
     sprintChanged: function (response, allGroups) {
       this.cachedResponse = response;
       this.allGroups = allGroups;
-      this.toggleSummary();
+      var self = this;
+      self.toggleSummary();
     },
     fetchData (inSprintId, width, height) {
       if (inSprintId !== undefined && inSprintId !== null && inSprintId !== '' && inSprintId === this.sprintid) {
         if (width) {
-          this.chartwidth = width;
+          this.localchartwidth = width;
         }
         if (height) {
-          this.chartheight = height;
+          this.localchartheight = height;
         }
         var self = this;
         var sprintid = inSprintId;
@@ -242,11 +245,11 @@ export default {
       }
     },
     toggleSummary: function (width, height) {
-      var chartWidth = this.chartwidth;
+      var chartWidth = this.localchartwidth;
       if (width) {
         chartWidth = width;
       }
-      var chartHeight = this.chartheight;
+      var chartHeight = this.localchartheight;
       if (height) {
         chartHeight = height;
       }
@@ -258,9 +261,19 @@ export default {
     if (this.$root.eventHub) {
       this.$root.eventHub.$on('getBreakDownChart', this.fetchData);
     }
+    this.localchartheight = this.chartheight;
+    this.localchartwidth = this.chartwidth;
   },
   mounted: function () {
     // this.prepareChart();
+  },
+  watch: {
+    chartheight: function () {
+      this.localchartheight = this.chartheight;
+    },
+    chartwidth: function () {
+      this.localchartwidth = this.chartwidth;
+    }
   },
   components: {
   }

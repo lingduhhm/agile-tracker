@@ -156,9 +156,9 @@ VUEChart.prototype.clearAllPoint = function () {
   $(this.ele).find('.chart .chartArea').empty();
 };
 VUEChart.prototype.addPopoverContainer = function () {
-  if ($('.chart .chartArea .popoverContainer').length === 0) {
+  if ($(this.ele).find('.chart .chartArea .popoverContainer').length === 0) {
     var popupContainer = $('<div class="popoverContainer" style="position:absolute;display:none;"><div class="popoverContent">test1818181818</div><div class="calloutpoint"></div></div>');
-    $('.chart .chartArea').append(popupContainer);
+    $(this.ele).find('.chart .chartArea').append(popupContainer);
   }
 };
 VUEChart.prototype.displayPopover = function (x, y, htmlContent) {

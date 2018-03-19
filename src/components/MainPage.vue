@@ -18,7 +18,7 @@
       </el-header>
       <el-container>
         <el-main>
-          <div class="chart" style="">
+          <div class="myChartMain" style="">
           </div>
         </el-main>
         <div style="display:table-cell;vertical-align: middle;padding-top: 40px;">
@@ -285,7 +285,7 @@ export default {
       if (height == null) {
         height = $(window).height() - 200;
       }
-      let chart = new VUEChart('.chart', width, height, maxX);
+      let chart = new VUEChart('.myChartMain', width, height, maxX);
       chart.addEventListener('pointclicked', function (evt) {
         chart.clearAllClickedPoint();
         self.currentClickedPoint = $(evt.sourceele).attr('pointid');
@@ -374,11 +374,11 @@ export default {
       return createHTML;
     },
     resizeChart: function (width, height, maxX) {
-      $('.chart').empty();
+      $('.myChartMain').empty();
       this.prepareChart(width, height, maxX);
       this.updateData(this.cachedResponse);
       if (this.currentClickedPoint) {
-        var currentClickedEle = $('.chart .chartArea [pointid=' + this.currentClickedPoint + ']');
+        var currentClickedEle = $('.myChartMain .chartArea [pointid=' + this.currentClickedPoint + ']');
         currentClickedEle.click();
       }
     },
@@ -411,7 +411,7 @@ export default {
     }
   },
   mounted: function () {
-    this.prepareChart();
+    // this.prepareChart();
   },
   components: {
     'sprint-select-dialog': SprintDialogContent,

@@ -91,7 +91,8 @@ export default {
   left: 0px;
   top: 0px;
   transform: scale(0.95);
-  box-shadow: 0px 0px 10px #000 inset;
+  box-shadow: 5px 5px 20px #333;
+  border-radius: 5px;
 }
 .breakDownLayerClose {
   width: 30px;
