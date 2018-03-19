@@ -223,7 +223,13 @@ export default {
       this.toggleSummary();
     },
     fetchData (inSprintId, width, height) {
-      if (inSprintId === this.sprintid) {
+      if (inSprintId !== undefined && inSprintId !== null && inSprintId !== '' && inSprintId === this.sprintid) {
+        if (width) {
+          this.chartwidth = width;
+        }
+        if (height) {
+          this.chartheight = height;
+        }
         var self = this;
         var sprintid = inSprintId;
         var module = this.$root.module;

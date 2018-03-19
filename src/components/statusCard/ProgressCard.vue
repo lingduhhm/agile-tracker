@@ -19,7 +19,7 @@ export default {
   props: {
     sprintid: {
       type: String,
-      default: '5aa771aa565aac21dbe670d1'
+      default: ''
     },
     showhead: {
       type: Boolean,
