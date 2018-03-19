@@ -35,7 +35,7 @@ VUEChart.prototype.createInitialDom = function (element) {
                 '        <div class="chartArea" style="position:absolute;">' +
                 '        </div>' +
                 '      </div>' +
-                '      <div class="axisXText" style="position:absolute;min-height:40px;"></div>' +
+                '      <div class="axisXText" style="position:relative;min-height:40px;"></div>' +
                 '    </div>' +
                 '  </div>' +
                 '  <div class="chartBar" style="display: flex;justify-content:space-evenly;">' +
@@ -116,7 +116,6 @@ VUEChart.prototype.init = function (width, height, maxX) {
   $(this.ele).find('.chart .chartArea').width(this.chartAreaWidth).height(this.chartAreaHeight).css('left', this.axisLength + 'px').css('top', '0px');
   $(this.ele).find('.axisYText').height(this.chartAreaHeight);
   $(this.ele).find('.axisXText').width(this.chartAreawidth);
-  $(this.ele).find('.axisXText').css('top', (this.chartAreaHeight + 10) + 'px');
 
   /* this.groups = {
     'groupid': {
