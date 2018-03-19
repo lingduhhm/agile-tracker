@@ -45,6 +45,8 @@
         if (data.current === '/dashboard' && data.target === '/dashboard') {
           this.$refs.sprintPage.fetchData();
         }
+        if (data.type === 'changeModule') {
+        }
       }
     }
   };

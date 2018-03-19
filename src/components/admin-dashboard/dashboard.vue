@@ -7,7 +7,6 @@
             <el-card class="box-card" style="height:273px;">
               <div slot="header" class="clearfix">
                 <span class="font">Current Sprint</span>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="showBurndown">Burndown</el-button>
                 <el-button v-if="sprintinfo.status != 'done'" style="float: right; padding: 3px 0" type="text" @click="refreshData">Refresh</el-button>
               </div>
               <el-form inline label-position="left" class="demo-table-expand">
@@ -33,8 +32,8 @@
           <el-col :span="16">
             <inprogressChart ref="inprogressChart"></inprogressChart>
           </el-col>
-          <el-col :span="8">
-            <inprogressCard/>
+          <el-col :span="8" ref="burndownChartContainer">
+            <inprogressCard :sprintid="burndownSprintid" :chartheight="182"/>
           </el-col>
         </el-row>
       </el-main>
@@ -90,13 +89,15 @@
             var responseData = response.data.resData;
             that.dashboard = responseData;
             that.sprintinfo = responseData.sprintData;
-            that.$root.eventHub.$emit('getBreakDownChart', this.sprintinfo._id);
             that.burndownSprintid = that.sprintinfo._id;
             this.$refs.worklogChartRef.fetchData('', this.sprintinfo);
             this.$refs.historyChartRef.fetchData('', this.sprintinfo);
             this.$refs.inprogressChart.setData(response.data.resData);
             this.$root.eventHub.$emit('updatePercentage', {
               percentage: that.sprintinfo.status === 'done' ? 100 : Math.ceil(((response.data.resData.commitedstories.length + response.data.resData.donestories.length) || 0) / ((response.data.resData.totalstories.length + response.data.resData.commitedstories.length + response.data.resData.donestories.length) || 1) * 100)
+            });
+            setTimeout(() => {
+              that.$root.eventHub.$emit('getBreakDownChart', this.sprintinfo._id, $(that.$refs.burndownChartContainer.$el).width() - 80);
             });
           } else {
             that.$message({
