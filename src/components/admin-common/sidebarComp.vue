@@ -1,6 +1,6 @@
 <template>
   <div style="background: rgb(84, 92, 100); height: 100%;">
-    <el-progress type="circle" :percentage="selectedPercentage" :width="60" :show-text="true"></el-progress>
+    <el-progress style="padding: 15px;" :text-inside="true" :stroke-width="16" :percentage="selectedPercentage" status="success"></el-progress>
     <el-tabs tab-position="left" style="height: 200px;" :value="selectedTab" @tab-click="handleSelect">
       <el-tab-pane :name="item._id" :key="item._id" v-for="item in planning">
         <span slot="label"><i class="el-icon-edit-outline"></i> {{item.release}}/{{item.sprint}}</span>
