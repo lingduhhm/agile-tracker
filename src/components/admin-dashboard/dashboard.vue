@@ -33,7 +33,7 @@
             <inprogressChart ref="inprogressChart"></inprogressChart>
           </el-col>
           <el-col :span="8" ref="burndownChartContainer">
-            <inprogressCard :sprintid="burndownSprintid" :chartheight="182"/>
+            <inprogressCard :sprintid="burndownSprintid" :chartheight="182" @cardclicked="showBurndown"/>
           </el-col>
         </el-row>
       </el-main>
@@ -117,12 +117,15 @@
       refreshData: function () {
         this.$refs.worklogChartRef.refresh(this.sprintinfo);
       },
-      showBurndown () {
+      showBurndown: function () {
         this.dialogDisplay = true;
         var self = this;
         setTimeout(function () {
           self.dialogDisplay = null;
         });
+        if (this.$root.eventHub) {
+          this.$root.eventHub.$emit('sprintDataChanged', this.burndownSprintid);
+        }
       }
     },
     components: {

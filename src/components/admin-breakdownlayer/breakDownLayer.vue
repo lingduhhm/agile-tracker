@@ -4,8 +4,8 @@
 
 <template>
   <div class="breakdownLayer">
-    <transition name="scale" v-on:after-enter="fetchData">
-      <div class="breakDownLayerContainer" v-if="isDisplay">
+    <transition name="scale">
+      <div class="breakDownLayerContainer" v-show="isDisplay">
         <break-down-main></break-down-main>
         <div class="el-icon-error breakDownLayerClose" @click="closeLayer"></div>
       </div>
@@ -63,8 +63,8 @@ export default {
   created: function () {
     var self = this;
     if (this.$root.eventHub) {
-      this.$root.eventHub.$on('sprintDataChanged', function (params) {
-        self.fetchData();
+      this.$root.eventHub.$on('sprintDataChanged', function (sprintid) {
+        self.fetchData(sprintid);
       });
     }
   },

@@ -1,12 +1,12 @@
 <template>
-  <div class="agileTrackerProgressCard">
+  <div class="agileTrackerProgressCard" @click="progressCardClicked">
     <el-card class="box-card">
       <div slot="header" class="clearfix" v-if="showhead">
         <span>Progress</span>
         <el-button style="float: right; padding: 3px 0" type="text"></el-button>
       </div>
       <el-row class="cardContentRow">
-        <el-col :span="24"><div class="grid-content totalTitle">
+        <el-col :span="24"><div class="grid-content">
           <breakdown-chart :sprintid="sprintid" :chartwidth="chartwidth" :chartheight="chartheight"></breakdown-chart>
         </div></el-col>
       </el-row>
@@ -43,6 +43,12 @@ export default {
     };
   },
   methods: {
+    progressCardClicked: function (evt) {
+      evt.stopImmediatePropagation();
+      evt.stopPropagation();
+      evt.preventDefault();
+      this.$emit('cardclicked', this.sprintid);
+    }
   },
   created: function () {
 
@@ -64,7 +70,6 @@ export default {
   width: 100%;
 }
 .cardContentRow {
-  line-height: 50px;
   align-items: center;
   margin-left: -20px;
   margin-right: -20px;

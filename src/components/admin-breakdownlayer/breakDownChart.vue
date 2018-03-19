@@ -3,7 +3,7 @@
 */
 
 <template>
-  <div class="chart" style="display: block;">
+  <div class="chartsummary" style="display: block;position: relative;z-index: 1;">
   </div>
 </template>
 
@@ -205,15 +205,15 @@ export default {
       if (height) {
         chartHeight = height;
       }
-      let chart = new VUEChart('.chart', chartWidth, chartHeight, maxX);
+      let chart = new VUEChart('.chartsummary', chartWidth, chartHeight, maxX);
       this.chart = chart;
     },
     resizeChart: function (width, height, maxX) {
-      $('.chart').empty();
+      $('.chartsummary').empty();
       this.prepareChart(width, height, maxX);
       this.updateData(this.cachedResponse);
       if (this.currentClickedPoint) {
-        var currentClickedEle = $('.chart .chartArea [pointid=' + this.currentClickedPoint + ']');
+        var currentClickedEle = $('.chartsummary .chartArea [pointid=' + this.currentClickedPoint + ']');
         currentClickedEle.click();
       }
     },
@@ -260,7 +260,7 @@ export default {
     }
   },
   mounted: function () {
-    this.prepareChart();
+    // this.prepareChart();
   },
   components: {
   }
