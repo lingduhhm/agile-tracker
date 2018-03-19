@@ -225,7 +225,7 @@ export default {
     fetchData (inSprintId, width, height) {
       if (inSprintId === this.sprintid) {
         var self = this;
-        var sprintid = this.$route.params.sprintid;
+        var sprintid = inSprintId;
         var module = this.$root.module;
         this.axios.get('/api/v1/getGroups?sprintid=' + sprintid).then(function (groupsData) {
           self.allGroups = groupsData.data.resData;
