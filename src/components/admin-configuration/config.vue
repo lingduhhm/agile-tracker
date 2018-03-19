@@ -50,7 +50,7 @@
     created: function () {
     },
     beforeRouteUpdate (to, from, next) {
-      this.refreshData();
+      next(this.refreshData());
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {

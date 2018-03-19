@@ -186,9 +186,9 @@
           name: 'Remaining Days'
         }];
         var pointsArr = [{
-          value: originalData.totalpoints,
+          value: originalData.inprogresspoints,
           name: 'Total',
-          list: originalData.totalstories
+          list: originalData.inprogresstories
         }, {
           value: originalData.commitedpoints,
           name: 'Commited',
@@ -203,8 +203,8 @@
           list: originalData.initialcommitedstories
         }];
         var countArr = [{
-          value: originalData.totalstories.length,
-          list: originalData.totalstories
+          value: originalData.inprogresstories.length,
+          list: originalData.inprogresstories
         }, {
           value: originalData.commitedstories.length,
           list: originalData.commitedstories

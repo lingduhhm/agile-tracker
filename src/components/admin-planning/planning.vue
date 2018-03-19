@@ -67,7 +67,7 @@
       };
     },
     beforeRouteUpdate (to, from, next) {
-      this.fetchData();
+      next(this.fetchData());
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {

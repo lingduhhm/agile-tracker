@@ -27,7 +27,7 @@
           </el-col>
         </el-row>
       </el-aside>
-      <el-main style="padding: 0 20px;">
+      <el-main style="padding: 0 0 0 20px;">
         <el-row :gutter="2">
           <el-col :span="16">
             <inprogressChart ref="inprogressChart"></inprogressChart>
@@ -74,7 +74,7 @@
       };
     },
     beforeRouteUpdate (to, from, next) {
-      this.fetchData();
+      next(this.fetchData());
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
@@ -97,7 +97,7 @@
             this.$refs.historyChartRef.fetchData('', this.sprintinfo);
             this.$refs.inprogressChart.setData(response.data.resData);
             this.$root.eventHub.$emit('updatePercentage', {
-              percentage: that.sprintinfo.status === 'done' ? 100 : Math.ceil(((response.data.resData.commitedstories.length + response.data.resData.donestories.length) || 0) / ((response.data.resData.totalstories.length + response.data.resData.commitedstories.length + response.data.resData.donestories.length) || 1) * 100)
+              percentage: that.sprintinfo.status === 'done' ? 100 : Math.ceil(((response.data.resData.commitedstories.length + response.data.resData.donestories.length) || 0) / ((response.data.resData.inprogresstories.length + response.data.resData.commitedstories.length + response.data.resData.donestories.length) || 1) * 100)
             });
             setTimeout(() => {
               that.$root.eventHub.$emit('getBreakDownChart', this.sprintinfo._id, $(that.$refs.burndownChartContainer.$el).width() - 80);

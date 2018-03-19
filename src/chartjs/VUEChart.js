@@ -337,7 +337,7 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
   }
 
   var group = this.groups[groupid];
-  var points = group.points;
+  var points = group && group.points;
   if (points == null) {
     return;
   }
