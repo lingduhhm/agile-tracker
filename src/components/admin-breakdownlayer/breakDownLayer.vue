@@ -10,6 +10,8 @@
         <div class="el-icon-error breakDownLayerClose" @click="closeLayer"></div>
       </div>
     </transition>
+    <div style="width: 100%;height: 100%;position: fixed;top: 0px;left: 0px;z-index: 10;background-color: rgba(0,0,0,0.5);" v-if="isDisplay" @click="closeLayer">
+    </div>
   </div>
 </template>
 
@@ -88,13 +90,15 @@ export default {
   z-index: 100;
   left: 0px;
   top: 0px;
+  transform: scale(0.95);
+  box-shadow: 0px 0px 10px #000 inset;
 }
 .breakDownLayerClose {
   width: 30px;
   height: 30px;
   position: fixed;
-  top: 5px;
-  right: 5px;
+  top: 10px;
+  right: 10px;
   font-size: 1.5rem;
   color: red;
 }
@@ -104,7 +108,7 @@ export default {
     opacity: 0;
   }
   100% {
-    transform: scale(1);
+    transform: scale(0.95);
     opacity: 1;
   }
 }

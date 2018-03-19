@@ -22,7 +22,7 @@
           </div>
         </el-main>
         <div style="display:table-cell;vertical-align: middle;padding-top: 40px;">
-          <img :src="isSummaryDisplay?foldIcon:expandIcon" style="width:30px;" @click="folderClicked" class="summaryIcon">
+          <img :src="isSummaryDisplay?foldIcon:expandIcon" style="width:30px;" @click="folderClicked" class="summaryIcon" v-bind:style="{ isSummaryDisplay: 'right: 0px;'}">
         </div>
         <transition name="slide-fade" v-on:after-leave="toggleSummary" v-on:after-enter="toggleSummary">
           <div style="display:table-cell;padding-top: 10px;" v-if="isSummaryDisplay">
@@ -483,5 +483,6 @@ a {
 .summaryIcon {
   /* animation: foldExpand 3s infinite; */
   opacity: 0.8;
+  margin-right: 10px;
 }
 </style>
