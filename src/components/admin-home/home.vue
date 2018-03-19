@@ -33,21 +33,7 @@
       'headerComp': headerComp
     },
     mounted () {
-      this.$root.eventHub.$off('refreshDataRequest', (data) => {
-        this.refreshData(data);
-      });
-      this.$root.eventHub.$on('refreshDataRequest', (data) => {
-        this.refreshData(data);
-      });
-    },
-    methods: {
-      refreshData (data) {
-        if (data.current === '/dashboard' && data.target === '/dashboard') {
-          this.$refs.sprintPage.fetchData();
-        }
-        if (data.type === 'changeModule') {
-        }
-      }
+      this.$refs.headerComp.fetchData();
     }
   };
 </script>

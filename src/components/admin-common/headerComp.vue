@@ -105,7 +105,6 @@
       'datepicker': DatePicker
     },
     created: function () {
-      this.fetchData();
       if (this.$root.eventHub) {
         this.$root.eventHub.$on('datePickerChanged', this.calendarDateSelected);
       }
@@ -156,7 +155,7 @@
                 that.currentModule = window.localStorage.getItem('module');
               } else {
                 that.currentModule = that.moduleList.length > 0 ? that.moduleList[0].key : 'Module';
-                window.localStorage.setItem('module', that.moduleList[0].key);
+                window.localStorage.setItem('module', that.moduleList.length > 0 ? that.moduleList[0].key : 'Module');
               }
               this.$root.eventHub.$emit('refreshDataRequest', {'type': 'changeModule'});
             } else {

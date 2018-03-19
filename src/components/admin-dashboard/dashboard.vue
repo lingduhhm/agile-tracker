@@ -73,6 +73,9 @@
         burndownSprintid: ''
       };
     },
+    beforeRouteUpdate (to, from, next) {
+      this.fetchData();
+    },
     beforeRouteEnter (to, from, next) {
       next(vm => {
         vm.fetchData();

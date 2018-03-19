@@ -25,11 +25,11 @@ export default new Router({
       component: Home,
       children: [
         {
-          path: '/dashboard',
+          path: '/dashboard/:pageid',
           component: Dashboard
         },
         {
-          path: '/planning',
+          path: '/planning/:pageid',
           component: Planning
         },
         {
@@ -37,7 +37,7 @@ export default new Router({
           component: Story
         },
         {
-          path: '/configuration',
+          path: '/configuration/:pageid',
           component: Configuration
         }
       ],

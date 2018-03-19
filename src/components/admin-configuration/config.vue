@@ -2,10 +2,10 @@
   <div>
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="12">
-        <group-card></group-card>
+        <group-card ref="groupCard"></group-card>
       </el-col>
       <el-col :span="12">
-        <table-comp :configObj= "configObj" ></table-comp>
+        <table-comp :configObj= "configObj" ref="tableComp"></table-comp>
       </el-col>
     </el-row>
   </div>
@@ -49,7 +49,19 @@
     },
     created: function () {
     },
-    watch: {
+    beforeRouteUpdate (to, from, next) {
+      this.refreshData();
+    },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        vm.refreshData();
+      });
+    },
+    methods: {
+      refreshData () {
+        this.$refs.groupCard.fetchData();
+        this.$refs.tableComp.fetchData();
+      }
     },
     components: {
       'groupCard': groupCard,

@@ -1,6 +1,6 @@
 <template>
   <div style="background: rgb(84, 92, 100); height: 100%;">
-    <el-progress type="circle" :percentage="selectedPercentage" :width="60"></el-progress>
+    <el-progress type="circle" :percentage="selectedPercentage" :width="60" :show-text="true"></el-progress>
     <el-tabs tab-position="left" style="height: 200px;" :value="selectedTab" @tab-click="handleSelect">
       <el-tab-pane :name="item._id" :key="item._id" v-for="item in planning">
         <span slot="label"><i class="el-icon-edit-outline"></i> {{item.release}}/{{item.sprint}}</span>
@@ -66,6 +66,7 @@
               } else {
                 that.selectedTab = 'configuration';
               }
+              window.localStorage.setItem('sprint', (that.selectedTab !== 'configuration' ? that.selectedTab : ''));
             }
             that.updateRouter(that.selectedTab);
           } else {
@@ -122,12 +123,12 @@
       },
       updateRouter (_id) {
         if (_id === 'configuration') {
-          this.$router.push('/configuration/');
+          this.$router.push('/configuration/' + window.localStorage.getItem('module') + window.localStorage.getItem('sprint'));
         } else {
           if (this.menuMap[_id].status === 'planning') {
-            this.$router.push('/planning');
+            this.$router.push('/planning/' + window.localStorage.getItem('module') + window.localStorage.getItem('sprint'));
           } else {
-            this.$router.push('/dashboard');
+            this.$router.push('/dashboard/' + window.localStorage.getItem('module') + window.localStorage.getItem('sprint'));
           }
         }
       }
@@ -136,4 +137,7 @@
 </script>
 
 <style>
+  .el-tabs__item {
+    color: white;
+  }
 </style>

@@ -35,7 +35,7 @@ new Vue({
       this.summary = null;
       this.allGroups = [];
       var sprintid = params._id;
-      var module = this.$root.module;
+      var module = window.localStorage.getItem('module');
       this.axios.get('/api/v1/getGroups?sprintid=' + sprintid).then(function (groupsData) {
         self.allGroups = groupsData.data.resData;
         self.axios.get('/api/v1/summary?sprintid=' + sprintid + '&module=' + module).then(function (summarydata) {

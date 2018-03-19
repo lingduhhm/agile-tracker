@@ -116,16 +116,13 @@
         deleteObjId: ''
       };
     },
-    created: function () {
-      this.fetchData();
-    },
-    watch: {
-      '$route': 'fetchData'
-    },
     methods: {
       fetchData: function () {
         var that = this;
-        var module = this.$root.module;
+        var module = window.localStorage.getItem('module');
+        if (!module) {
+          return false;
+        }
         this.axios.get('/admin/groups/' + module)
         .then(function (response) {
           if (response.data.status === 'success') {
@@ -166,7 +163,7 @@
       handleEdit: function (data) {
         var that = this;
         if (this.form._id) {
-          this.axios.put('/admin/groups?module=' + this.$root.module, this.form)
+          this.axios.put('/admin/groups?module=' + window.localStorage.getItem('module'), this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
               that.groupList = response.data.resData;
@@ -190,8 +187,8 @@
             });
           });
         } else {
-          this.form.module = this.$root.module;
-          this.axios.post('/admin/groups?module=' + this.$root.module, this.form)
+          this.form.module = window.localStorage.getItem('module');
+          this.axios.post('/admin/groups?module=' + window.localStorage.getItem('module'), this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
               that.groupList = response.data.resData;
@@ -219,7 +216,7 @@
 
       handleDelete: function (data) {
         var that = this;
-        this.axios.delete('/admin/groups?objid=' + this.deleteObjId + '&module=' + this.$root.module)
+        this.axios.delete('/admin/groups?objid=' + this.deleteObjId + '&module=' + window.localStorage.getItem('module'))
         .then(function (response) {
           if (response.data.status === 'success') {
             that.groupList = response.data.resData;

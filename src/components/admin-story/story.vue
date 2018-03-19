@@ -117,7 +117,7 @@
       fetchData: function () {
         var that = this;
         var objId = this.$route.params.sprintid;
-        this.axios.get('/admin/stories/' + objId + '?module=' + this.$root.module)
+        this.axios.get('/admin/stories/' + objId + '?module=' + window.localStorage.getItem('module'))
         .then(function (response) {
           if (response.data.status === 'success') {
             that.tableData = response.data.resData;
@@ -156,7 +156,7 @@
       handleEdit: function (data) {
         var that = this;
         if (this.form._id) {
-          this.axios.put('/admin/stories?module=' + this.$root.module, this.form)
+          this.axios.put('/admin/stories?module=' + window.localStorage.getItem('module'), this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
               that.tableData = response.data.resData;
@@ -181,7 +181,7 @@
           });
         } else {
           this.form.sprint = this.$route.params.sprintid;
-          this.axios.post('/admin/stories?module=' + this.$root.module, this.form)
+          this.axios.post('/admin/stories?module=' + window.localStorage.getItem('module'), this.form)
           .then(function (response) {
             if (response.data.status === 'success') {
               that.tableData = response.data.resData;
@@ -209,7 +209,7 @@
 
       handleDelete: function (data) {
         var that = this;
-        this.axios.delete('/admin/stories?objid=' + this.deleteObjId + '&sprintid=' + this.$route.params.sprintid + '&module=' + this.$root.module)
+        this.axios.delete('/admin/stories?objid=' + this.deleteObjId + '&sprintid=' + this.$route.params.sprintid + '&module=' + window.localStorage.getItem('module'))
         .then(function (response) {
           if (response.data.status === 'success') {
             that.tableData = response.data.resData;

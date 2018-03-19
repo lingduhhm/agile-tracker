@@ -78,7 +78,7 @@
     methods: {
       fetchData () {
         var that = this;
-        this.axios.get('/admin/dashboard/sprintHistoryPoints?module=' + this.$root.module).then((response) => {
+        this.axios.get('/admin/dashboard/sprintHistoryPoints?module=' + window.localStorage.getItem('module')).then((response) => {
           if (response.data.status === 'success') {
             var responseData = response.data.resData;
             that.setData(responseData);
