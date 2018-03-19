@@ -60,7 +60,7 @@
           label: 'Status',
           key: 'status',
           formatter: (row, column, cellValue) => {
-            return cellValue === 'initial' ? 'No Update' : cellValue;
+            return cellValue === 'initial' ? row.initialstatus : cellValue;
           }
         }, {
           label: 'Points',
@@ -177,7 +177,7 @@
     },
     methods: {
       setData: function (originalData) {
-        var xAxis = ['Inprogress', 'Commited', 'Done', 'Initial Commited'];
+        var xAxis = ['Open&Inprogress', 'Commited', 'Done', 'Initial Commited'];
         var days = [{
           value: originalData.totaldays - originalData.leftdays,
           name: 'Passed Days'
