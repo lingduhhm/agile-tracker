@@ -13,7 +13,7 @@
     <el-container>
       <el-header>
         <h1 class="title" style="">
-        Agile Workflow ({{module}} - {{sprint}})
+        Burndown Chart ({{module}} - {{sprint}})
         </h1>
       </el-header>
       <el-container>

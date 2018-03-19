@@ -3,7 +3,7 @@
 */
 
 <template>
-  <div class="chart" style="positon: fixed;">
+  <div class="chart" style="display: block;">
   </div>
 </template>
 
@@ -15,6 +15,14 @@ export default {
     'sprintid': {
       type: String,
       default: true
+    },
+    'chartwidth': {
+      type: Number,
+      default: 400
+    },
+    'chartheight': {
+      type: Number,
+      default: 200
     }
   },
   name: 'ChartMainPage',
@@ -191,12 +199,13 @@ export default {
     },
     prepareChart: function (width, height, maxX) {
       var self = this;
-      var window75Width = $(window).width() * 0.75;
-      if (width == null) {
-        width = window75Width - 100;
+      var chartWidth = this.chartwidth;
+      if (width) {
+        chartWidth = width;
       }
-      if (height == null) {
-        height = $(window).height() - 200;
+      var chartHeight = this.chartheight;
+      if(height) {
+        chartHeight = height;
       }
       let chart = new VUEChart('.chart', width, height, maxX);
       this.chart = chart;
@@ -215,7 +224,7 @@ export default {
       this.allGroups = allGroups;
       this.toggleSummary();
     },
-    fetchData (inSprintId) {
+    fetchData (inSprintId, width, height) {
       if (inSprintId === this.sprintid) {
         var self = this;
         var sprintid = this.$route.params.sprintid;
@@ -228,6 +237,18 @@ export default {
           });
         });
       }
+    },
+    toggleSummary: function (width, height) {
+      var chartWidth = this.chartwidth;
+      if (width) {
+        chartWidth = width;
+      }
+      var chartHeight = this.chartheight;
+      if(height) {
+        chartHeight = height;
+      }
+      var sprintTotalDayCount = this.cachedResponse.resData.sprintTotalDayCount;
+      this.resizeChart(chartWidth, chartHeight, sprintTotalDayCount - 1);
     }
   },
   created: function () {
@@ -272,7 +293,6 @@ a {
   z-index: 10;
 }
 .chart {
-  position: fixed;
 }
 .title {
   position: fixed;
