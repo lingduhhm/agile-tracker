@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import MainPage from '@/components/MainPage';
-import DataSheet from '@/components/DataSheet';
 
 import Home from '@/components/admin-home/home';
 import Login from '@/components/login/login';
@@ -23,30 +21,15 @@ export default new Router({
     },
     {
       path: '/index',
-      name: '',
-      component: MainPage,
-      children: [
-        {
-          path: '',
-          component: DataSheet
-        }
-      ]
-    },
-    {
-      path: '/admin',
-      redirect: 'admin/home'
-    },
-    {
-      path: '/admin/home',
       name: 'home',
       component: Home,
       children: [
         {
-          path: '/dashboard/:sprintid',
+          path: '/dashboard',
           component: Dashboard
         },
         {
-          path: '/planning/:sprintid',
+          path: '/planning',
           component: Planning
         },
         {

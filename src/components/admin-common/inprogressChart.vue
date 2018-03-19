@@ -3,10 +3,10 @@
   <div>
     <el-card class="box-card" style="margin-bottom: 10px;">
       <el-row :gutter="2">
-        <el-col :span="16">
+        <el-col :span="22">
           <div id="inprogressChart" style="height:233px;"></div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" v-show="false">
          <div id="inprogressPie" style="height:233px;"></div>
         </el-col>
       </el-row>

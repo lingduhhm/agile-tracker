@@ -66,16 +66,18 @@
         sprintinfo: ''
       };
     },
-    mounted: function () {
-      this.fetchData();
-    },
-    watch: {
-      '$route': 'fetchData'
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        vm.fetchData();
+      });
     },
     methods: {
       fetchData () {
         var that = this;
-        this.axios.get('/admin/planning?module=' + this.$root.module + '&sprintid=' + this.$route.params.sprintid).then((response) => {
+        if (!window.localStorage.getItem('module') || !window.localStorage.getItem('sprint')) {
+          return false;
+        }
+        this.axios.get('/admin/planning?module=' + window.localStorage.getItem('module') + '&sprintid=' + window.localStorage.getItem('sprint')).then((response) => {
           if (response.data.status === 'success') {
             that.sprintinfo = response.data.resData;
             that.sprintinfo.totalpoints = response.data.totalPoints;

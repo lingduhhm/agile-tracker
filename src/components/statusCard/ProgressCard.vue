@@ -27,11 +27,11 @@ export default {
     },
     chartwidth: {
       type: Number,
-      default: 400
+      default: 200
     },
     chartheight: {
       type: Number,
-      default: 200
+      default: 220
     }
   },
   data () {

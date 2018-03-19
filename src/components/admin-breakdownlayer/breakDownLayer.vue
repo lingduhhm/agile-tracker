@@ -27,7 +27,7 @@ export default {
       type: String,
       default: '5aa771aa565aac21dbe670d1'
     },
-    'layerDisplay': {
+    'layerdisplay': {
       type: Boolean,
       default: false
     }
@@ -45,8 +45,8 @@ export default {
     },
     fetchData (inSprintId) {
       var self = this;
-      //if (inSprintId === this.sprintid) {
-      if (true) {
+      if (inSprintId === this.sprintid) {
+      // if (true) {
         var sprintid = this.sprintid;
         this.axios.get('/api/v1/getGroups?sprintid=' + sprintid).then(function (groupsData) {
           self.allGroups = groupsData.data.resData;
@@ -71,9 +71,9 @@ export default {
   mounted: function () {
   },
   watch: {
-    layerDisplay: function () {
+    layerdisplay: function () {
       if (!this.isDisplay) {
-        this.isDisplay = this.layerDisplay;
+        this.isDisplay = this.layerdisplay;
       }
     }
   }

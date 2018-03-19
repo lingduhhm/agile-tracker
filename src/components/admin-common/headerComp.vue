@@ -1,13 +1,17 @@
 <template>
   <div>
     <el-row>
-      <el-col :span="1">
-        <el-button icon="el-icon-back" type="primary" @click="backToMainBoard" size="mini" style="padding: 5px 15px;" plain></el-button>
+      <el-col :span="3">
+        <el-dropdown @command="changeModule">
+          <span class="el-dropdown-link">
+            {{currentModule}}<i class="el-icon-arrow-down el-icon--right"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item :command="item.key" :key="item.key" divided v-for="item in moduleList">{{item.key}}</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </el-col>
       <el-col :span="2">
-        <span style='font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif; color: #409EFF; font-size: 18px;'>{{$root.module}}</span>
-      </el-col>
-      <el-col :span="2" v-if="$route.params.sprintid">
         <el-dropdown style="float: right;"  @command="action">
           <span class="el-dropdown-link">
             Action<i class="el-icon-arrow-down el-icon--right"></i>
@@ -18,18 +22,7 @@
             <el-dropdown-item command="proceed">{{sprintinfo.status == 'done'? "Restart": "Proceed"}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-      </el-col>
-      <template>
-        <el-col :span="4" :offset="1">
-          Work Days: {{(form.workdays && form.workdays.length) || 0}} days
-        </el-col> 
-        <el-col :span="4" :offset="1">
-          Start Date: {{form.start}}
-        </el-col> 
-        <el-col :span="4" :offset="1">
-          End Date: {{form.end}}
-        </el-col> 
-      </template>           
+      </el-col>          
     </el-row>
     <el-dialog 
       :title="title" 
@@ -102,7 +95,10 @@
           workdays: []
         },
         defaultJql: '',
-        sprintSelectedDaysCount: 0
+        sprintSelectedDaysCount: 0,
+        currentSprint: window.localStorage.getItem('sprint') || '',
+        currentModule: window.localStorage.getItem('module') || 'Module',
+        moduleList: []
       };
     },
     components: {
@@ -113,9 +109,6 @@
       if (this.$root.eventHub) {
         this.$root.eventHub.$on('datePickerChanged', this.calendarDateSelected);
       }
-    },
-    watch: {
-      '$route': 'fetchData'
     },
     computed: {
       selectedDays: function () {
@@ -154,40 +147,80 @@
     methods: {
       fetchData () {
         var that = this;
-        if (this.$route.params.sprintid !== undefined && this.$route.params.sprintid !== 'undefined') {
-          this.axios.get('/admin/sprint?sprintid=' + this.$route.params.sprintid + '&module=' + this.$root.module).then((response) => {
-            if (response.data.status === 'success') {
-              this.sprintinfo = response.data.resData.sprintinfo;
-              this.defaultJql = response.data.resData.defaultJql;
-              this.form = response.data.resData.sprintinfo;
-            } else {
-              that.$message({
-                message: response.data.resMsg,
-                type: response.data.status
-              });
-              if (response.data.redirect) {
-                window.location.href = response.data.redirect;
+        this.axios.get('/api/v1/modules')
+        .then((response) => {
+          if (response.data.status === 'success') {
+            that.moduleList = response.data.resData;
+            if (that.moduleList.length > 0) {
+              if (window.localStorage.getItem('module')) {
+                that.currentModule = window.localStorage.getItem('module');
+              } else {
+                that.currentModule = that.moduleList.length > 0 ? that.moduleList[0].key : 'Module';
+                window.localStorage.setItem('module', that.moduleList[0].key);
               }
+              this.$root.eventHub.$emit('refreshDataRequest', {'type': 'changeModule'});
+            } else {
+              window.localStorage.setItem('module', '');
             }
-          })
-          .catch((err) => {
-            console.log(err);
+          } else {
             that.$message({
-              message: 'Data fetch failed!',
-              type: 'error'
+              message: response.data.resMsg,
+              type: response.data.status
             });
+          }
+        })
+        .catch((err) => {
+          that.$message({
+            message: 'Data fetch failed!',
+            type: 'error'
           });
-        }
+          console.log(err);
+        });
+      },
+      changeModule (val) {
+        window.localStorage.setItem('module', val);
+        window.localStorage.setItem('sprint', '');
+        this.currentModule = val;
+        this.$root.eventHub.$emit('refreshDataRequest', {'type': 'changeModule'});
       },
       calendarDateSelected: function (dateArr) {
         this.form.workdays = dateArr;
         this.sprintSelectedDaysCount = this.form.workdays.length;
       },
       action (command) {
+        var that = this;
+        var loading = '';
         if (command === 'edit') {
-          this.form = this.sprintinfo;
-          this.dialogVisible = true;
-          this.title = 'Edit Sprint';
+          if (window.localStorage.getItem('module') && window.localStorage.getItem('sprint')) {
+            loading = Loading.service({fullscreen: true,
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)',
+              text: 'Loading...'});
+            this.axios.get('/admin/sprint?sprintid=' + window.localStorage.getItem('sprint') + '&module=' + window.localStorage.getItem('module'))
+            .then((response) => {
+              if (response.data.status === 'success') {
+                that.form = response.data.resData.sprintinfo;
+                that.dialogVisible = true;
+                that.title = 'Edit Sprint';
+                that.defaultJql = response.data.resData.defaultJql;
+              } else {
+                that.$message({
+                  message: response.data.resMsg,
+                  type: response.data.status
+                });
+              }
+              loading.close();
+            })
+            .catch((err) => {
+              loading.close();
+              console.log(err);
+            });
+          } else {
+            that.$message({
+              message: 'Please select sprint first！',
+              type: 'error'
+            });
+          }
         } else if (command === 'add') {
           this.form = {
             'status': 'planning',
@@ -196,44 +229,46 @@
           this.title = 'Add Sprint';
           this.dialogVisible = true;
         } else if (command === 'proceed') {
-          var loading = Loading.service({fullscreen: true,
-            spinner: 'el-icon-loading',
-            background: 'rgba(0, 0, 0, 0.7)',
-            text: 'Loading...'});
-          var that = this;
-          this.axios.put('/admin/sprint/proceed?status=' + this.$route.query.status + '&module=' + this.$root.module + '&sprintid=' + this.sprintinfo._id).then((response) => {
-            if (response.data.status === 'success') {
-              that.fetchData();
-              that.$emit('refreshdata', {'type': 'proceed'});
-            }
-            loading.close();
-            that.$message({
-              message: response.data.resMsg,
-              type: response.data.status
+          if (window.localStorage.getItem('module') && window.localStorage.getItem('sprint')) {
+            loading = Loading.service({fullscreen: true,
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0.7)',
+              text: 'Loading...'});
+            this.axios.put('/admin/sprint/proceed?module=' + window.localStorage.getItem('module') + '&sprintid=' + window.localStorage.getItem('sprint')).then((response) => {
+              if (response.data.status === 'success') {
+                this.$root.eventHub.$emit('refreshDataRequest', {'type': 'changeSprint'});
+              }
+              loading.close();
+              that.$message({
+                message: response.data.resMsg,
+                type: response.data.status
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+              that.$message({
+                message: 'Data error!',
+                type: 'error'
+              });
             });
-          })
-          .catch((err) => {
-            console.log(err);
+          } else {
             that.$message({
-              message: 'Data error!',
+              message: 'Please select sprint first！',
               type: 'error'
             });
-          });
+          }
         }
-      },
-      backToMainBoard () {
-        window.location.href = '/';
       },
       actionExec () {
         var that = this;
         if (this.form._id) {
-          this.axios.put('/admin/sprint?module=' + this.$root.module, this.form).then((response) => {
+          this.axios.put('/admin/sprint?module=' + window.localStorage.getItem('module'), this.form).then((response) => {
             that.$message({
               message: response.data.resMsg,
               type: response.data.status
             });
             if (response.data.status === 'success') {
-              that.$emit('refreshdata', {'type': 'edit'});
+              this.$root.eventHub.$emit('refreshDataRequest', {'type': 'changeSprint'});
               that.dialogVisible = false;
             }
           })
@@ -245,18 +280,15 @@
             });
           });
         } else {
-          this.form.module = this.$root.module;
-          this.axios.post('/admin/sprint?module=' + this.$root.module, this.form).then((response) => {
+          this.form.module = window.localStorage.getItem('module');
+          this.axios.post('/admin/sprint?module=' + window.localStorage.getItem('module'), this.form).then((response) => {
             that.$message({
               message: response.data.resMsg,
               type: response.data.status
             });
             if (response.data.status === 'success') {
-              that.$emit('refreshdata', {'type': 'add'});
+              this.$root.eventHub.$emit('refreshDataRequest', {'type': 'changeSprint'});
               that.dialogVisible = false;
-              if (this.$route.params.sprintid === undefined || this.$route.params.sprintid === 'undefined') {
-                window.location.href = '/#/dashboard/' + response.data.resData[0]._id;
-              }
             }
           })
           .catch((err) => {

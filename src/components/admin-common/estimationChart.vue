@@ -143,6 +143,9 @@
           loading.close();
           if (response.data.status === 'success') {
             that.setData(response.data);
+            that.$root.eventHub.$emit('updatePercentage', {
+              percentage: that.computePercentage(response.data)
+            });
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -157,6 +160,19 @@
             type: 'error'
           });
         });
+      },
+      computePercentage (data) {
+        var capacity = 0;
+        var estimation = 0;
+        for (var cap in data.capacity) {
+          capacity += data.capacity[cap];
+        }
+        if (data.resData && data.resData.data) {
+          for (var est in data.resData.data) {
+            estimation += data.resData.data[est].leftEstimate;
+          }
+        }
+        return Math.ceil((estimation / 3600 || 0) / (capacity || 1) * 100);
       },
       refresh: function (sprintinfo) {
         this.fetchData('y', sprintinfo);

@@ -7,6 +7,7 @@
             <el-card class="box-card" style="height:273px;">
               <div slot="header" class="clearfix">
                 <span class="font">Current Sprint</span>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="showBurndown">Burndown</el-button>
                 <el-button v-if="sprintinfo.status != 'done'" style="float: right; padding: 3px 0" type="text" @click="refreshData">Refresh</el-button>
               </div>
               <el-form inline label-position="left" class="demo-table-expand">
@@ -28,10 +29,16 @@
         </el-row>
       </el-aside>
       <el-main style="padding: 0 20px;">
-        <inprogressChart ref="inprogressChart"></inprogressChart>
+        <el-row :gutter="2">
+          <el-col :span="16">
+            <inprogressChart ref="inprogressChart"></inprogressChart>
+          </el-col>
+          <el-col :span="8">
+            <inprogressCard/>
+          </el-col>
+        </el-row>
       </el-main>
     </el-container>
-
     <el-row :gutter="20" class="rowMargin">
       <el-col :span="24">
         <worklog-chart ref="worklogChartRef" @updatepints= "fetchData"></worklog-chart>
@@ -43,7 +50,7 @@
         <line-chart ref="historyChartRef"></line-chart>
       </el-col>
     </el-row>
-
+    <breakdown-layer :layerdisplay="dialogDisplay" :sprintid="burndownSprintid"></breakdown-layer>
   </div>
 </template>
 
@@ -52,6 +59,8 @@
   import lineChart from '../admin-common/historyChart.vue';
   import worklogChart from '../admin-common/worklogChart.vue';
   import inprogressChart from '../admin-common/inprogressChart.vue';
+  import breakdownLayer from '@/components/admin-breakdownlayer/breakdownLayer';
+  import inprogressCard from '@/components/statusCard/ProgressCard';
 
   export default {
     data () {
@@ -60,33 +69,35 @@
         dashboard: {
           sprintData: {},
           pastdays: 0
-        }
+        },
+        dialogDisplay: false,
+        burndownSprintid: ''
       };
     },
-    mounted: function () {
-      this.fetchData();
-    },
-    watch: {
-      '$route': 'fetchData'
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        vm.fetchData();
+      });
     },
     methods: {
       fetchData () {
         var that = this;
-        if (!window.localStorage.getItem('module')) {
-          window.location.href = '/';
+        if (!window.localStorage.getItem('module') || !window.localStorage.getItem('sprint')) {
           return false;
         }
-        if (this.$route.params.sprintid === 'undefined' || this.$route.params.sprintid === undefined) {
-          return false;
-        }
-        this.axios.get('/admin/dashboard?module=' + this.$root.module + '&sprintid=' + this.$route.params.sprintid).then((response) => {
+        this.axios.get('/admin/dashboard?module=' + window.localStorage.getItem('module') + '&sprintid=' + window.localStorage.getItem('sprint')).then((response) => {
           if (response.data.status === 'success') {
             var responseData = response.data.resData;
             that.dashboard = responseData;
             that.sprintinfo = responseData.sprintData;
+            that.$root.eventHub.$emit('getBreakDownChart', this.sprintinfo._id);
+            that.burndownSprintid = that.sprintinfo._id;
             this.$refs.worklogChartRef.fetchData('', this.sprintinfo);
             this.$refs.historyChartRef.fetchData('', this.sprintinfo);
             this.$refs.inprogressChart.setData(response.data.resData);
+            this.$root.eventHub.$emit('updatePercentage', {
+              percentage: that.sprintinfo.status === 'done' ? 100 : Math.ceil(((response.data.resData.commitedstories.length + response.data.resData.donestories.length) || 0) / ((response.data.resData.totalstories.length + response.data.resData.commitedstories.length + response.data.resData.donestories.length) || 1) * 100)
+            });
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -104,13 +115,22 @@
       },
       refreshData: function () {
         this.$refs.worklogChartRef.refresh(this.sprintinfo);
+      },
+      showBurndown () {
+        this.dialogDisplay = true;
+        var self = this;
+        setTimeout(function () {
+          self.dialogDisplay = null;
+        });
       }
     },
     components: {
       'numberCard': numberCard,
       'lineChart': lineChart,
       'worklogChart': worklogChart,
-      'inprogressChart': inprogressChart
+      'inprogressChart': inprogressChart,
+      'breakdownLayer': breakdownLayer,
+      'inprogressCard': inprogressCard
     }
   };
 </script>

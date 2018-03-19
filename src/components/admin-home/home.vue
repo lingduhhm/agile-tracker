@@ -10,7 +10,7 @@
       </el-aside>
       <el-container>
         <el-header style="font-size: 12px; background: #e4e4e4; padding: 20px;">
-          <header-comp ref="headerComp" @refreshdata="refreshData"></header-comp>          
+          <header-comp ref="headerComp"></header-comp>          
         </el-header>
         <el-main>
           <router-view ref="sprintPage"></router-view>
@@ -33,14 +33,16 @@
       'headerComp': headerComp
     },
     mounted () {
-      this.$refs.sidebarComp.fetchData(true);
+      this.$root.eventHub.$off('refreshDataRequest', (data) => {
+        this.refreshData(data);
+      });
+      this.$root.eventHub.$on('refreshDataRequest', (data) => {
+        this.refreshData(data);
+      });
     },
     methods: {
       refreshData (data) {
-        if (data.type === 'proceed') {
-          this.$refs.sidebarComp.fetchData(true);
-        } else {
-          this.$refs.sidebarComp.fetchData(false);
+        if (data.current === '/dashboard' && data.target === '/dashboard') {
           this.$refs.sprintPage.fetchData();
         }
       }

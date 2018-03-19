@@ -1,46 +1,21 @@
 <template>
-  <el-menu class="left-menu" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :default-active="this.$route.path" @select="handleSelect" :unique-opened="true" ref="sidebarMenu" :collapse="isCollapse">
-    <el-submenu index="dashboard" route="/dashboard">
-      <template  slot="title">
-        <i class="el-icon-menu"></i>
-        <span slot="title">Dashboard<span class="hint">({{inprogress.length}})</span></span>
-      </template>
-      <el-menu-item-group v-for="item in inprogress" :key="item._id">
-        <span slot="title">{{item.release}}/{{item.sprint}}</span>
-        <el-menu-item :index="'/dashboard/'+item._id" route="/dashboard/">View Dashboard</el-menu-item>
-        <el-menu-item :index="'/story/'+item._id" route="/story/">Edit Stories</el-menu-item>
-      </el-menu-item-group>
-    </el-submenu>
-
-    <el-submenu index="planning" route="/planning">
-      <template  slot="title">
-        <i class="el-icon-edit-outline"></i>
-        <span slot="title">Planning<span class="hint">({{planning.length}})</span></span>
-      </template>
-      <el-menu-item-group v-for="item in planning" :key="item._id">
-        <span slot="title">{{item.release}}/{{item.sprint}}</span>
-        <el-menu-item :index="'/planning/'+item._id" route="/planning/">View Dashboard</el-menu-item>
-        <el-menu-item :index="'/story/'+item._id" route="/story/">Edit Stories</el-menu-item>
-      </el-menu-item-group>
-    </el-submenu>
-
-    <el-submenu index="done" route="/done">
-      <template  slot="title">
-        <i class="el-icon-check"></i>
-        <span slot="title">Done<span class="hint">({{done.length}})</span></span>
-      </template>
-      <el-menu-item-group v-for="item in done" :key="item._id">
-        <span slot="title">{{item.release}}/{{item.sprint}}</span>
-        <el-menu-item :index="'/dashboard/'+item._id" route="/dashboard/">View Dashboard</el-menu-item>
-        <el-menu-item :index="'/story/'+item._id" route="/story/">Edit Stories</el-menu-item>
-      </el-menu-item-group>
-    </el-submenu>
-
-    <el-menu-item index="/configuration" route="/configuration">
-      <i class="el-icon-setting"></i>
-      <span slot="title">Configuration</span>
-    </el-menu-item>
-  </el-menu>
+  <div style="background: rgb(84, 92, 100); height: 100%;">
+    <el-progress type="circle" :percentage="selectedPercentage" :width="60"></el-progress>
+    <el-tabs tab-position="left" style="height: 200px;" :value="selectedTab" @tab-click="handleSelect">
+      <el-tab-pane :name="item._id" :key="item._id" v-for="item in planning">
+        <span slot="label"><i class="el-icon-edit-outline"></i> {{item.release}}/{{item.sprint}}</span>
+      </el-tab-pane>
+      <el-tab-pane :name="item._id" :key="item._id" v-for="item in inprogress">
+        <span slot="label"><i class="el-icon-menu"></i> {{item.release}}/{{item.sprint}}</span>
+      </el-tab-pane>
+      <el-tab-pane :name="item._id" :key="item._id" v-for="item in done">
+        <span slot="label"><i class="el-icon-check"></i> {{item.release}}/{{item.sprint}}</span>
+      </el-tab-pane>
+      <el-tab-pane name="configuration" key="configuration">
+        <span slot="label"><i class="el-icon-setting"></i> Configuration</span>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
 <script>
@@ -51,20 +26,48 @@
         planning: [],
         inprogress: [],
         done: [],
-        isCollapse: false
+        selectedTab: 'configuration',
+        selectedPercentage: 0
       };
     },
     created: function () {
-      this.fetchData();
+      this.$root.eventHub.$off('refreshDataRequest', () => {
+        this.fetchData();
+      });
+      this.$root.eventHub.$on('refreshDataRequest', () => {
+        this.fetchData();
+      });
+      this.$root.eventHub.$off('updatePercentage', (data) => {
+        this.selectedPercentage = data.percentage;
+      });
+      this.$root.eventHub.$on('updatePercentage', (data) => {
+        this.selectedPercentage = data.percentage;
+      });
     },
     methods: {
-      fetchData (isReopen) {
+      fetchData () {
         var that = this;
-        this.axios.get('/admin/sprint?limit=8&module=' + this.$root.module).then((response) => {
+        if (!window.localStorage.getItem('module')) {
+          return false;
+        }
+        this.axios.get('/admin/sprint?limit=8&module=' + window.localStorage.getItem('module')).then((response) => {
           if (response.data.status === 'success') {
             var menu = response.data.resData;
             that.menuMap = that.jsonfy(menu);
-            that.openDefaultTab(isReopen);
+            if (window.localStorage.getItem('sprint')) {
+              that.selectedTab = window.localStorage.getItem('sprint');
+            } else {
+              if (menu[0].length > 0) {
+                that.selectedTab = menu[0][0]._id;
+              } else if (menu[1].length > 0) {
+                that.selectedTab = menu[1][0]._id;
+              } else if (menu[2].length > 0) {
+                that.selectedTab = menu[2][0]._id;
+              } else {
+                that.selectedTab = 'configuration';
+              }
+            }
+            that.updateRouter(that.selectedTab);
           } else {
             that.$message({
               message: response.data.resMsg,
@@ -110,20 +113,21 @@
         }
         return mapRes;
       },
-      handleSelect (key, keyPath) {
-        this.$router.push(key);
+      handleSelect (evt) {
+        if (evt.$props.name !== 'configuration') {
+          window.localStorage.setItem('sprint', evt.$props.name);
+          this.$root.eventHub.$emit('refreshDataRequest', {type: 'changeSprint', current: this.$route.path, target: this.menuMap[evt.$props.name].status === 'planning' ? '/planning' : '/dashboard'});
+        }
+        this.updateRouter(evt.$props.name);
       },
-      openDefaultTab (isReopen) {
-        if (isReopen) {
-          if (this.inprogress[0]) {
-            this.$router.push('/dashboard/' + (this.inprogress[0] && this.inprogress[0]._id));
-            this.$refs.sidebarMenu.open('dashboard');
-          } else if (this.planning[0]) {
-            this.$router.push('/planning/' + (this.planning[0] && this.planning[0]._id));
-            this.$refs.sidebarMenu.open('planning');
+      updateRouter (_id) {
+        if (_id === 'configuration') {
+          this.$router.push('/configuration/');
+        } else {
+          if (this.menuMap[_id].status === 'planning') {
+            this.$router.push('/planning');
           } else {
-            this.$router.push('/dashboard/' + (this.done[0] && this.done[0]._id));
-            this.$refs.sidebarMenu.open('done');
+            this.$router.push('/dashboard');
           }
         }
       }
@@ -131,10 +135,5 @@
   };
 </script>
 
-<style scoped>
-  .hint{
-    color: rgb(202, 165, 33);
-    font-size: 13px;
-    font-weight: bolder;
-  }
+<style>
 </style>
