@@ -58,14 +58,14 @@ new Vue({
     }
   },
   created: function () {
-    var self = this;
+    // var self = this;
     if (this.eventHub) {
-      /*this.eventHub.$on('sprintSelected', function (params) {
+      /* this.eventHub.$on('sprintSelected', function (params) {
         self.sprintSelected = params;
       });
       this.eventHub.$on('sprintDataChanged', function (params) {
         self.querySummaryData(self.sprintSelected);
-      });*/
+      }); */
     }
   },
   watch: {

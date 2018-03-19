@@ -43,21 +43,19 @@ export default {
     };
   },
   methods: {
-    
   },
   created: function () {
 
   },
   mounted: function () {
     if (this.$root.eventHub) {
-      this.$root.eventHub.$emit("getBreakDownChart", this.sprintid, this.chartwidth, this.chartheight);
+      this.$root.eventHub.$emit('getBreakDownChart', this.sprintid, this.chartwidth, this.chartheight);
     }
   },
   watch: {
-    
   },
   components: {
-    "breakdown-chart": breakDownChart
+    'breakdown-chart': breakDownChart
   }
 };
 </script>

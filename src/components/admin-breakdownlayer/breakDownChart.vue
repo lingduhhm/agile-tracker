@@ -33,8 +33,7 @@ export default {
       allLines: [],
       allData: null,
       allGroups: null,
-      summary: null,
-      allGroups: null,
+      summary: null
     };
   },
   methods: {
@@ -198,16 +197,15 @@ export default {
       this.chart.addGroup(groupname, {color: selectedColor});
     },
     prepareChart: function (width, height, maxX) {
-      var self = this;
       var chartWidth = this.chartwidth;
       if (width) {
         chartWidth = width;
       }
       var chartHeight = this.chartheight;
-      if(height) {
+      if (height) {
         chartHeight = height;
       }
-      let chart = new VUEChart('.chart', width, height, maxX);
+      let chart = new VUEChart('.chart', chartWidth, chartHeight, maxX);
       this.chart = chart;
     },
     resizeChart: function (width, height, maxX) {
@@ -244,7 +242,7 @@ export default {
         chartWidth = width;
       }
       var chartHeight = this.chartheight;
-      if(height) {
+      if (height) {
         chartHeight = height;
       }
       var sprintTotalDayCount = this.cachedResponse.resData.sprintTotalDayCount;

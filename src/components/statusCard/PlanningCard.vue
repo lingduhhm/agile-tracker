@@ -19,7 +19,6 @@
 <script>
 export default {
   props: {
-    
   },
   data () {
     return {
@@ -30,16 +29,12 @@ export default {
     };
   },
   methods: {
-    
   },
   created: function () {
-    
   },
   mounted: function () {
-
   },
   watch: {
-    
   }
 };
 </script>
