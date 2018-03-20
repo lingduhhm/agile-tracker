@@ -147,6 +147,11 @@ export default {
     }
   },
   mounted: function () {
+    var layerHeight = $('.breakDownLayerContainer').height();
+    if (layerHeight > 100) {
+      var datasheetHeight = layerHeight - 90;
+      $('.dataSheet').height(datasheetHeight);
+    }
   },
   computed: {
     effortOffsetValue () {
@@ -208,7 +213,6 @@ export default {
   padding-bottom: 5px;
 }
 .dataSheet .dataSheetTabs {
-  height: calc( 100% - 10px );
 }
 .dataSheet .dataSheetTabs .el-tabs__nav {
   width: 100%;

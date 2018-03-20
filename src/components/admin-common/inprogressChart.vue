@@ -51,7 +51,7 @@
           key: 'storykey',
           formatter: (row, column, cellValue) => {
             var url = 'https://jira.successfactors.com/browse/' + cellValue;
-            return <a href= {url} target="_blank">{cellValue}</a>;
+            return '<a href= {url} target="_blank">{cellValue}</a>';
           }
         }, {
           label: 'Summary',
@@ -75,108 +75,115 @@
       };
     },
     mounted () {
-      var that = this;
-      this.myChart = echarts.init(document.getElementById('inprogressChart'));
-      this.myPie = echarts.init(document.getElementById('inprogressPie'));
-      this.myChart.on('click', function (params) {
-        if (params.type === 'click' && params.seriesType === 'bar') {
-          that.tableData = params.data.list || [];
-          that.showPopup = true;
-        }
-      });
-      this.myChart.setOption(
-        {
-          title: {
-            text: 'Inprogress Overview'
-          },
-          tooltip: {
-            show: true,
-            trigger: 'item'
-          },
-          legend: {
-            show: true,
-            data: ['Points', 'Count']
-          },
-          toolbox: {
-            show: true,
-            feature: {
-              mark: {show: true},
-              dataView: {show: true, readOnly: false},
-              magicType: {show: true, type: ['bar']},
-              restore: {show: true},
-              saveAsImage: {show: true}
-            }
-          },
-          calculable: true,
-          yAxis: {
-            type: 'value',
-            name: 'Points/Count',
-            axisLabel: {
-              formatter: '{value}'
-            }
-          },
-          xAxis: {
-            type: 'category',
-            data: [],
-            axisLabel: {
-              interval: 0
-            }
-          },
-          series: [
-            {
-              name: 'Points',
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  borderRadius: 5,
-                  color: 'rgb(230, 162, 60)',
-                  label: {
-                    show: true,
-                    textStyle: {
-                      fontSize: '20',
-                      fontFamily: '微软雅黑',
-                      fontWeight: 'bold'
-                    }
-                  }
-                }
-              },
-              data: []
-            },
-            {
-              name: 'Count',
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  borderRadius: 5,
-                  color: 'rgb(64, 158, 255)',
-                  label: {
-                    show: true,
-                    textStyle: {
-                      fontSize: '20',
-                      fontFamily: '微软雅黑',
-                      fontWeight: 'bold'
-                    }
-                  }
-                }
-              },
-              data: []
-            }
-          ]
-        });
-      this.myPie.setOption({
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a}<br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'center',
-          data: ['Passed Days', 'Remaining Days']
-        }
-      });
     },
     methods: {
+      createChart: function () {
+        var that = this;
+        if (!this.myChart) {
+          this.myChart = echarts.init(document.getElementById('inprogressChart'));
+          this.myChart.on('click', function (params) {
+            if (params.type === 'click' && params.seriesType === 'bar') {
+              that.tableData = params.data.list || [];
+              that.showPopup = true;
+            }
+          });
+          this.myChart.setOption(
+            {
+              title: {
+                text: 'Inprogress Overview'
+              },
+              tooltip: {
+                show: true,
+                trigger: 'item'
+              },
+              legend: {
+                show: true,
+                data: ['Points', 'Count']
+              },
+              toolbox: {
+                show: true,
+                feature: {
+                  mark: {show: true},
+                  dataView: {show: true, readOnly: false},
+                  magicType: {show: true, type: ['bar']},
+                  restore: {show: true},
+                  saveAsImage: {show: true}
+                }
+              },
+              calculable: true,
+              yAxis: {
+                type: 'value',
+                name: 'Points/Count',
+                axisLabel: {
+                  formatter: '{value}'
+                }
+              },
+              xAxis: {
+                type: 'category',
+                data: [],
+                axisLabel: {
+                  interval: 0
+                }
+              },
+              series: [
+                {
+                  name: 'Points',
+                  type: 'bar',
+                  itemStyle: {
+                    normal: {
+                      borderRadius: 5,
+                      color: 'rgb(230, 162, 60)',
+                      label: {
+                        show: true,
+                        textStyle: {
+                          fontSize: '20',
+                          fontFamily: '微软雅黑',
+                          fontWeight: 'bold'
+                        }
+                      }
+                    }
+                  },
+                  data: []
+                },
+                {
+                  name: 'Count',
+                  type: 'bar',
+                  itemStyle: {
+                    normal: {
+                      borderRadius: 5,
+                      color: 'rgb(64, 158, 255)',
+                      label: {
+                        show: true,
+                        textStyle: {
+                          fontSize: '20',
+                          fontFamily: '微软雅黑',
+                          fontWeight: 'bold'
+                        }
+                      }
+                    }
+                  },
+                  data: []
+                }
+              ]
+            });
+        }
+        if (!this.myPie) {
+          this.myPie = echarts.init(document.getElementById('inprogressPie'));
+          this.myPie.setOption({
+            tooltip: {
+              trigger: 'item',
+              formatter: '{a}<br/>{b} : {c} ({d}%)'
+            },
+            legend: {
+              orient: 'vertical',
+              left: 'center',
+              data: ['Passed Days', 'Remaining Days']
+            }
+          });
+        }
+      },
       setData: function (originalData) {
+        this.createChart();
         var xAxis = ['Open&Inprogress', 'Commited', 'Done', 'Initial Commited'];
         var days = [{
           value: originalData.totaldays - originalData.leftdays,

@@ -13,7 +13,7 @@
     <el-container>
       <el-header>
         <h1 class="title" style="">
-        Burndown Chart ({{module}} - {{sprint}})
+        Burndown Chart by Story Point ({{module}} - {{sprint}})
         </h1>
       </el-header>
       <el-container>
@@ -22,7 +22,8 @@
           </div>
         </el-main>
         <div style="display:table-cell;vertical-align: middle;padding-top: 40px;">
-          <img :src="isSummaryDisplay?foldIcon:expandIcon" style="width:30px;" @click="folderClicked" class="summaryIcon" v-bind:style="{ isSummaryDisplay: 'right: 0px;'}">
+          <!-- <img :src="isSummaryDisplay?foldIcon:expandIcon" style="width:30px;" @click="folderClicked" class="summaryIcon" v-bind:style="{ isSummaryDisplay: 'right: 0px;'}"> -->
+          <div @click="folderClicked" class="summaryIcon el-icon-d-arrow-left" :class="{'summaryDisplay el-icon-d-arrow-right noanimation': isSummaryDisplay}"></div>
         </div>
         <transition name="slide-fade" v-on:after-leave="toggleSummary" v-on:after-enter="toggleSummary">
           <div style="display:table-cell;padding-top: 10px;" v-if="isSummaryDisplay">
@@ -74,7 +75,7 @@ export default {
       });
     },
     sprintSelected: function (sprintSelected) {
-      let sprintName = sprintSelected.release + ' Sprint ' + sprintSelected.sprint;
+      let sprintName = sprintSelected.release + sprintSelected.sprint;
       this.module = sprintSelected.module;
       this.sprint = sprintName;
     },
@@ -471,18 +472,35 @@ a {
 @keyframes foldExpand
 {
   0% {
-    opacity: 1;
+    opacity: 0.8;
   }
   50% {
-    opacity: 0.2;
+    opacity: 0.3;
   }
   100% {
-    opacity: 1;
+    opacity: 0.8;
   }
 }
 .summaryIcon {
   /* animation: foldExpand 3s infinite; */
   opacity: 0.8;
   margin-right: 10px;
+  animation: foldExpand 3s infinite;
+  font-size: 1.5rem;
+}
+.summaryIcon.noanimation {
+  animation: none;
+}
+.summaryIcon.summaryDisplay {
+  margin-right: 0px;
+  right: 0px;
+}
+</style>
+<style>
+.dataSheet > header {
+  padding-left: 5px;
+}
+.dataSheet > main {
+  padding-left: 5px;
 }
 </style>

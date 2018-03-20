@@ -18,65 +18,71 @@
       this.fetchData();
     },
     mounted () {
-      this.myChart = echarts.init(document.getElementById('mainChart'));
-      this.myChart.setOption(
-        {
-          title: {
-            text: 'Sprint History Review'
-          },
-          tooltip: {
-            trigger: 'axis'
-          },
-          legend: {
-            data: ['Planned', 'Commited', 'Done'],
-            show: true,
-            left: 'center'
-          },
-          toolbox: {
-            show: true,
-            feature: {
-              dataZoom: {
-                yAxisIndex: 'none'
-              },
-              dataView: {readOnly: false},
-              magicType: {type: ['line', 'bar']},
-              restore: {},
-              saveAsImage: {}
-            }
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: []
-          },
-          yAxis: {
-            type: 'value',
-            name: 'Points',
-            axisLabel: {
-              formatter: '{value}'
-            }
-          },
-          series: [
-            {
-              name: 'Planned',
-              type: 'line',
-              data: [],
-              itemStyle: {
-                normal: {
-                  color: '#67C23A'
-                }
-              }
-            },
-            {
-              name: 'Done',
-              type: 'line',
-              data: []
-            }
-          ]
-        });
     },
     methods: {
+      createChart: function () {
+        if (this.myChart) {
+          return;
+        }
+        this.myChart = echarts.init(document.getElementById('mainChart'));
+        this.myChart.setOption(
+          {
+            title: {
+              text: 'Sprint History Review'
+            },
+            tooltip: {
+              trigger: 'axis'
+            },
+            legend: {
+              data: ['Planned', 'Commited', 'Done'],
+              show: true,
+              left: 'center'
+            },
+            toolbox: {
+              show: true,
+              feature: {
+                dataZoom: {
+                  yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+              }
+            },
+            xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              data: []
+            },
+            yAxis: {
+              type: 'value',
+              name: 'Points',
+              axisLabel: {
+                formatter: '{value}'
+              }
+            },
+            series: [
+              {
+                name: 'Planned',
+                type: 'line',
+                data: [],
+                itemStyle: {
+                  normal: {
+                    color: '#67C23A'
+                  }
+                }
+              },
+              {
+                name: 'Done',
+                type: 'line',
+                data: []
+              }
+            ]
+          });
+      },
       fetchData () {
+        this.createChart();
         var that = this;
         this.axios.get('/admin/dashboard/sprintHistoryPoints?module=' + window.localStorage.getItem('module')).then((response) => {
           if (response.data.status === 'success') {
