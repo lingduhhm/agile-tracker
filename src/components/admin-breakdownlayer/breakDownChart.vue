@@ -207,7 +207,7 @@ export default {
       if (height) {
         chartHeight = height;
       }
-      let chart = new VUEChart('.chartsummary', chartWidth, chartHeight, maxX);
+      let chart = new VUEChart('.chartsummary', chartWidth, chartHeight, maxX, {pointHeight: 5, pointWidth: 5});
       this.chart = chart;
     },
     resizeChart: function (width, height, maxX) {

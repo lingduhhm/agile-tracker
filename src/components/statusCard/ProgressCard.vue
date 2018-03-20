@@ -54,9 +54,9 @@ export default {
 
   },
   mounted: function () {
-    if (this.$root.eventHub) {
+    /* if (this.$root.eventHub) {
       this.$root.eventHub.$emit('getBreakDownChart', this.sprintid, this.chartwidth, this.chartheight);
-    }
+    } */
   },
   watch: {
   },

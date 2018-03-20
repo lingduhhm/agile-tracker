@@ -33,7 +33,7 @@
             <inprogressChart ref="inprogressChart"></inprogressChart>
           </el-col>
           <el-col :span="8" ref="burndownChartContainer">
-            <inprogressCard :sprintid="burndownSprintid" :chartheight="182" @cardclicked="showBurndown"/>
+            <inprogressCard :sprintid="burndownSprintid" :chartheight="184" @cardclicked="showBurndown"/>
           </el-col>
         </el-row>
       </el-main>

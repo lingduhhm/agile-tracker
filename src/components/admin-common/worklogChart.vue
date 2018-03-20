@@ -28,152 +28,158 @@
       };
     },
     mounted () {
-      var that = this;
-      this.myChart = echarts.init(document.getElementById('worklogChart'));
-      this.myChart.on('click', function (params) {
-        if (params.type === 'click' && params.seriesName === 'Left' && params.seriesType === 'bar') {
-          that.popupTitle = 'Remaining Tasks';
-          that.tableColumns = [{
-            label: 'Owner',
-            key: 'owner'
-          }, {
-            label: 'Remaining Effort (H)',
-            key: 'leftEstimate'
-          }, {
-            label: 'Ticket Key',
-            key: 'key',
-            formatter: (row, column, cellValue) => {
-              var url = 'https://jira.successfactors.com/browse/' + cellValue;
-              return <a href= {url} target="_blank">{cellValue}</a>;
-            }
-          }];
-          that.tableData = (params.data.list || []).map((item) => {
-            item.leftEstimate = Math.ceil(item.leftEstimate / 3600);
-            return item;
-          });
-          that.showPopup = true;
-        }
-        if (params.type === 'click' && params.seriesName === 'Logged' && params.seriesType === 'bar') {
-          that.popupTitle = 'Effort Logged History';
-          that.tableColumns = [{
-            label: 'Owner',
-            key: 'owner'
-          }, {
-            label: 'Logged Effort (H)',
-            key: 'loggedEffort'
-          }, {
-            label: 'Ticket Key',
-            key: 'key',
-            formatter: (row, column, cellValue) => {
-              var url = 'https://jira.successfactors.com/browse/' + cellValue;
-              return <a href= {url} target="_blank">{cellValue}</a>;
-            }
-          }, {
-            label: 'Date',
-            key: 'created',
-            formatter: (row, column, cellValue) => {
-              return new Date(cellValue).toLocaleString();
-            }
-          }];
-          that.tableData = (params.data.list || []).map((item) => {
-            item.created = new Date(item.created).valueOf();
-            return item;
-          });
-          that.showPopup = true;
-        }
-      });
-      this.myChart.setOption(
-        {
-          title: {
-            text: 'Effort Track Status'
-          },
-          tooltip: {
-            show: true,
-            trigger: 'item'
-          },
-          legend: {
-            data: ['Left', 'Logged']
-          },
-          toolbox: {
-            show: true,
-            feature: {
-              mark: {show: true},
-              dataView: {show: true, readOnly: false},
-              magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-              restore: {show: true},
-              saveAsImage: {show: true}
-            }
-          },
-          calculable: true,
-          yAxis: {
-            type: 'value',
-            name: 'Hours',
-            axisLabel: {
-              formatter: '{value}'
-            }
-          },
-          xAxis: {
-            type: 'category',
-            data: [],
-            axisLabel: {
-              interval: 0
-            }
-          },
-          series: [
-            {
-              name: 'Left',
-              type: 'bar',
-              stack: 'Left',
-              data: [],
-              itemStyle: {
-                normal: {
-                  borderRadius: 5,
-                  color: 'rgb(230, 162, 60)',
-                  label: {
-                    show: true,
-                    textStyle: {
-                      fontSize: '20',
-                      fontFamily: '微软雅黑',
-                      fontWeight: 'bold'
-                    }
-                  }
-                }
-              },
-              markLine: {
-                data: [
-                  {type: 'average', name: 'Average'}
-                ]
-              }
-            },
-            {
-              name: 'Logged',
-              type: 'bar',
-              itemStyle: {
-                normal: {
-                  borderRadius: 5,
-                  color: 'rgb(64, 158, 255)',
-                  label: {
-                    show: true,
-                    textStyle: {
-                      fontSize: '20',
-                      fontFamily: '微软雅黑',
-                      fontWeight: 'bold'
-                    }
-                  }
-                }
-              },
-              data: [],
-              markLine: {
-                data: [
-                  {type: 'average', name: 'Average'}
-                ]
-              }
-            }
-          ]
-        });
     },
     methods: {
+      createChart: function () {
+        if (this.myChart) {
+          return;
+        }
+        var that = this;
+        this.myChart = echarts.init(document.getElementById('worklogChart'));
+        this.myChart.on('click', function (params) {
+          if (params.type === 'click' && params.seriesName === 'Left' && params.seriesType === 'bar') {
+            that.popupTitle = 'Remaining Tasks';
+            that.tableColumns = [{
+              label: 'Owner',
+              key: 'owner'
+            }, {
+              label: 'Remaining Effort (H)',
+              key: 'leftEstimate'
+            }, {
+              label: 'Ticket Key',
+              key: 'key',
+              formatter: (row, column, cellValue) => {
+                var url = 'https://jira.successfactors.com/browse/' + cellValue;
+                return '<a href= {url} target="_blank">{cellValue}</a>';
+              }
+            }];
+            that.tableData = (params.data.list || []).map((item) => {
+              item.leftEstimate = Math.ceil(item.leftEstimate / 3600);
+              return item;
+            });
+            that.showPopup = true;
+          }
+          if (params.type === 'click' && params.seriesName === 'Logged' && params.seriesType === 'bar') {
+            that.popupTitle = 'Effort Logged History';
+            that.tableColumns = [{
+              label: 'Owner',
+              key: 'owner'
+            }, {
+              label: 'Logged Effort (H)',
+              key: 'loggedEffort'
+            }, {
+              label: 'Ticket Key',
+              key: 'key',
+              formatter: (row, column, cellValue) => {
+                var url = 'https://jira.successfactors.com/browse/' + cellValue;
+                return '<a href= {url} target="_blank">{cellValue}</a>';
+              }
+            }, {
+              label: 'Date',
+              key: 'created',
+              formatter: (row, column, cellValue) => {
+                return new Date(cellValue).toLocaleString();
+              }
+            }];
+            that.tableData = (params.data.list || []).map((item) => {
+              item.created = new Date(item.created).valueOf();
+              return item;
+            });
+            that.showPopup = true;
+          }
+        });
+        this.myChart.setOption(
+          {
+            title: {
+              text: 'Effort Track Status'
+            },
+            tooltip: {
+              show: true,
+              trigger: 'item'
+            },
+            legend: {
+              data: ['Left', 'Logged']
+            },
+            toolbox: {
+              show: true,
+              feature: {
+                mark: {show: true},
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+              }
+            },
+            calculable: true,
+            yAxis: {
+              type: 'value',
+              name: 'Hours',
+              axisLabel: {
+                formatter: '{value}'
+              }
+            },
+            xAxis: {
+              type: 'category',
+              data: [],
+              axisLabel: {
+                interval: 0
+              }
+            },
+            series: [
+              {
+                name: 'Left',
+                type: 'bar',
+                stack: 'Left',
+                data: [],
+                itemStyle: {
+                  normal: {
+                    borderRadius: 5,
+                    color: 'rgb(230, 162, 60)',
+                    label: {
+                      show: true,
+                      textStyle: {
+                        fontSize: '20',
+                        fontFamily: '微软雅黑',
+                        fontWeight: 'bold'
+                      }
+                    }
+                  }
+                },
+                markLine: {
+                  data: [
+                    {type: 'average', name: 'Average'}
+                  ]
+                }
+              },
+              {
+                name: 'Logged',
+                type: 'bar',
+                itemStyle: {
+                  normal: {
+                    borderRadius: 5,
+                    color: 'rgb(64, 158, 255)',
+                    label: {
+                      show: true,
+                      textStyle: {
+                        fontSize: '20',
+                        fontFamily: '微软雅黑',
+                        fontWeight: 'bold'
+                      }
+                    }
+                  }
+                },
+                data: [],
+                markLine: {
+                  data: [
+                    {type: 'average', name: 'Average'}
+                  ]
+                }
+              }
+            ]
+          });
+      },
       fetchData: function (isRefresh, sprintinfo) {
+        this.createChart();
         this.sprintinfo = sprintinfo;
         if (!this.sprintinfo._id) {
           this.setData({

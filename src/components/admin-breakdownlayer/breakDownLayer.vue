@@ -7,7 +7,7 @@
     <transition name="scale">
       <div class="breakDownLayerContainer" v-show="isDisplay">
         <break-down-main></break-down-main>
-        <div class="el-icon-error breakDownLayerClose" @click="closeLayer"></div>
+        <div class="el-icon-close breakDownLayerClose" @click="closeLayer"></div>
       </div>
     </transition>
     <div style="width: 100%;height: 100%;position: fixed;top: 0px;left: 0px;z-index: 10;background-color: rgba(0,0,0,0.5);" v-if="isDisplay" @click="closeLayer">
@@ -101,7 +101,11 @@ export default {
   top: 10px;
   right: 10px;
   font-size: 1.5rem;
-  color: red;
+  color: #909399;
+}
+.breakDownLayerClose:hover {
+  color: #409EFF;
+  cursor: pointer;
 }
 @keyframes scale-in {
   0% {
