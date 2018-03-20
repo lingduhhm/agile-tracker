@@ -1,5 +1,5 @@
 <template>
-  <div style="background: rgb(84, 92, 100); height: 100%;">
+  <div style="background: rgb(84, 92, 100); height: 100%;" class="sidebar">
     <el-progress style="padding: 15px;" :text-inside="true" :stroke-width="16" :percentage="selectedPercentage" status="success"></el-progress>
     <el-tabs tab-position="left" :value="selectedTab" @tab-click="handleSelect">
       <el-tab-pane :name="item._id" :key="item._id" v-for="item in planning">
@@ -13,6 +13,9 @@
       </el-tab-pane>
       <el-tab-pane name="configuration" key="configuration">
         <span slot="label"><i class="el-icon-setting"></i> Configuration</span>
+      </el-tab-pane>
+      <el-tab-pane name="checktools" key="checktools">
+        <span slot="label"><i class="el-icon-view"></i> Check Tools</span>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -115,15 +118,15 @@
         return mapRes;
       },
       handleSelect (evt) {
-        if (evt.$props.name !== 'configuration') {
+        if (evt.$props.name !== 'configuration' && evt.$props.name !== 'checktools') {
           window.localStorage.setItem('sprint', evt.$props.name);
           this.$root.eventHub.$emit('refreshDataRequest', {type: 'changeSprint', current: this.$route.path, target: this.menuMap[evt.$props.name].status === 'planning' ? '/planning' : '/dashboard'});
         }
         this.updateRouter(evt.$props.name);
       },
       updateRouter (_id) {
-        if (_id === 'configuration') {
-          this.$router.push('/configuration/' + window.localStorage.getItem('module') + window.localStorage.getItem('sprint'));
+        if (_id === 'configuration' || _id === 'checktools') {
+          this.$router.push('/' + _id + '/' + window.localStorage.getItem('module') + window.localStorage.getItem('sprint'));
         } else {
           if (this.menuMap[_id].status === 'planning') {
             this.$router.push('/planning/' + window.localStorage.getItem('module') + window.localStorage.getItem('sprint'));
@@ -137,7 +140,10 @@
 </script>
 
 <style>
-  .el-tabs__item {
+  .sidebar .el-tabs__item {
     color: white;
+  }
+  .sidebar .el-tabs__item.is-active{
+    color: #409EFF;
   }
 </style>

@@ -9,6 +9,7 @@ import Story from '@/components/admin-story/story';
 import Dashboard from '@/components/admin-dashboard/dashboard';
 import Planning from '@/components/admin-planning/planning';
 import Configuration from '@/components/admin-configuration/config';
+import CheckTools from '@/components/admin-check/checkTools';
 
 Vue.use(Router);
 Vue.use(ElementUI);
@@ -39,6 +40,10 @@ export default new Router({
         {
           path: '/configuration/:pageid',
           component: Configuration
+        },
+        {
+          path: '/checktools/:pageid',
+          component: CheckTools
         }
       ],
       meta: { requiresAuth: true }
