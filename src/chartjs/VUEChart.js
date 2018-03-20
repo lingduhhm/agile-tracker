@@ -76,7 +76,7 @@ VUEChart.prototype.init = function (width, height, maxX) {
   this.minYGap = 30;  // the min pixel for y
 
   this.maxXValue = 10;
-  if (maxX) {
+  if (maxX && maxX > 1) {
     this.maxXValue = maxX;
   }
   this.maxYValue = 20;
