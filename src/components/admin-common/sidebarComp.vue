@@ -57,10 +57,10 @@
             if (window.localStorage.getItem('sprint')) {
               that.selectedTab = window.localStorage.getItem('sprint');
             } else {
-              if (menu[0].length > 0) {
-                that.selectedTab = menu[0][0]._id;
-              } else if (menu[1].length > 0) {
+              if (menu[1].length > 0) {
                 that.selectedTab = menu[1][0]._id;
+              } else if (menu[0].length > 0) {
+                that.selectedTab = menu[0][0]._id;
               } else if (menu[2].length > 0) {
                 that.selectedTab = menu[2][0]._id;
               } else {
