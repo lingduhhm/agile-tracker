@@ -4,7 +4,8 @@
 /* global $:true */
 import EventProvider from './EventProvider.js';
 
-function VUEChart (element, width, height, maxX) {
+function VUEChart (element, width, height, maxX, settings) {
+  this.settings = settings;
   this.groups = {};
   this.points = [];
   this.groupVisible = {};
@@ -22,7 +23,7 @@ VUEChart.prototype.createInitialDom = function (element) {
                 '    Chart Title' +
                 '  </div>' +
                 '  <div style="display:inline-flex;">' +
-                '    <div class="axisYText" style="display:inline-block;min-width:50px;position:relative;">' +
+                '    <div class="axisYText" style="display:inline-block;min-width:30px;position:relative;">' +
                 '    </div>' +
                 '    <div>' +
                 '      <div class="chart" style="position: relative;display:inline-block;">' +
@@ -111,6 +112,18 @@ VUEChart.prototype.init = function (width, height, maxX) {
   this.pointWidth = 10;
   this.pointColor = 'red';
   this.lineHeight = 2;
+  if (this.settings && this.settings.pointHeight) {
+    this.pointHeight = this.settings.pointHeight;
+  }
+  if (this.settings && this.settings.pointWidth) {
+    this.pointWidth = this.settings.pointWidth;
+  }
+  if (this.settings && this.settings.pointColor) {
+    this.pointColor = this.settings.pointColor;
+  }
+  if (this.settings && this.settings.lineHeight) {
+    this.lineHeight = this.settings.lineHeight;
+  }
 
   $(this.ele).find('.chart').width(this.axisAreaWidth).height(this.axisAreaHeight);
   $(this.ele).find('.chart .chartArea').width(this.chartAreaWidth).height(this.chartAreaHeight).css('left', this.axisLength + 'px').css('top', '0px');
@@ -278,7 +291,8 @@ VUEChart.prototype.addAxisYGap = function () {
     $(this.ele).find('.chart .axisArea .axisY').append(gapItem);
 
     // add axis text
-    var textItem = $('<div></div>').text(this.numberUnderEachYGap * i).addClass('chartAxisText').width(45).css('textAlign', 'right');
+    var axisYTestWidth = $(this.ele).find('.axisYText').width();
+    var textItem = $('<div></div>').text(this.numberUnderEachYGap * i).addClass('chartAxisText').width(axisYTestWidth - 5).css('textAlign', 'right');
     $(this.ele).find('.axisYText').append(textItem);
     var height = textItem.height();
     var textPositionTop = positionTop - height / 2;
@@ -396,11 +410,16 @@ VUEChart.prototype.addPoint = function (x, y, groupid, extradata, isAdd) {
       self.currentActivePoint = this.pointdata;
     }
     evt.stopPropagation();
+    evt.stopImmediatePropagation();
   })
-  .hover(function () {
+  .hover(function (evt) {
     self.fireEvent('pointhoverenter', {ele: pointItem, point: point, x: x, y: y, groupid: groupid, isAdd: isAdd, pointdata: extradata});
-  }, function () {
+    evt.stopPropagation();
+    evt.stopImmediatePropagation();
+  }, function (evt) {
     self.fireEvent('pointhoverleave', {ele: pointItem, point: point, x: x, y: y, groupid: groupid, isAdd: isAdd, pointdata: extradata});
+    evt.stopPropagation();
+    evt.stopImmediatePropagation();
   });
   point['ele'] = pointItem;
   $(this.ele).find('.chart .chartArea').append(pointItem);
@@ -440,15 +459,18 @@ VUEChart.prototype.addLine = function (point1, point2, extradata, isAdd) {
   .click(function (evt) {
     self.fireEvent('lineclicked', {ele: this, data: this.linedata});
     evt.stopPropagation();
+    evt.stopImmediatePropagation();
   })
   .hover(function (evt) {
     $(this).addClass('lineHighlited');
     self.fireEvent('linehoverenter', {ele: this, data: this.pointdata});
     evt.stopPropagation();
+    evt.stopImmediatePropagation();
   }, function (evt) {
     $(this).removeClass('lineHighlited');
     self.fireEvent('linehoverleave', {ele: this, data: this.pointdata});
     evt.stopPropagation();
+    evt.stopImmediatePropagation();
   });
   var line = {
     startPoint: point1,
