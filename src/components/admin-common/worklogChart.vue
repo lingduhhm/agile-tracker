@@ -24,7 +24,41 @@
         popupTitle: '',
         showPopup: false,
         tableData: [],
-        tableColumns: []
+        tableColumns: [],
+        remainingColumnsMap: [{
+          label: 'Owner',
+          key: 'owner'
+        }, {
+          label: 'Remaining Effort (H)',
+          key: 'leftEstimate'
+        }, {
+          label: 'Ticket Key',
+          key: 'key',
+          formatter: (row, column, cellValue) => {
+            var url = 'https://jira.successfactors.com/browse/' + cellValue;
+            return <a href={url} target="_blank">{cellValue}</a>;
+          }
+        }],
+        loggedColumnsMap: [{
+          label: 'Owner',
+          key: 'owner'
+        }, {
+          label: 'Logged Effort (H)',
+          key: 'loggedEffort'
+        }, {
+          label: 'Ticket Key',
+          key: 'key',
+          formatter: (row, column, cellValue) => {
+            var url = 'https://jira.successfactors.com/browse/' + cellValue;
+            return <a href={url} target="_blank">{cellValue}</a>;
+          }
+        }, {
+          label: 'Date',
+          key: 'created',
+          formatter: (row, column, cellValue) => {
+            return new Date(cellValue).toLocaleString();
+          }
+        }]
       };
     },
     mounted () {
@@ -39,21 +73,7 @@
         this.myChart.on('click', function (params) {
           if (params.type === 'click' && params.seriesName === 'Left' && params.seriesType === 'bar') {
             that.popupTitle = 'Remaining Tasks';
-            that.tableColumns = [{
-              label: 'Owner',
-              key: 'owner'
-            }, {
-              label: 'Remaining Effort (H)',
-              key: 'leftEstimate'
-            }, {
-              label: 'Ticket Key',
-              key: 'key',
-              formatter: (row, column, cellValue) => {
-                // var url = 'https://jira.successfactors.com/browse/' + cellValue;
-                // return <a href={url} target="_blank">{cellValue}</a>;
-                return cellValue;
-              }
-            }];
+            that.tableColumns = that.remainingColumnsMap;
             that.tableData = (params.data.list || []).map((item) => {
               item.leftEstimate = Math.ceil(item.leftEstimate / 3600);
               return item;
@@ -62,27 +82,7 @@
           }
           if (params.type === 'click' && params.seriesName === 'Logged' && params.seriesType === 'bar') {
             that.popupTitle = 'Effort Logged History';
-            that.tableColumns = [{
-              label: 'Owner',
-              key: 'owner'
-            }, {
-              label: 'Logged Effort (H)',
-              key: 'loggedEffort'
-            }, {
-              label: 'Ticket Key',
-              key: 'key',
-              formatter: (row, column, cellValue) => {
-                // var url = 'https://jira.successfactors.com/browse/' + cellValue;
-                // return <a href={url} target="_blank">{cellValue}</a>;
-                return cellValue;
-              }
-            }, {
-              label: 'Date',
-              key: 'created',
-              formatter: (row, column, cellValue) => {
-                return new Date(cellValue).toLocaleString();
-              }
-            }];
+            that.tableColumns = that.loggedColumnsMap;
             that.tableData = (params.data.list || []).map((item) => {
               item.created = new Date(item.created).valueOf();
               return item;
