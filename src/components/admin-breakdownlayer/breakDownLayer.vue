@@ -65,6 +65,7 @@ export default {
     if (this.$root.eventHub) {
       this.$root.eventHub.$on('sprintDataChanged', function (sprintid) {
         self.fetchData(sprintid);
+        self.$root.eventHub.$emit('getBreakDownChart', sprintid);
       });
     }
   },
