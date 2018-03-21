@@ -147,7 +147,7 @@
     color: #409EFF;
   }
   .maxWidth .el-tabs__item{
-    max-width: 175px;
+    max-width: 165px;
   }
   .maxWidth .el-tabs__item span{
     display: block;

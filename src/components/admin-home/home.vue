@@ -5,7 +5,7 @@
 <template>
   <div class="home">
     <el-container style="height: 100%; border: 1px solid #eee">
-      <el-aside style="width: 180px;">
+      <el-aside style="width: 170px;">
         <sidebar-comp ref="sidebarComp"></sidebar-comp>
       </el-aside>
       <el-container>
