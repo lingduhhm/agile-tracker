@@ -1,7 +1,7 @@
 <template>
   <div style="background: rgb(84, 92, 100); height: 100%;" class="sidebar">
     <el-progress style="padding: 15px;" :text-inside="true" :stroke-width="16" :percentage="selectedPercentage" status="success"></el-progress>
-    <el-tabs tab-position="left" :value="selectedTab" @tab-click="handleSelect">
+    <el-tabs tab-position="left" :value="selectedTab" @tab-click="handleSelect" class="maxWidth">
       <el-tab-pane :name="item._id" :key="item._id" v-for="item in planning">
         <span slot="label"><i class="el-icon-edit-outline"></i> {{item.release}}/{{item.sprint}}</span>
       </el-tab-pane>
@@ -145,5 +145,13 @@
   }
   .sidebar .el-tabs__item.is-active{
     color: #409EFF;
+  }
+  .maxWidth .el-tabs__item{
+    max-width: 150px;
+  }
+  .maxWidth .el-tabs__item span{
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>
