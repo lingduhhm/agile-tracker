@@ -51,7 +51,7 @@
           key: 'storykey',
           formatter: (row, column, cellValue) => {
             var url = 'https://jira.successfactors.com/browse/' + cellValue;
-            return '<a href= {url} target="_blank">{cellValue}</a>';
+            return <a href= {url} target="_blank">{cellValue}</a>;
           }
         }, {
           label: 'Summary',
@@ -73,8 +73,6 @@
           }
         }]
       };
-    },
-    mounted () {
     },
     methods: {
       createChart: function () {

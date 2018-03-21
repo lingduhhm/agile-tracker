@@ -14,9 +14,6 @@
   require('echarts/lib/chart/line');
 
   export default {
-    created: function () {
-      this.fetchData();
-    },
     mounted () {
     },
     methods: {
