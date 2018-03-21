@@ -151,7 +151,7 @@ export default {
           var self = this;
           this.axios.post('/api/v1/addIssue', newIssue).then(function (response) {
             if (response.data.status === 'success') {
-              self.$root.eventHub.$emit('sprintDataChanged');
+              self.$root.eventHub.$emit('sprintDataChanged', sprint);
               self.dialogVisible = false;
             } else {
               self.$message({

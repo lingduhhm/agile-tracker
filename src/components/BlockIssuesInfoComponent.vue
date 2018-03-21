@@ -128,7 +128,7 @@ export default {
       this.axios.post('/api/v1/updateIssue', updateInfo).then(function (response) {
         self.popoverdisplay = false;
         if (response.data.status === 'success') {
-          self.$root.eventHub.$emit('sprintDataChanged');
+          self.$root.eventHub.$emit('sprintDataChanged', sprint);
           // row.status = status;
         } else {
           self.$message({
@@ -166,7 +166,7 @@ export default {
       this.axios.post('/api/v1/updateIssue', updateInfo).then(function (response) {
         self.popoverdisplay = false;
         if (response.data.status === 'success') {
-          self.$root.eventHub.$emit('sprintDataChanged');
+          self.$root.eventHub.$emit('sprintDataChanged', sprint);
           // row.status = status;
         } else {
           self.$message({
