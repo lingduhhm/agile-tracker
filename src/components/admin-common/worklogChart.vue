@@ -49,8 +49,9 @@
               label: 'Ticket Key',
               key: 'key',
               formatter: (row, column, cellValue) => {
-                var url = 'https://jira.successfactors.com/browse/' + cellValue;
-                return <a href= { url } target="_blank">{cellValue}</a>;
+                // var url = 'https://jira.successfactors.com/browse/' + cellValue;
+                // return <a href={url} target="_blank">{cellValue}</a>;
+                return cellValue;
               }
             }];
             that.tableData = (params.data.list || []).map((item) => {
@@ -71,8 +72,9 @@
               label: 'Ticket Key',
               key: 'key',
               formatter: (row, column, cellValue) => {
-                var url = 'https://jira.successfactors.com/browse/' + cellValue;
-                return <a href= { url } target="_blank">{cellValue}</a>;
+                // var url = 'https://jira.successfactors.com/browse/' + cellValue;
+                // return <a href={url} target="_blank">{cellValue}</a>;
+                return cellValue;
               }
             }, {
               label: 'Date',

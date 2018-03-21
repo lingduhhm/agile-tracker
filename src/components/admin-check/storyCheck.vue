@@ -27,6 +27,11 @@
           :data="storyList"
           style="width: 100%">
           <el-table-column
+            prop="type"
+            align="left"
+            label="Type">
+          </el-table-column>
+          <el-table-column
             prop="key"
             label="Key"
             sortable 
@@ -36,19 +41,20 @@
             :filter-method="filterHandler">
           </el-table-column>
           <el-table-column
-            prop="assignee"
+            prop="summary"
+            width="400"
             align="left"
-            label="Assignee">
-          </el-table-column>
-          <el-table-column
-            prop="type"
-            align="left"
-            label="Type">
+            label="Summary">
           </el-table-column>
           <el-table-column
             prop="status"
             align="left"
             label="Status">
+          </el-table-column>
+          <el-table-column
+            prop="assignee"
+            align="left"
+            label="Assignee">
           </el-table-column>
         </el-table>
       </el-col>
