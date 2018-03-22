@@ -17,7 +17,7 @@
     <el-row style="margin: 20px;">
       <el-col :span="2" v-for="item in statistic" :key="item.label" >
         <el-badge :value="item.count" class="item">
-          <el-button type="warning" plain size="mini" round disabled>{{item.label}}</el-button>
+          <el-button type="warning" plain size="mini" round>{{item.label}}</el-button>
         </el-badge>
       </el-col>
     </el-row>
