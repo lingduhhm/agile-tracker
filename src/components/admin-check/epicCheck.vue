@@ -1,17 +1,17 @@
 <template>
   <div>
     <el-row :gutter="20" type="flex" align="middle">
-      <el-col :span="4" >JQL for Stories</el-col>
+      <el-col :span="4" >JQL for Opened Epics</el-col>
       <el-col :span="16">
         <el-input
           type="textarea"
           :rows="2"
-          placeholder="JQL for stories"
+          placeholder="JQL for epics"
           v-model="jql">
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="fetchData" plain>Chec</el-button>
+        <el-button type="primary" @click="fetchData" plain>Check</el-button>
       </el-col>
     </el-row>
     <el-row style="margin: 20px;">
@@ -24,7 +24,7 @@
     <el-row>
       <el-col :span="24">
         <el-table
-          :data="storyList"
+          :data="epicList"
           style="width: 100%">
           <el-table-column
             prop="type"
@@ -67,15 +67,15 @@
   export default {
     data () {
       return {
-        jql: window.localStorage.getItem('checkJql') || '',
-        storyList: [],
+        jql: window.localStorage.getItem('checkEpicJql') || '',
+        epicList: [],
         filter: [],
         statistic: []
       };
     },
     methods: {
       fetchData () {
-        window.localStorage.setItem('checkJql', this.jql);
+        window.localStorage.setItem('checkEpicJql', this.jql);
         var that = this;
         if (!this.jql) {
           this.$message({
@@ -89,13 +89,13 @@
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
           text: 'Loading...'});
-        this.axios.post('/admin/tools/checkstory', {
+        this.axios.post('/admin/tools/checkepic', {
           module: window.localStorage.getItem('module'),
           jql: this.jql
         })
         .then(function (response) {
           if (response.data.status === 'success') {
-            that.storyList = response.data.resData.list || [];
+            that.epicList = response.data.resData.list || [];
             for (var key in response.data.resData.modules) {
               that.filter.push({
                 text: key,
@@ -104,7 +104,7 @@
             }
             var tempModule = response.data.resData.modules;
             for (var module in tempModule) {
-              tempModule[module] = (that.storyList.filter((value) => {
+              tempModule[module] = (that.epicList.filter((value) => {
                 return value.key.indexOf(module) !== -1;
               })).length;
             }
