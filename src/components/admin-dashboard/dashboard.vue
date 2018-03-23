@@ -103,10 +103,7 @@
               that.$root.eventHub.$emit('getBreakDownChart', this.sprintinfo._id, $(that.$refs.burndownChartContainer.$el).width() - 80);
             });
           } else {
-            that.$message({
-              message: response.data.resMsg,
-              type: response.data.status
-            });
+            window.location.href = '/';
           }
         })
         .catch((err) => {
