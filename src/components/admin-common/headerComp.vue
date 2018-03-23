@@ -151,9 +151,9 @@
           if (response.data.status === 'success') {
             that.moduleList = response.data.resData;
             var tempModuleList = [];
-            for (var idx=0; idx< that.moduleList.length; idx++){
+            for (var idx = 0; idx < that.moduleList.length; idx++) {
               tempModuleList.push(that.moduleList[idx].key);
-            } 
+            }
             if (that.moduleList.length > 0) {
               if (window.localStorage.getItem('module') && (tempModuleList.indexOf(window.localStorage.getItem('module')) !== -1)) {
                 that.currentModule = window.localStorage.getItem('module');
