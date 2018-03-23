@@ -9,6 +9,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/css/VUECharts.less';
 import '@/css/admin.less';
+
 Vue.config.productionTip = false;
 
 Vue.use(VueAxios, axios);

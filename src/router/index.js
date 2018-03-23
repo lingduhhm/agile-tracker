@@ -10,7 +10,8 @@ import Dashboard from '@/components/admin-dashboard/dashboard';
 import Planning from '@/components/admin-planning/planning';
 import Configuration from '@/components/admin-configuration/config';
 import CheckTools from '@/components/admin-check/checkTools';
-
+import locale from 'element-ui/lib/locale/lang/en';
+Vue.use(ElementUI, {locale});
 Vue.use(Router);
 Vue.use(ElementUI);
 

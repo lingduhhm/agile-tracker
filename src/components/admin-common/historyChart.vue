@@ -38,13 +38,13 @@
             toolbox: {
               show: true,
               feature: {
-                dataZoom: {
-                  yAxisIndex: 'none'
-                },
-                dataView: {readOnly: false},
-                magicType: {type: ['line', 'bar']},
-                restore: {},
-                saveAsImage: {}
+                magicType: {
+                  type: ['line', 'bar'],
+                  title: {
+                    line: 'line',
+                    bar: 'bar'
+                  }
+                }
               }
             },
             xAxis: {

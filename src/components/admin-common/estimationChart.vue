@@ -44,10 +44,16 @@
             show: true,
             feature: {
               mark: {show: true},
-              dataView: {show: true, readOnly: false},
-              magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
-              restore: {show: true},
-              saveAsImage: {show: true}
+              magicType: {
+                show: true,
+                type: ['line', 'bar', 'stack', 'tiled'],
+                title: {
+                  line: 'line',
+                  bar: 'bar',
+                  stack: 'stack',
+                  tiled: 'tiled'
+                }
+              }
             }
           },
           calculable: true,

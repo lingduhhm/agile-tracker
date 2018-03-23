@@ -96,16 +96,13 @@
               },
               legend: {
                 show: true,
+                right: '10px',
                 data: ['Points', 'Count']
               },
               toolbox: {
-                show: true,
+                show: false,
                 feature: {
-                  mark: {show: true},
-                  dataView: {show: true, readOnly: false},
-                  magicType: {show: true, type: ['bar']},
-                  restore: {show: true},
-                  saveAsImage: {show: true}
+                  magicType: {show: true, type: ['bar']}
                 }
               },
               calculable: true,
