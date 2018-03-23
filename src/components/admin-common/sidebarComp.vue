@@ -17,6 +17,9 @@
       <el-tab-pane name="checktools" key="checktools">
         <span slot="label"><i class="el-icon-view"></i> Check Tools</span>
       </el-tab-pane>
+      <el-tab-pane name="teamOverview" key="teamOverview">
+        <span slot="label"><i class="el-icon-view"></i> Team Overview</span>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -118,14 +121,14 @@
         return mapRes;
       },
       handleSelect (evt) {
-        if (evt.$props.name !== 'configuration' && evt.$props.name !== 'checktools') {
+        if (evt.$props.name !== 'configuration' && evt.$props.name !== 'checktools' && evt.$props.name !== 'teamOverview') {
           window.localStorage.setItem('sprint', evt.$props.name);
           this.$root.eventHub.$emit('refreshDataRequest', {type: 'changeSprint', current: this.$route.path, target: this.menuMap[evt.$props.name].status === 'planning' ? '/planning' : '/dashboard'});
         }
         this.updateRouter(evt.$props.name);
       },
       updateRouter (_id) {
-        if (_id === 'configuration' || _id === 'checktools') {
+        if (_id === 'configuration' || _id === 'checktools' || _id === 'teamOverview') {
           this.$router.push('/' + _id + '/' + window.localStorage.getItem('module') + window.localStorage.getItem('sprint'));
         } else {
           if (this.menuMap[_id].status === 'planning') {

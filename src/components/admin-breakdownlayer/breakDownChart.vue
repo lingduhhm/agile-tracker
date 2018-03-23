@@ -23,6 +23,10 @@ export default {
     'chartheight': {
       type: Number,
       default: 200
+    },
+    'displayChartBar': {
+      type: Boolean,
+      default: false
     }
   },
   name: 'ChartMainPage',
@@ -207,7 +211,7 @@ export default {
       if (height) {
         chartHeight = height;
       }
-      let chart = new VUEChart('.chartsummary', chartWidth, chartHeight, maxX, {pointHeight: 5, pointWidth: 5});
+      let chart = new VUEChart('.chartsummary', chartWidth, chartHeight, maxX, {pointHeight: 5, pointWidth: 5, isDisplayBar: this.displayChartBar});
       this.chart = chart;
     },
     resizeChart: function (width, height, maxX) {

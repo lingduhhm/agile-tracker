@@ -64,6 +64,13 @@ VUEChart.prototype.init = function (width, height, maxX) {
 
   this.addPopoverContainer();
 
+  this.isDisplayBar = true;
+  if (this.settings && this.settings.isDisplayBar != null) {
+    this.isDisplayBar = this.settings.isDisplayBar;
+  }
+  if (!this.isDisplayBar) {
+    $(this.ele).find('.chartBar').css('visibility', 'hidden');
+  }
   this.chartHeight = height;
   this.chartWidth = width;
 

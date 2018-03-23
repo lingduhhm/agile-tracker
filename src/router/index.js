@@ -10,6 +10,7 @@ import Dashboard from '@/components/admin-dashboard/dashboard';
 import Planning from '@/components/admin-planning/planning';
 import Configuration from '@/components/admin-configuration/config';
 import CheckTools from '@/components/admin-check/checkTools';
+import TeamOverview from '@/components/admin-teamoverview/teamOverview';
 
 Vue.use(Router);
 Vue.use(ElementUI);
@@ -44,6 +45,10 @@ export default new Router({
         {
           path: '/checktools/:pageid',
           component: CheckTools
+        },
+        {
+          path: '/teamoverview/:pageid',
+          component: TeamOverview
         }
       ],
       meta: { requiresAuth: true }

@@ -1,22 +1,22 @@
 <template>
-  <div class="agileTrackerDoneCard">
+  <div class="agileTrackerPlanningCard">
     <el-card class="box-card">
-      <div slot="header" class="clearfix" style="position:relative;">
+      <div slot="header" class="clearfix" style="position: relative;">
         <span style="border: 1px solid white;position:absolute;top: -20px; left: -20px;border-radius: 5px;background-color: #303133;color:white;padding-left:10px;padding-right:10px;padding-top:1px;">CDP</span>
         <el-dropdown style="float: left; padding: 3px 0;">
-          <span class="el-dropdown-link" style="position:relative;top: 5px;color:white;">
+          <span class="el-dropdown-link" style="position:relative;top: 5px;">
             Actions<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>View Detail</el-dropdown-item>
             <el-dropdown-item>Edit Sprint</el-dropdown-item>
-            <el-dropdown-item>ReOpen To Planning</el-dropdown-item>
+            <el-dropdown-item>Move To In Progress</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <span>b1805 - Sprint 2</span>
       </div>
       <el-row class="cardRow">
-        <el-col :span="24" class="firstColumn">
+        <el-col :span="10" class="firstColumn">
           <el-row class="leftContentRow">
             <el-col :span="12">
               From: 2018-3-1
@@ -26,13 +26,16 @@
             </el-col>
           </el-row>
           <el-row class="leftContentRow">
-            <el-col :span="14"><div class="grid-content totalTitle">Points Done</div></el-col>
-            <el-col :span="10"><div class="grid-content">68</div></el-col>
+            <el-col :span="14"><div class="grid-content totalTitle">Points</div></el-col>
+            <el-col :span="10"><div class="grid-content">2</div></el-col>
           </el-row>
           <el-row class="leftContentRow">
-            <el-col :span="14"><div class="grid-content daysTitle">Total Days</div></el-col>
-            <el-col :span="10"><div class="grid-content">27</div></el-col>
+            <el-col :span="14"><div class="grid-content daysTitle">Days</div></el-col>
+            <el-col :span="10"><div class="grid-content">2</div></el-col>
           </el-row>
+        </el-col>
+        <el-col :span="14">
+          <estimation-chart @updatepints= "fetchData" :module="module" ref="estimationChartRef"></estimation-chart>
         </el-col>
       </el-row>
     </el-card>
@@ -108,9 +111,10 @@ export default {
 };
 </script>
 <style scoped>
-.agileTrackerDoneCard {
-  width: 400px;
-  padding-top: 20px;
+.agileTrackerPlanningCard {
+  width: 100%;
+  max-width: 650px;
+  min-width: 400px;
 }
 .cardRow {
   align-items: center;
