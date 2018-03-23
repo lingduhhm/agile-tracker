@@ -151,7 +151,7 @@
           if (response.data.status === 'success') {
             that.moduleList = response.data.resData;
             if (that.moduleList.length > 0) {
-              if (window.localStorage.getItem('module')) {
+              if (window.localStorage.getItem('module') && (that.moduleList.indexOf(window.localStorage.getItem('module')) !== -1)) {
                 that.currentModule = window.localStorage.getItem('module');
               } else {
                 that.currentModule = that.moduleList.length > 0 ? that.moduleList[0].key : 'Module';
