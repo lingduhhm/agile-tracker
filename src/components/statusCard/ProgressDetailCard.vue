@@ -41,10 +41,10 @@
         <el-col :span="5" class="burnDownChart">
           <burndown-chart :sprintid="sprintid" ref="burnDownChart" :chartwidth="burndownWidth" :chartheight="burndownHeight"></burndown-chart>
         </el-col>
-        <el-col :span="5" class="inProgressChart">
+        <el-col :span="5" class="inProgressChart" v-show="false">
           <inprogress-chart ref="inProgressChart"></inprogress-chart>
         </el-col>
-        <el-col :span="7" class="workLogChart">
+        <el-col :span="12" class="workLogChart">
           <worklog-chart ref="workLogChart"></worklog-chart>
         </el-col>
       </el-row>

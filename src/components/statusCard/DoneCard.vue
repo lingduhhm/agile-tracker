@@ -109,7 +109,7 @@ export default {
 </script>
 <style scoped>
 .agileTrackerDoneCard {
-  width: 400px;
+  width: 300px;
   padding-top: 20px;
 }
 .cardRow {
