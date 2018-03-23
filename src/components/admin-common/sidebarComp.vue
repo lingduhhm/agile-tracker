@@ -57,7 +57,7 @@
           if (response.data.status === 'success') {
             var menu = response.data.resData;
             that.menuMap = that.jsonfy(menu);
-            if (window.localStorage.getItem('sprint') && (menu.indexOf(window.localStorage.getItem('sprint')) !== -1)) {
+            if (window.localStorage.getItem('sprint') && (that.menuMap[window.localStorage.getItem('sprint')])) {
               that.selectedTab = window.localStorage.getItem('sprint');
             } else {
               if (menu[1].length > 0) {
