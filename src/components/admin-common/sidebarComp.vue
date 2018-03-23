@@ -41,10 +41,10 @@
         this.fetchData();
       });
       this.$root.eventHub.$off('updatePercentage', (data) => {
-        this.selectedPercentage = parseInt(data.percentage, 10) || 100;
+        this.selectedPercentage = (parseInt(data.percentage, 10) || 100) > 100 ? 0 : parseInt(data.percentage, 10);
       });
       this.$root.eventHub.$on('updatePercentage', (data) => {
-        this.selectedPercentage = parseInt(data.percentage, 10) || 100;
+        this.selectedPercentage = (parseInt(data.percentage, 10) || 100) > 100 ? 0 : parseInt(data.percentage, 10);
       });
     },
     methods: {

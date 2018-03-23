@@ -6,7 +6,7 @@
           <el-col :span="24">
             <el-card class="box-card rowMargin">
               <div slot="header" class="clearfix">
-                <span class="font">Sprint Infomation</span>
+                <span class="font"><el-tag>{{sprintinfo.status&&sprintinfo.status.toUpperCase()}}</el-tag></span>
                 <el-button style="float: right; padding: 3px 0" type="text" @click="refreshData">Refresh</el-button>
               </div>
               <el-form inline label-position="left" class="demo-table-expand">

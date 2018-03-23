@@ -6,7 +6,7 @@
           <el-col :span="24">
             <el-card class="box-card" style="height:273px;">
               <div slot="header" class="clearfix">
-                <span class="font">Current Sprint</span>
+                <span class="font"><el-tag>{{sprintinfo.status && sprintinfo.status.toUpperCase()}}</el-tag></span>
                 <el-button v-if="sprintinfo.status != 'done'" style="float: right; padding: 3px 0" type="text" @click="refreshData">Refresh</el-button>
               </div>
               <el-form inline label-position="left" class="demo-table-expand">
