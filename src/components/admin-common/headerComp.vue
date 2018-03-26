@@ -22,6 +22,9 @@
             <el-dropdown-item command="proceed">{{sprintinfo.status == 'done'? "Restart": "Proceed"}}</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
+      </el-col>
+      <el-col :span="1" :offset="18">
+        <el-button type="primary" icon="el-icon-question" @click="navigateToHelp" size="mini" round plain>Help</el-button>
       </el-col>          
     </el-row>
     <el-dialog 
@@ -261,6 +264,9 @@
             });
           }
         }
+      },
+      navigateToHelp () {
+        window.open('https://confluence.successfactors.com/display/ENG/Agile+Tracker+Documentation');
       },
       actionExec () {
         var that = this;
